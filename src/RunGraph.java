@@ -23,11 +23,11 @@ public class RunGraph {
      public void initialize(){
         graph = new RoutingGraph<Integer>();
         for (int j = 0; j < 16; j++) {
-            if (j < 4) {
-                graph.AddNode(j);
-            } else if (j >= 4 && j < 12) {
+            if (j < 8) {
                 graph.AddNode(j);
                 graph.getGraph().get(j).setState(1);
+            } else if (j >= 8 && j < 12) {
+                graph.AddNode(j);               
             } else {
                 graph.AddNode(j);
                 graph.getGraph().get(j).setState(2);
@@ -37,6 +37,7 @@ public class RunGraph {
         for(int i = 0; i < graph.getGraph().size(); i++){
             System.out.println("cost " + graph.getGraph().get(i).getCost());
         }
+        find_shortest_path();
      }
     /**
      * increase the size of graph from 5 to 1000
@@ -47,11 +48,11 @@ public class RunGraph {
     public void run() {
         graph = new RoutingGraph<Integer>();
         for (int j = 0; j < 16; j++) {
-            if (j < 4) {
-                graph.AddNode(j);                
-            } else if (j >= 4 && j < 12) {
-                graph.AddNode(j);
+            if (j < 8) {
+                graph.AddNode(j);   
                 graph.getGraph().get(j).setState(1);
+            } else if (j >= 8 && j < 12) {
+                graph.AddNode(j);
             } else {
                 graph.AddNode(j);
                 graph.getGraph().get(j).setState(2);
@@ -159,7 +160,8 @@ public class RunGraph {
                         if(path_find.get(m).getState()==1){
                             path_find.get(m).changeOther();
                         }
-                    }                    
+                    }
+                    sources.get(i).paths.add(path_find);
         }
     }
             
@@ -186,6 +188,10 @@ public class RunGraph {
     public ArrayList<RoutingGraph<Integer>.Node<Integer>> drawGraph(){
         ArrayList<RoutingGraph<Integer>.Node<Integer>> list = graph.getGraph();
         return list;
+    }
+    
+    public RoutingGraph<Integer> getGraph(){
+        return graph;
     }
     
     private RoutingGraph<Integer> graph;

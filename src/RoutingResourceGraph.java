@@ -33,14 +33,19 @@ public class RoutingResourceGraph extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        graphPanel = new javax.swing.JPanel();
-        jButton1 = new javax.swing.JButton();
+        graphPanel = new DrawGraph(ex.getGraph(),squares);
+        route = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         graphPanel.setLayout(new java.awt.GridLayout(4, 4, 50, 50));
 
-        jButton1.setText("Start");
+        route.setText("Start");
+        route.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                routeActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -48,7 +53,7 @@ public class RoutingResourceGraph extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGap(18, 18, 18)
-                .addComponent(jButton1)
+                .addComponent(route)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 80, Short.MAX_VALUE)
                 .addComponent(graphPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 455, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -62,12 +67,19 @@ public class RoutingResourceGraph extends javax.swing.JFrame {
                         .addComponent(graphPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 339, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(22, 22, 22))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(jButton1)
+                        .addComponent(route)
                         .addGap(101, 101, 101))))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void routeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_routeActionPerformed
+
+        // TODO add your handling code here:
+        ex.runIteration();
+        graphPanel.repaint();
+    }//GEN-LAST:event_routeActionPerformed
 
     /**
      * @param args the command line arguments
@@ -108,7 +120,7 @@ public class RoutingResourceGraph extends javax.swing.JFrame {
          for(int i = 0; i < 4; i++){
             for(int j = 0; j < 4; j++){
                 squares[i][j] = new JLabel();
-                if(ex.drawGraph().get(4*i+j).getState()==1){
+                if(ex.drawGraph().get(4*i+j).getState()==1){                
                 squares[i][j].setBackground(Color.yellow);
                 squares[i][j].setOpaque(true);
                 }
@@ -125,10 +137,12 @@ public class RoutingResourceGraph extends javax.swing.JFrame {
         } 
     }
     
+ 
+    
     private RunGraph ex;
     private JLabel squares[][] = new JLabel[4][4];
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel graphPanel;
-    private javax.swing.JButton jButton1;
+    private javax.swing.JButton route;
     // End of variables declaration//GEN-END:variables
 }

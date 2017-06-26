@@ -135,6 +135,7 @@ public class RoutingGraph<K> {
     public Node(K k){
         edge = new LinkedList<Edge<K>> ();
         this.key = k;
+        this.paths = new LinkedList<ArrayList<Node<Integer>>>();
     }
     public K getKey(){
         return key;
@@ -156,7 +157,6 @@ public class RoutingGraph<K> {
             changeCost();
         }
         else{
-            paths = new LinkedList<ArrayList<Node<Integer>>>();
             cost = 0;
         }
     }
