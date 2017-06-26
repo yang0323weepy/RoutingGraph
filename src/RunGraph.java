@@ -15,11 +15,29 @@ import java.util.*;
 public class RunGraph {
      public static void main(String[] args) {
        RunGraph ex = new RunGraph();
-        ex.run();
+       ex.run();
          
     }
 
 
+     public void initialize(){
+        graph = new RoutingGraph<Integer>();
+        for (int j = 0; j < 16; j++) {
+            if (j < 4) {
+                graph.AddNode(j);
+            } else if (j >= 4 && j < 12) {
+                graph.AddNode(j);
+                graph.getGraph().get(j).setState(1);
+            } else {
+                graph.AddNode(j);
+                graph.getGraph().get(j).setState(2);
+            }
+        }
+        add_edge();
+        for(int i = 0; i < graph.getGraph().size(); i++){
+            System.out.println("cost " + graph.getGraph().get(i).getCost());
+        }
+     }
     /**
      * increase the size of graph from 5 to 1000
      * add node to the graph,add edge, and find shortest path 
@@ -27,37 +45,35 @@ public class RunGraph {
 
     //method to run the whole program
     public void run() {
-        RoutingGraph<Integer> graph = new RoutingGraph<Integer>();
+        graph = new RoutingGraph<Integer>();
         for (int j = 0; j < 16; j++) {
-            if (j < 8) {
+            if (j < 4) {
+                graph.AddNode(j);                
+            } else if (j >= 4 && j < 12) {
                 graph.AddNode(j);
                 graph.getGraph().get(j).setState(1);
-            } else if (j >= 8 && j < 12) {
-                graph.AddNode(j);
             } else {
                 graph.AddNode(j);
                 graph.getGraph().get(j).setState(2);
             }
         }
-        add_edge(graph, 10);
+        add_edge();
         for(int i = 0; i < graph.getGraph().size(); i++){
             System.out.println("cost " + graph.getGraph().get(i).getCost());
         }
-        find_shortest_path(graph);
+        find_shortest_path();
         while(!testCong(graph)){
             System.out.println("===============================");
-            runIteration(graph);
+            runIteration();
         }
     }
 
     /**
      * the method to add edge between two random city, the weight is randomized between 1 and 10
      * 
-     * @param    graph  an undirected graph of integer
-     *           graph_size the size of graph
      */
     //the method to add edge (the node and the weight) between two random city in the graph
-    public void add_edge(RoutingGraph<Integer> graph,int graph_size){
+    public void add_edge(){
         //generate edges and add them into the graph
         graph.AddEdge(0, 2, 0.1);
         graph.AddEdge(0, 4, 0.5);
@@ -100,11 +116,10 @@ public class RunGraph {
      * the method to decide whether discard the graph
      * if not all nodes can be reached, the method return false
      * 
-     * @param   graph  an undirected graph of integer
      * @return     true or false
      */
     //the method to decide whether discard the graph
-    public boolean discard_graph(RoutingGraph<Integer> graph){
+    public boolean discard_graph(){
         for(int i = 0; i < graph.getGraph().size(); i++){
             if(graph.getGraph().get(i).getEdge().isEmpty()){
                 return false;
@@ -117,11 +132,9 @@ public class RunGraph {
      * if all nodes can be reached, find the shortest path between two random city 
      * print the path out and the execution time out
      * 
-     * @param    graph  an undirected graph of integer
-     *           graph_size the size of graph
      */
     //find the shortest path between two random city print the path out and the execution time out
-    public void find_shortest_path(RoutingGraph<Integer> graph) {
+    public void find_shortest_path() {
         ArrayList<RoutingGraph<Integer>.Node<Integer>> sources = new ArrayList<RoutingGraph<Integer>.Node<Integer>>();
         for(int i = 0; i < graph.getGraph().size(); i++){
             if(graph.getGraph().get(i).getState() == 0){
@@ -150,7 +163,7 @@ public class RunGraph {
         }
     }
             
-    public void runIteration(RoutingGraph<Integer> graph){
+    public void runIteration(){
         for(int i = 0; i < graph.getGraph().size(); i++){
             if(graph.getGraph().get(i).getState() == 1 && graph.getGraph().get(i).getOther() > 2){
                 graph.getGraph().get(i).changeHistory();
@@ -159,7 +172,7 @@ public class RunGraph {
             }
         }
         graph.changeEdges();
-        find_shortest_path(graph);
+        find_shortest_path();
     }
     
     public boolean testCong(RoutingGraph<Integer> graph) {
@@ -169,5 +182,12 @@ public class RunGraph {
         }
         return true;
     }
+    
+    public ArrayList<RoutingGraph<Integer>.Node<Integer>> drawGraph(){
+        ArrayList<RoutingGraph<Integer>.Node<Integer>> list = graph.getGraph();
+        return list;
+    }
+    
+    private RoutingGraph<Integer> graph;
 }
 
