@@ -1,6 +1,6 @@
 
 import java.awt.Color;
-import javax.swing.JLabel;
+import javax.swing.*;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -19,9 +19,11 @@ public class RoutingResourceGraph extends javax.swing.JFrame {
      */
     public RoutingResourceGraph() {
         ex = new RunGraph();
+        squares = new JLabel[4][4];
         ex.initialize();
         initComponents();
-        show_contents();
+        showGraph();
+        
     }
 
     /**
@@ -33,10 +35,17 @@ public class RoutingResourceGraph extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        graphPanel = new DrawGraph(ex.getGraph(),squares);
+        graphPanel = new DrawGraph(ex,squares);
         route = new javax.swing.JButton();
+        reroute = new javax.swing.JButton();
+        showState = new javax.swing.JLabel();
+        jMenuBar1 = new javax.swing.JMenuBar();
+        jMenu1 = new javax.swing.JMenu();
+        about = new javax.swing.JMenuItem();
+        exit = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
 
         graphPanel.setLayout(new java.awt.GridLayout(4, 4, 50, 50));
 
@@ -47,39 +56,98 @@ public class RoutingResourceGraph extends javax.swing.JFrame {
             }
         });
 
+        reroute.setText("Restart");
+        reroute.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                rerouteActionPerformed(evt);
+            }
+        });
+
+        jMenu1.setText("Menu");
+
+        about.setText("About");
+        jMenu1.add(about);
+
+        exit.setText("Exit");
+        exit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                exitActionPerformed(evt);
+            }
+        });
+        jMenu1.add(exit);
+
+        jMenuBar1.add(jMenu1);
+
+        setJMenuBar(jMenuBar1);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(18, 18, 18)
-                .addComponent(route)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 80, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(showState, javax.swing.GroupLayout.PREFERRED_SIZE, 237, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(26, 26, 26))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(106, 106, 106)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(reroute)
+                            .addComponent(route, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(106, 106, 106)))
                 .addComponent(graphPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 455, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addContainerGap(79, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap(62, Short.MAX_VALUE)
+                .addContainerGap(40, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(graphPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 339, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(22, 22, 22))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(showState, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(65, 65, 65)
                         .addComponent(route)
-                        .addGap(101, 101, 101))))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(reroute)
+                        .addGap(118, 118, 118))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(graphPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 339, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(23, 23, 23))))
         );
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void routeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_routeActionPerformed
 
         // TODO add your handling code here:
+        System.out.println("===============================");
         ex.runIteration();
+        if (!ex.getGraph().testCong()) {  
+            showState.setText("STILL CONGESTED");
+        } else {
+            showState.setText("This circuit already resolve congestion");
+        }
         graphPanel.repaint();
     }//GEN-LAST:event_routeActionPerformed
+
+    private void rerouteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rerouteActionPerformed
+        // TODO add your handling code here:
+        ex.initialize();
+        if (!ex.getGraph().testCong()) {  
+            showState.setText("STILL CONGESTED");
+        } else {
+            showState.setText("This circuit already resolve congestion");
+        }
+        graphPanel.repaint();
+    }//GEN-LAST:event_rerouteActionPerformed
+
+    private void exitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitActionPerformed
+        // TODO add your handling code here:
+        System.exit(0);
+    }//GEN-LAST:event_exitActionPerformed
 
     /**
      * @param args the command line arguments
@@ -116,19 +184,22 @@ public class RoutingResourceGraph extends javax.swing.JFrame {
         });
     }
     
-    public void show_contents(){
+    public void showGraph(){
          for(int i = 0; i < 4; i++){
             for(int j = 0; j < 4; j++){
-                squares[i][j] = new JLabel();
-                if(ex.drawGraph().get(4*i+j).getState()==1){                
+                squares[i][j] = new JLabel("",SwingConstants.CENTER);
+                if(ex.drawGraph().get(4*i+j).getState()==1){ 
+                squares[i][j].setText(Integer.toString(ex.drawGraph().get(4*i+j).getKey()));
                 squares[i][j].setBackground(Color.yellow);
                 squares[i][j].setOpaque(true);
                 }
                 else if(ex.drawGraph().get(4*i+j).getState()==0){
+                squares[i][j].setText(Integer.toString(ex.drawGraph().get(4*i+j).getKey()));
                 squares[i][j].setBackground(Color.blue);
                 squares[i][j].setOpaque(true);
                 }
                 else if(ex.drawGraph().get(4*i+j).getState()==2){
+                squares[i][j].setText(Integer.toString(ex.drawGraph().get(4*i+j).getKey()));
                 squares[i][j].setBackground(Color.red);
                 squares[i][j].setOpaque(true);
                 }
@@ -136,13 +207,18 @@ public class RoutingResourceGraph extends javax.swing.JFrame {
             }  
         } 
     }
-    
- 
+
     
     private RunGraph ex;
-    private JLabel squares[][] = new JLabel[4][4];
+    private JLabel squares[][];
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JMenuItem about;
+    private javax.swing.JMenuItem exit;
     private javax.swing.JPanel graphPanel;
+    private javax.swing.JMenu jMenu1;
+    private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JButton reroute;
     private javax.swing.JButton route;
+    private javax.swing.JLabel showState;
     // End of variables declaration//GEN-END:variables
 }

@@ -120,6 +120,14 @@ public class RoutingGraph<K> {
         return wires;
     }
     
+        public boolean testCong() {
+        ArrayList<Node<K>> wires = getWire();
+        for (int i = 0; i < wires.size(); i++) {
+            if (wires.get(i).getOther() > 2) return false;
+        }
+        return true;
+    }
+    
     public class Node<K> implements Comparable<Node<K>>{
     Node<K> prev;
     int state = 0;

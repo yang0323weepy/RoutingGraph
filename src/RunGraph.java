@@ -22,6 +22,7 @@ public class RunGraph {
 
      public void initialize(){
         graph = new RoutingGraph<Integer>();
+                System.out.println(graph);
         for (int j = 0; j < 16; j++) {
             if (j < 8) {
                 graph.AddNode(j);
@@ -153,6 +154,7 @@ public class RunGraph {
                 wires.get(k).resetOther();
             }
         for (int i = 0; i < sources.size(); i++) {
+                    sources.get(i).paths.clear();
                     System.out.println("path from" +sources.get(i).getKey() + " to" + sinks.get(i).getKey() );
                     ArrayList<RoutingGraph<Integer>.Node<Integer>> path_find = graph.findShortestPath(sources.get(i).getKey(),sinks.get(i).getKey());
                     for (int m = 0; m < path_find.size(); m++) {
