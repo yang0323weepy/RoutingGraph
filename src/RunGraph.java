@@ -58,30 +58,30 @@ public class RunGraph {
         graph.AddEdge(7, 4, 0.2);
         graph.AddEdge(7, 11, 0.2);
         graph.AddEdge(11, 4,0.5);
-       graph.AddEdge(0,4,graph.getGraph().get(0).getCost());  
-       graph.AddEdge(0,5,graph.getGraph().get(1).getCost());  
-       graph.AddEdge(1,6,graph.getGraph().get(2).getCost());  
-       graph.AddEdge(1,7,graph.getGraph().get(3).getCost());  
-       graph.AddEdge(2,8,graph.getGraph().get(4).getCost());  
-       graph.AddEdge(2,9,graph.getGraph().get(5).getCost());  
-       graph.AddEdge(3,10,graph.getGraph().get(6).getCost());  
-       graph.AddEdge(3,11,graph.getGraph().get(7).getCost());   
-       graph.AddEdge(4,12,graph.getGraph().get(0).getCost());   
-       graph.AddEdge(5,12,graph.getGraph().get(1).getCost());   
-       graph.AddEdge(6,13,graph.getGraph().get(2).getCost());
-       graph.AddEdge(7,13,graph.getGraph().get(3).getCost());  
-       graph.AddEdge(8,14,graph.getGraph().get(4).getCost());  
-       graph.AddEdge(9,14,graph.getGraph().get(5).getCost());  
-       graph.AddEdge(10,15,graph.getGraph().get(6).getCost());  
-       graph.AddEdge(11,15,graph.getGraph().get(7).getCost()); 
-       graph.AddEdge(4,13,graph.getGraph().get(0).getCost());   
-       graph.AddEdge(5,14,graph.getGraph().get(1).getCost());   
-       graph.AddEdge(6,15,graph.getGraph().get(2).getCost());
-       graph.AddEdge(7,12,graph.getGraph().get(3).getCost());  
-       graph.AddEdge(11,13,graph.getGraph().get(7).getCost());
-       graph.AddEdge(4,15,graph.getGraph().get(0).getCost());    
-       graph.AddEdge(7,15,graph.getGraph().get(3).getCost());  
-       graph.AddEdge(11,12,graph.getGraph().get(7).getCost());  
+       graph.AddEdge(0,4,graph.getGraph().get(4).getCost());  
+       graph.AddEdge(0,5,graph.getGraph().get(5).getCost());  
+       graph.AddEdge(1,6,graph.getGraph().get(6).getCost());  
+       graph.AddEdge(1,7,graph.getGraph().get(7).getCost());  
+       graph.AddEdge(2,8,graph.getGraph().get(8).getCost());  
+       graph.AddEdge(2,9,graph.getGraph().get(9).getCost());  
+       graph.AddEdge(3,10,graph.getGraph().get(10).getCost());  
+       graph.AddEdge(3,11,graph.getGraph().get(11).getCost());   
+       graph.AddEdge(4,12,graph.getGraph().get(4).getCost());   
+       graph.AddEdge(5,12,graph.getGraph().get(5).getCost());   
+       graph.AddEdge(6,13,graph.getGraph().get(6).getCost());
+       graph.AddEdge(7,13,graph.getGraph().get(7).getCost());  
+       graph.AddEdge(8,14,graph.getGraph().get(8).getCost());  
+       graph.AddEdge(9,14,graph.getGraph().get(9).getCost());  
+       graph.AddEdge(10,15,graph.getGraph().get(10).getCost());  
+       graph.AddEdge(11,15,graph.getGraph().get(11).getCost()); 
+       graph.AddEdge(4,13,graph.getGraph().get(4).getCost());   
+       graph.AddEdge(5,14,graph.getGraph().get(5).getCost());   
+       graph.AddEdge(6,15,graph.getGraph().get(6).getCost());
+       graph.AddEdge(7,12,graph.getGraph().get(7).getCost());  
+       graph.AddEdge(11,13,graph.getGraph().get(11).getCost());
+       graph.AddEdge(4,15,graph.getGraph().get(4).getCost());    
+       graph.AddEdge(7,15,graph.getGraph().get(7).getCost());  
+       graph.AddEdge(11,12,graph.getGraph().get(11).getCost());  
     }
 
     /**
@@ -109,6 +109,7 @@ public class RunGraph {
             }
         for (int i = 0; i < sources.size(); i++) {
                     sources.get(i).paths.clear();
+                    sources.get(i).distance.clear();
                     System.out.println("path from" +sources.get(i).getKey() + " to" + sinks.get(i).getKey() );
                     ArrayList<RoutingGraph<Integer>.Node<Integer>> path_find = graph.findShortestPath(sources.get(i).getKey(),sinks.get(i).getKey());
                     for (int m = 0; m < path_find.size(); m++) {
@@ -118,6 +119,7 @@ public class RunGraph {
                         }
                     }
                     sources.get(i).paths.add(path_find);
+                    sources.get(i).distance.add(sinks.get(i).min_distance);
         }
     }
             

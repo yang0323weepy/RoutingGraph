@@ -140,10 +140,12 @@ public class RoutingGraph<K> {
     K key;
     LinkedList<Edge<K>> edge;
     LinkedList<ArrayList<Node<Integer>>> paths;
+    LinkedList<Double> distance;
     public Node(K k){
         edge = new LinkedList<Edge<K>> ();
         this.key = k;
         this.paths = new LinkedList<ArrayList<Node<Integer>>>();
+        this.distance = new LinkedList<Double>();
     }
     public K getKey(){
         return key;

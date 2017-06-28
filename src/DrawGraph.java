@@ -5,6 +5,7 @@
  */
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.geom.Line2D;
 import java.util.ArrayList;
 import java.util.Enumeration;
 
@@ -16,7 +17,7 @@ import javax.swing.*;
  */
 public class DrawGraph extends JPanel {
 
-    public DrawGraph(RunGraph ex, JLabel square[][]) {
+    public DrawGraph(RunGraph ex, JToggleButton square[][]) {
         this.run = ex;
         graph = ex.getGraph();
         squares = square;
@@ -29,12 +30,13 @@ public class DrawGraph extends JPanel {
         for (int i = 0; i < wires.size(); i++) {
             int m = wires.get(i).getKey() % 4;
             int n = (wires.get(i).getKey() - m) / 4;
+            squares[n][m].setContentAreaFilled(false);
             squares[n][m].setOpaque(false);
         }
             paintRoute(g);
     }
 
-    public void paintRoute(Graphics g) {  
+    public void paintRoute(Graphics g) { 
         graph = run.getGraph();
        ArrayList<RoutingGraph<Integer>.Node<Integer>> sources = new ArrayList<RoutingGraph<Integer>.Node<Integer>>();
         for (int i = 0; i < graph.getGraph().size(); i++) {
@@ -51,7 +53,7 @@ public class DrawGraph extends JPanel {
                         int n = (sources.get(i).paths.get(j).get(k).getKey() - m) / 4;
                         if (k != 0) {
                             g.setColor(Color.black);
-                            g.drawLine(prev_x, prev_y, squares[n][m].getX() + 20, squares[n][m].getY() + 20);
+                            g.drawLine(prev_x, prev_y, squares[n][m].getX() + 20, squares[n][m].getY() + 20);                            
                         }
                         if (sources.get(i).paths.get(j).get(k).getState() == 1) {
                             squares[n][m].setBackground(Color.green);
@@ -71,5 +73,5 @@ public class DrawGraph extends JPanel {
     }
     private RunGraph run;
     private RoutingGraph<Integer> graph;
-    private JLabel squares[][];
+    private JToggleButton squares[][];
 }

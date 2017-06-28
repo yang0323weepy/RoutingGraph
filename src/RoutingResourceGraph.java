@@ -22,7 +22,7 @@ public class RoutingResourceGraph extends javax.swing.JFrame {
      */
     public RoutingResourceGraph() {
         ex = new RunGraph();
-        squares = new JLabel[4][4];
+        squares = new JToggleButton[4][4];
         ex.initialize();
         initComponents();
         showCong();
@@ -230,7 +230,6 @@ public class RoutingResourceGraph extends javax.swing.JFrame {
 
     private void showStateMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_showStateMouseClicked
         // TODO add your handling code here:
-
     }//GEN-LAST:event_showStateMouseClicked
 
     /**
@@ -268,26 +267,24 @@ public class RoutingResourceGraph extends javax.swing.JFrame {
         });
     }
 
-    public void showGraph() {
+     public void showGraph() {
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
-                squares[i][j] = new JLabel("", SwingConstants.CENTER);
+                squares[i][j] = new JToggleButton("");
                 if (ex.drawGraph().get(4 * i + j).getState() == 1) {
                     squares[i][j].setText(Integer.toString(ex.drawGraph().get(4 * i + j).getKey()));
                 } else if (ex.drawGraph().get(4 * i + j).getState() == 0) {
                     squares[i][j].setText(Integer.toString(ex.drawGraph().get(4 * i + j).getKey()));
-                    squares[i][j].setBackground(Color.blue);
                     squares[i][j].setOpaque(true);
                 } else if (ex.drawGraph().get(4 * i + j).getState() == 2) {
                     squares[i][j].setText(Integer.toString(ex.drawGraph().get(4 * i + j).getKey()));
-                    squares[i][j].setBackground(Color.red);
                     squares[i][j].setOpaque(true);
                 }
                 squares[i][j].setToolTipText("cost"+ex.drawGraph().get(4 * i + j).getCost());
                 squares[i][j].addMouseListener(new MouseAdapter() {
                     @Override
                     public void mouseClicked(MouseEvent e) {
-                        JLabel l = (JLabel) e.getSource();
+                        JToggleButton l = (JToggleButton) e.getSource();
                         String state = "";
                         int num = Integer.parseInt(l.getText());
                         if (ex.drawGraph().get(num).getState() == 1) {
@@ -297,17 +294,18 @@ public class RoutingResourceGraph extends javax.swing.JFrame {
                             if (history_get != 0) {
                                 history = (int) (Math.log(ex.drawGraph().get(num).getHistory()) / Math.log(1.1));
                             }
-
                             showInfo.setText("<html>" + state + "<br>" + "congestion history" + history + "<br>" + "congestion" + ex.drawGraph().get(num).getOther() + "</html>");
-                        } else if (ex.drawGraph().get(Integer.parseInt(l.getText())).getState() == 0) {
+                        } else if (ex.drawGraph().get(num).getState() == 0) {
                             state = "source";
                             String path = "path from";
-                            for (int i = 0; i < ex.drawGraph().get(Integer.parseInt(l.getText())).paths.size(); i++) {
-                                for (int m = 0; m < ex.drawGraph().get(Integer.parseInt(l.getText())).paths.get(i).size(); m++) {
-                                    path = path + " " + ex.drawGraph().get(Integer.parseInt(l.getText())).paths.get(i).get(m).getKey();
+                            String cost = "cost ";
+                            for (int i = 0; i < ex.drawGraph().get(num).paths.size(); i++) {
+                                for (int m = 0; m < ex.drawGraph().get(num).paths.get(i).size(); m++) {
+                                    path = path + " " + ex.drawGraph().get(num).paths.get(i).get(m).getKey();
                                 }
-                            }
-                            showInfo.setText("<html>" + state + "<br>" + path + "</html>");
+                                cost = cost + ex.drawGraph().get(num).distance.get(i);
+                            }                  
+                            showInfo.setText("<html>" + state + "<br>" + path + "<br>" + cost +"</html>");
                         } else {
                             state = "sink";
                             showInfo.setText("state: " + state);
@@ -319,17 +317,16 @@ public class RoutingResourceGraph extends javax.swing.JFrame {
         }
         showInfo.setFont(new Font("Courier", Font.PLAIN, 13));
     }
-    
-    public void showCong() {
+     
+         public void showCong() {
         if (!ex.getGraph().testCong()) {
             showState.setText("STILL CONGESTED");
         } else {
             showState.setText("This circuit has no congestion");
         }
     }
-
     private RunGraph ex;
-    private JLabel squares[][];
+    private JToggleButton squares[][];
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem about;
     private javax.swing.JMenuItem exit;
