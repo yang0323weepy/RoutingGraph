@@ -7,6 +7,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.util.ArrayList;
 import java.util.Enumeration;
+
 import javax.swing.*;
 
 /**
@@ -28,8 +29,7 @@ public class DrawGraph extends JPanel {
         for (int i = 0; i < wires.size(); i++) {
             int m = wires.get(i).getKey() % 4;
             int n = (wires.get(i).getKey() - m) / 4;
-            squares[n][m].setBackground(Color.yellow);
-            squares[n][m].setOpaque(true);
+            squares[n][m].setOpaque(false);
         }
             paintRoute(g);
     }
@@ -62,6 +62,12 @@ public class DrawGraph extends JPanel {
                     }
                 }
             }
+         for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                 squares[i][j].setToolTipText("cost"+graph.getGraph().get(4 * i + j).getCost());
+            }
+         }
+
     }
     private RunGraph run;
     private RoutingGraph<Integer> graph;

@@ -154,6 +154,9 @@ public class RoutingGraph<K> {
     public int getOther(){
         return other;
     }
+    public double getHistory(){
+        return history;
+    }
     public double getCost(){
         return cost;
     }

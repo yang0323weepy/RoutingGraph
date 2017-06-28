@@ -17,8 +17,6 @@ public class RunGraph {
        RunGraph ex = new RunGraph();
          
     }
-
-
      public void initialize(){
         graph = new RoutingGraph<Integer>();
                 System.out.println(graph);

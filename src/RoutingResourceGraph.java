@@ -2,6 +2,7 @@
 import java.awt.Color;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.Font;
 import java.util.ArrayList;
 import javax.swing.*;
 
@@ -10,7 +11,6 @@ import javax.swing.*;
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 /**
  *
  * @author yangy
@@ -25,8 +25,8 @@ public class RoutingResourceGraph extends javax.swing.JFrame {
         squares = new JLabel[4][4];
         ex.initialize();
         initComponents();
+        showCong();
         showGraph();
-        
     }
 
     /**
@@ -50,6 +50,7 @@ public class RoutingResourceGraph extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
+        showInfo = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         about = new javax.swing.JMenuItem();
@@ -125,6 +126,10 @@ public class RoutingResourceGraph extends javax.swing.JFrame {
         jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel4.setText("Blue: Source node");
 
+        showInfo.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        showInfo.setText("Node Information");
+        showInfo.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+
         jMenu1.setText("Menu");
 
         about.setText("About");
@@ -154,16 +159,19 @@ public class RoutingResourceGraph extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addGap(128, 128, 128)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(reroute)
-                            .addComponent(route, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(route, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(reroute)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 106, Short.MAX_VALUE)
+                                .addComponent(showInfo, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE))))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(97, 97, 97)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addGap(158, 158, 158)
+                            .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addGap(18, 18, 18)
                 .addComponent(graphPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 455, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(27, Short.MAX_VALUE))
         );
@@ -174,19 +182,22 @@ public class RoutingResourceGraph extends javax.swing.JFrame {
                 .addComponent(showState, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(route)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(reroute)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(4, 4, 4)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(reroute)
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(showInfo, javax.swing.GroupLayout.PREFERRED_SIZE, 154, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(33, Short.MAX_VALUE)
+                .addContainerGap(78, Short.MAX_VALUE)
                 .addComponent(graphPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 339, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(30, 30, 30))
         );
@@ -196,25 +207,19 @@ public class RoutingResourceGraph extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void routeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_routeActionPerformed
-    // TODO add your handling code here:
+        // TODO add your handling code here:
         System.out.println("===============================");
+        showInfo.setText("");
         ex.runIteration();
-        if (!ex.getGraph().testCong()) {  
-            showState.setText("STILL CONGESTED");
-        } else {
-            showState.setText("This circuit already resolve congestion");
-        }
+        showCong();
         graphPanel.repaint();
     }//GEN-LAST:event_routeActionPerformed
 
     private void rerouteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rerouteActionPerformed
         // TODO add your handling code here:
         ex.initialize();
-        if (!ex.getGraph().testCong()) {  
-            showState.setText("STILL CONGESTED");
-        } else {
-            showState.setText("This circuit already resolve congestion");
-        }
+        showInfo.setText("");
+        showCong();
         graphPanel.repaint();
     }//GEN-LAST:event_rerouteActionPerformed
 
@@ -225,7 +230,7 @@ public class RoutingResourceGraph extends javax.swing.JFrame {
 
     private void showStateMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_showStateMouseClicked
         // TODO add your handling code here:
-        
+
     }//GEN-LAST:event_showStateMouseClicked
 
     /**
@@ -262,47 +267,67 @@ public class RoutingResourceGraph extends javax.swing.JFrame {
             }
         });
     }
-    
-    public void showGraph(){
-         for(int i = 0; i < 4; i++){
-            for(int j = 0; j < 4; j++){
-                squares[i][j] = new JLabel("",SwingConstants.CENTER);
-                if(ex.drawGraph().get(4*i+j).getState()==1){ 
-                squares[i][j].setText(Integer.toString(ex.drawGraph().get(4*i+j).getKey()));
-                squares[i][j].setBackground(Color.yellow);
-                squares[i][j].setOpaque(true);
+
+    public void showGraph() {
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                squares[i][j] = new JLabel("", SwingConstants.CENTER);
+                if (ex.drawGraph().get(4 * i + j).getState() == 1) {
+                    squares[i][j].setText(Integer.toString(ex.drawGraph().get(4 * i + j).getKey()));
+                } else if (ex.drawGraph().get(4 * i + j).getState() == 0) {
+                    squares[i][j].setText(Integer.toString(ex.drawGraph().get(4 * i + j).getKey()));
+                    squares[i][j].setBackground(Color.blue);
+                    squares[i][j].setOpaque(true);
+                } else if (ex.drawGraph().get(4 * i + j).getState() == 2) {
+                    squares[i][j].setText(Integer.toString(ex.drawGraph().get(4 * i + j).getKey()));
+                    squares[i][j].setBackground(Color.red);
+                    squares[i][j].setOpaque(true);
                 }
-                else if(ex.drawGraph().get(4*i+j).getState()==0){
-                squares[i][j].setText(Integer.toString(ex.drawGraph().get(4*i+j).getKey()));
-                squares[i][j].setBackground(Color.blue);
-                squares[i][j].setOpaque(true);
-                }
-                else if(ex.drawGraph().get(4*i+j).getState()==2){
-                squares[i][j].setText(Integer.toString(ex.drawGraph().get(4*i+j).getKey()));
-                squares[i][j].setBackground(Color.red);
-                squares[i][j].setOpaque(true);
-                }
+                squares[i][j].setToolTipText("cost"+ex.drawGraph().get(4 * i + j).getCost());
                 squares[i][j].addMouseListener(new MouseAdapter() {
-                @Override
-                public void mouseClicked(MouseEvent e) {
-                    showPro.setVisible(true);
-                }
-            });
+                    @Override
+                    public void mouseClicked(MouseEvent e) {
+                        JLabel l = (JLabel) e.getSource();
+                        String state = "";
+                        int num = Integer.parseInt(l.getText());
+                        if (ex.drawGraph().get(num).getState() == 1) {
+                            state = "wire";
+                            double history_get = ex.drawGraph().get(num).getHistory();
+                            int history = 0;
+                            if (history_get != 0) {
+                                history = (int) (Math.log(ex.drawGraph().get(num).getHistory()) / Math.log(1.1));
+                            }
+
+                            showInfo.setText("<html>" + state + "<br>" + "congestion history" + history + "<br>" + "congestion" + ex.drawGraph().get(num).getOther() + "</html>");
+                        } else if (ex.drawGraph().get(Integer.parseInt(l.getText())).getState() == 0) {
+                            state = "source";
+                            String path = "path from";
+                            for (int i = 0; i < ex.drawGraph().get(Integer.parseInt(l.getText())).paths.size(); i++) {
+                                for (int m = 0; m < ex.drawGraph().get(Integer.parseInt(l.getText())).paths.get(i).size(); m++) {
+                                    path = path + " " + ex.drawGraph().get(Integer.parseInt(l.getText())).paths.get(i).get(m).getKey();
+                                }
+                            }
+                            showInfo.setText("<html>" + state + "<br>" + path + "</html>");
+                        } else {
+                            state = "sink";
+                            showInfo.setText("state: " + state);
+                        }
+                    }
+                });
                 graphPanel.add(squares[i][j]);
-            }  
-        } 
+            }
+        }
+        showInfo.setFont(new Font("Courier", Font.PLAIN, 13));
     }
     
-    public void addMouse(){
-       ArrayList<RoutingGraph<Integer>.Node<Integer>> sources = new ArrayList<RoutingGraph<Integer>.Node<Integer>>();
-        for (int i = 0; i < ex.getGraph().getGraph().size(); i++) {
-            if (ex.getGraph().getGraph().get(i).getState() == 0) {
-                sources.add(ex.getGraph().getGraph().get(i));
-            }
+    public void showCong() {
+        if (!ex.getGraph().testCong()) {
+            showState.setText("STILL CONGESTED");
+        } else {
+            showState.setText("This circuit has no congestion");
         }
     }
 
-    
     private RunGraph ex;
     private JLabel squares[][];
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -320,6 +345,7 @@ public class RoutingResourceGraph extends javax.swing.JFrame {
     private javax.swing.JTextArea prosperity;
     private javax.swing.JButton reroute;
     private javax.swing.JButton route;
+    private javax.swing.JLabel showInfo;
     private javax.swing.JDialog showPro;
     private javax.swing.JLabel showState;
     // End of variables declaration//GEN-END:variables
