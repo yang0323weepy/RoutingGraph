@@ -268,6 +268,7 @@ public class RoutingResourceGraph extends javax.swing.JFrame {
     }
 
      public void showGraph() {
+         //paint the source nodes and the sink nodes in JFrame
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
                 squares[i][j] = new JToggleButton("");
@@ -317,7 +318,7 @@ public class RoutingResourceGraph extends javax.swing.JFrame {
         }
         showInfo.setFont(new Font("Courier", Font.PLAIN, 13));
     }
-     
+    //show whether the congestion has been resolved in the panel 
          public void showCong() {
         if (!ex.getGraph().testCong()) {
             showState.setText("STILL CONGESTED");

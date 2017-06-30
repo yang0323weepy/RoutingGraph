@@ -3,11 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+
 import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.geom.Line2D;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.awt.geom.Line2D;
 
 import javax.swing.*;
 
@@ -23,9 +24,11 @@ public class DrawGraph extends JPanel {
         squares = square;
     }
 
+
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
+        //repaint the wire nodes to make the graph much clearer
         ArrayList<RoutingGraph<Integer>.Node<Integer>> wires = graph.getWire();
         for (int i = 0; i < wires.size(); i++) {
             int m = wires.get(i).getKey() % 4;
@@ -36,6 +39,7 @@ public class DrawGraph extends JPanel {
             paintRoute(g);
     }
 
+    //draw the route between the nodes
     public void paintRoute(Graphics g) { 
         graph = run.getGraph();
        ArrayList<RoutingGraph<Integer>.Node<Integer>> sources = new ArrayList<RoutingGraph<Integer>.Node<Integer>>();
@@ -64,12 +68,12 @@ public class DrawGraph extends JPanel {
                     }
                 }
             }
+         //update cost in the tooltip for each wire
          for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
                  squares[i][j].setToolTipText("cost"+graph.getGraph().get(4 * i + j).getCost());
             }
          }
-
     }
     private RunGraph run;
     private RoutingGraph<Integer> graph;
