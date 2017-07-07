@@ -13,18 +13,17 @@ import java.util.*;
 
 
 public class RunGraph {
-     public static void main(String[] args) {
-       RunGraph ex = new RunGraph();
-         
+    public RunGraph(int graph, int wire){
+        size_g = graph;
+        size_w = wire;
     }
      public void initialize(){
         graph = new RoutingGraph<Integer>();
                 System.out.println(graph);
-        for (int j = 0; j < 16; j++) {
-            if (j < 4) {
-                graph.AddNode(j);
-                
-            } else if (j >= 4 && j < 12) {
+        for (int j = 0; j < size_g*size_g*2+2*(size_g*size_g*size_w); j++) {
+            if (j < size_g*size_g) {
+                graph.AddNode(j);                
+            } else if (j >= size_g*size_g && j < size_g*size_g+2*(size_g*size_g*size_w)) {
                 graph.AddNode(j);
                 graph.getGraph().get(j).setState(1);
             } else {
@@ -33,9 +32,6 @@ public class RunGraph {
             }
         }
         add_edge();
-        for(int i = 0; i < graph.getGraph().size(); i++){
-            System.out.println("cost " + graph.getGraph().get(i).getCost());
-        }
         find_shortest_path();
      }
   
@@ -45,43 +41,55 @@ public class RunGraph {
      */
     //the method to add edge (the node and the weight) between two random city in the graph
     public void add_edge(){
+        ArrayList<ArrayList<Integer>> list = new ArrayList<ArrayList<Integer>> ();
+        int init = size_g*size_g;
+        for(int i = 0; i <size_g*size_g;i++){
+            ArrayList<Integer> num_list = new ArrayList<Integer> ();
+            for(int j = 0; j < size_w; j++){
+            num_list.add(init+j);
+            num_list.add(init+size_w+j);
+            num_list.add(init+size_g*size_g*size_w+j);
+            num_list.add(init+size_g*size_g*size_w+size_g*size_w+j);
+        }
+            init = init+size_w;
+            list.add(num_list);
+        }
+        for(int i = 0; i < list.size();i++){
+            for(int j = 0; j < list.get(i).size();j++){
+                System.out.print("list"+ list.get(i).get(j)+" ");
+            }
+            System.out.println();
+        }
         //generate edges and add them into the graph
-        graph.AddEdge(4, 6, 0.1);
-        graph.AddEdge(4, 8, 0.5);
-        graph.AddEdge(8, 7, 0.3);
-        graph.AddEdge(7, 8, 2.0);
-        graph.AddEdge(9, 11, 0.5);
-        graph.AddEdge(5, 11, 0.5);
-        graph.AddEdge(9, 8, 0.5);
-        graph.AddEdge(6, 10, 0.1);
-        graph.AddEdge(10, 6, 0.1);
-        graph.AddEdge(7, 4, 0.2);
-        graph.AddEdge(7, 11, 0.2);
-        graph.AddEdge(11, 4,0.5);
-       graph.AddEdge(0,4,graph.getGraph().get(4).getCost());  
-       graph.AddEdge(0,5,graph.getGraph().get(5).getCost());  
-       graph.AddEdge(1,6,graph.getGraph().get(6).getCost());  
-       graph.AddEdge(1,7,graph.getGraph().get(7).getCost());  
-       graph.AddEdge(2,8,graph.getGraph().get(8).getCost());  
-       graph.AddEdge(2,9,graph.getGraph().get(9).getCost());  
-       graph.AddEdge(3,10,graph.getGraph().get(10).getCost());  
-       graph.AddEdge(3,11,graph.getGraph().get(11).getCost());   
-       graph.AddEdge(4,12,graph.getGraph().get(4).getCost());   
-       graph.AddEdge(5,12,graph.getGraph().get(5).getCost());   
-       graph.AddEdge(6,13,graph.getGraph().get(6).getCost());
-       graph.AddEdge(7,13,graph.getGraph().get(7).getCost());  
-       graph.AddEdge(8,14,graph.getGraph().get(8).getCost());  
-       graph.AddEdge(9,14,graph.getGraph().get(9).getCost());  
-       graph.AddEdge(10,15,graph.getGraph().get(10).getCost());  
-       graph.AddEdge(11,15,graph.getGraph().get(11).getCost()); 
-       graph.AddEdge(4,13,graph.getGraph().get(4).getCost());   
-       graph.AddEdge(5,14,graph.getGraph().get(5).getCost());   
-       graph.AddEdge(6,15,graph.getGraph().get(6).getCost());
-       graph.AddEdge(7,12,graph.getGraph().get(7).getCost());  
-       graph.AddEdge(11,13,graph.getGraph().get(11).getCost());
-       graph.AddEdge(4,15,graph.getGraph().get(4).getCost());    
-       graph.AddEdge(7,15,graph.getGraph().get(7).getCost());  
-       graph.AddEdge(11,12,graph.getGraph().get(11).getCost());  
+        for(int i = 0; i < size_g*size_g; i++){
+          for(int k = 0; k < size_w*size_w*size_g; k++){
+            Random random = new Random();
+            int city1 = random.nextInt(list.get(i).size()) + 0;
+            int city2 = random.nextInt(list.get(i).size()) + 0;
+            double weight = random.nextDouble()+2;
+            if(city1 != city2 && list.get(i).get(city1) < size_g*size_g+2*(size_g*size_g*size_w) && list.get(i).get(city2) < size_g*size_g+2*(size_g*size_g*size_w)){
+                graph.AddEdge(list.get(i).get(city1),list.get(i).get(city2),weight);
+            } 
+              System.out.println("edge test1 " + list.get(i).get(city1)+" "+list.get(i).get(city2)+" " + weight);             
+        }
+    }
+    int num = size_g*size_g;
+     for(int i = 0; i < size_g*size_g; i++){
+       graph.AddEdge(i,num,graph.getGraph().get(num).getCost()); 
+       num++;
+       graph.AddEdge(i,num,graph.getGraph().get(num).getCost()); 
+       num++;
+        }
+     
+     int num_s = size_g*size_g+size_g*size_g*size_w;
+      for(int i = size_g*size_g+2*(size_g*size_g*size_w); i < (size_g*size_g*2+2*size_g*size_g*size_w); i++){       
+       graph.AddEdge(num_s,i,graph.getGraph().get(num_s).getCost());  
+       System.out.println("edge test2 " + num_s + " " + i);
+       num_s++;
+       graph.AddEdge(num_s,i,graph.getGraph().get(num_s).getCost()); 
+              System.out.println("edge test2 " + num_s + " " + i);
+       num_s++;
+        }
     }
 
     /**
@@ -151,7 +159,16 @@ public class RunGraph {
     public RoutingGraph<Integer> getGraph(){
         return graph;
     }
+    public int getGraphSize(){
+        return size_g;
+    }
+    
+    public int getWireSize(){
+        return size_w;
+    }
     
     private RoutingGraph<Integer> graph;
+    private int size_g;
+    private int size_w;
 }
 

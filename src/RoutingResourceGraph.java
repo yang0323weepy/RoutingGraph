@@ -3,8 +3,10 @@ import java.awt.Color;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.Font;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import javax.swing.*;
+import static javax.swing.SwingConstants.CENTER;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -21,10 +23,13 @@ public class RoutingResourceGraph extends javax.swing.JFrame {
      * Creates new form RoutingResourceGraph
      */
     public RoutingResourceGraph() {
-        ex = new RunGraph();
-        squares = new JToggleButton[4][4];
+        ex = new RunGraph(3,2);
+        squares = new JLabel[ex.getGraphSize()][ex.getGraphSize()];
+        squares_sinks = new JLabel[ex.getGraphSize()][ex.getGraphSize()];
+        squares_wires = new JLabel[2 * ex.getGraphSize() * ex.getGraphSize()][ex.getWireSize()];
         ex.initialize();
         initComponents();
+        initialize();
         showCong();
         showGraph();
     }
@@ -42,7 +47,7 @@ public class RoutingResourceGraph extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         prosperity = new javax.swing.JTextArea();
         exitD = new javax.swing.JButton();
-        graphPanel = new DrawGraph(ex,squares);
+        graphPanel = new DrawGraph(ex,squares,squares_sinks,squares_wires);
         route = new javax.swing.JButton();
         reroute = new javax.swing.JButton();
         showState = new javax.swing.JLabel();
@@ -91,7 +96,18 @@ public class RoutingResourceGraph extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
 
-        graphPanel.setLayout(new java.awt.GridLayout(4, 4, 50, 50));
+        graphPanel.setPreferredSize(new java.awt.Dimension(640, 640));
+
+        javax.swing.GroupLayout graphPanelLayout = new javax.swing.GroupLayout(graphPanel);
+        graphPanel.setLayout(graphPanelLayout);
+        graphPanelLayout.setHorizontalGroup(
+            graphPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 640, Short.MAX_VALUE)
+        );
+        graphPanelLayout.setVerticalGroup(
+            graphPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 640, Short.MAX_VALUE)
+        );
 
         route.setText("Start");
         route.addActionListener(new java.awt.event.ActionListener() {
@@ -162,7 +178,7 @@ public class RoutingResourceGraph extends javax.swing.JFrame {
                             .addComponent(route, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(reroute)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 106, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 60, Short.MAX_VALUE)
                                 .addComponent(showInfo, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE))))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(97, 97, 97)
@@ -172,8 +188,8 @@ public class RoutingResourceGraph extends javax.swing.JFrame {
                             .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addGap(18, 18, 18)
-                .addComponent(graphPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 455, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(27, Short.MAX_VALUE))
+                .addComponent(graphPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(68, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -197,8 +213,8 @@ public class RoutingResourceGraph extends javax.swing.JFrame {
                     .addComponent(showInfo, javax.swing.GroupLayout.PREFERRED_SIZE, 154, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(78, Short.MAX_VALUE)
-                .addComponent(graphPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 339, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(29, Short.MAX_VALUE)
+                .addComponent(graphPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(30, 30, 30))
         );
 
@@ -267,59 +283,139 @@ public class RoutingResourceGraph extends javax.swing.JFrame {
         });
     }
 
-     public void showGraph() {
-         //paint the source nodes and the sink nodes in JFrame
-        for (int i = 0; i < 4; i++) {
-            for (int j = 0; j < 4; j++) {
-                squares[i][j] = new JToggleButton("");
-                if (ex.drawGraph().get(4 * i + j).getState() == 1) {
-                    squares[i][j].setText(Integer.toString(ex.drawGraph().get(4 * i + j).getKey()));
-                } else if (ex.drawGraph().get(4 * i + j).getState() == 0) {
-                    squares[i][j].setText(Integer.toString(ex.drawGraph().get(4 * i + j).getKey()));
-                    squares[i][j].setOpaque(true);
-                } else if (ex.drawGraph().get(4 * i + j).getState() == 2) {
-                    squares[i][j].setText(Integer.toString(ex.drawGraph().get(4 * i + j).getKey()));
-                    squares[i][j].setOpaque(true);
-                }
-                squares[i][j].setToolTipText("cost"+ex.drawGraph().get(4 * i + j).getCost());
-                squares[i][j].addMouseListener(new MouseAdapter() {
-                    @Override
-                    public void mouseClicked(MouseEvent e) {
-                        JToggleButton l = (JToggleButton) e.getSource();
-                        String state = "";
-                        int num = Integer.parseInt(l.getText());
-                        if (ex.drawGraph().get(num).getState() == 1) {
-                            state = "wire";
-                            double history_get = ex.drawGraph().get(num).getHistory();
-                            int history = 0;
-                            if (history_get != 0) {
-                                history = (int) (Math.log(ex.drawGraph().get(num).getHistory()) / Math.log(1.1));
-                            }
-                            showInfo.setText("<html>" + state + "<br>" + "congestion history" + history + "<br>" + "congestion" + ex.drawGraph().get(num).getOther() + "</html>");
-                        } else if (ex.drawGraph().get(num).getState() == 0) {
-                            state = "source";
-                            String path = "path from";
-                            String cost = "cost ";
-                            for (int i = 0; i < ex.drawGraph().get(num).paths.size(); i++) {
-                                for (int m = 0; m < ex.drawGraph().get(num).paths.get(i).size(); m++) {
-                                    path = path + " " + ex.drawGraph().get(num).paths.get(i).get(m).getKey();
-                                }
-                                cost = cost + ex.drawGraph().get(num).distance.get(i);
-                            }                  
-                            showInfo.setText("<html>" + state + "<br>" + path + "<br>" + cost +"</html>");
-                        } else {
-                            state = "sink";
-                            showInfo.setText("state: " + state);
-                        }
-                    }
-                });
-                graphPanel.add(squares[i][j]);
+    
+    public void initialize(){
+         ArrayList<RoutingGraph<Integer>.Node<Integer>> wires = ex.getGraph().getWire();
+        ArrayList<RoutingGraph<Integer>.Node<Integer>> sources = new ArrayList<RoutingGraph<Integer>.Node<Integer>>();
+        for (int i = 0; i < ex.getGraph().getGraph().size(); i++) {
+            if (ex.getGraph().getGraph().get(i).getState() == 0) {
+                sources.add(ex.getGraph().getGraph().get(i));
             }
+        }
+        ArrayList<RoutingGraph<Integer>.Node<Integer>> sinks = new ArrayList<RoutingGraph<Integer>.Node<Integer>>();
+        for (int i = 0; i < ex.getGraph().getGraph().size(); i++) {
+            if (ex.getGraph().getGraph().get(i).getState() == 2) {
+                sinks.add(ex.getGraph().getGraph().get(i));
+            }
+        }
+        for (int i = 0; i < sources.size(); i++) {
+            squares[i / ex.getGraphSize()][i % ex.getGraphSize()] = new JLabel("", CENTER);
+            squares[i / ex.getGraphSize()][i % ex.getGraphSize()].setText(Integer.toString(sources.get(i).getKey()));
+            squares[i / ex.getGraphSize()][i % ex.getGraphSize()].setBackground(Color.green);
+            squares[i / ex.getGraphSize()][i % ex.getGraphSize()].setOpaque(true);
+            squares[i / ex.getGraphSize()][i % ex.getGraphSize()].setLocation(2 + (640 * (i / ex.getGraphSize()) + 320) / ex.getGraphSize() - 26, 3 + (i % ex.getGraphSize()) * 640 / ex.getGraphSize());
+            squares[i / ex.getGraphSize()][i % ex.getGraphSize()].setSize(25, 25);
+            squares[i / ex.getGraphSize()][i % ex.getGraphSize()].addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    JLabel l = (JLabel) e.getSource();
+                    String state = "";
+                    int num = Integer.parseInt(l.getText());
+                    state = "source";
+                    String path = "path from";
+                    String cost = "cost ";
+                    for (int i = 0; i < ex.drawGraph().get(num).paths.size(); i++) {
+                        for (int m = 0; m < ex.drawGraph().get(num).paths.get(i).size(); m++) {
+                            path = path + " " + ex.drawGraph().get(num).paths.get(i).get(m).getKey();
+                        }
+                        DecimalFormat numformat = new DecimalFormat("#.00");
+                        cost = cost+numformat.format(ex.drawGraph().get(num).distance.get(i));
+                    }
+                   
+                    showInfo.setText("<html>" + state + "<br>" + path + "<br>" + cost + "</html>");
+
+                }
+            });
+        }
+
+        for (int i = 0; i < sinks.size(); i++) {
+            squares_sinks[i / ex.getGraphSize()][i % ex.getGraphSize()] = new JLabel("", CENTER);
+            squares_sinks[i / ex.getGraphSize()][i % ex.getGraphSize()].setText(Integer.toString(sinks.get(i).getKey()));
+            squares_sinks[i / ex.getGraphSize()][i % ex.getGraphSize()].setBackground(Color.yellow);
+            squares_sinks[i / ex.getGraphSize()][i % ex.getGraphSize()].setOpaque(true);
+            squares_sinks[i / ex.getGraphSize()][i % ex.getGraphSize()].setLocation(3 + (640 * (i / ex.getGraphSize())) / ex.getGraphSize(), 2 + (640 * (i % ex.getGraphSize()) + 320) / ex.getGraphSize() - 26);
+            squares_sinks[i / ex.getGraphSize()][i % ex.getGraphSize()].setSize(25, 25);
+            squares_sinks[i / ex.getGraphSize()][i % ex.getGraphSize()].addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    JLabel l = (JLabel) e.getSource();
+                    String state = "";
+                    state = "sink";
+                    showInfo.setText("state: " + state);
+                }
+            });
+        }
+        int array_size = wires.size() / 2;
+        int j = 0;
+        int direction = 0;
+        for (int i = 0; i < wires.size(); i++) {
+            if (j == array_size) {
+                j = 0;
+                direction = (direction + 1) % 2;
+            }
+            squares_wires[i / ex.getWireSize()][i % ex.getWireSize()] = new JLabel("", CENTER);
+            squares_wires[i / ex.getWireSize()][i % ex.getWireSize()].setText(Integer.toString(wires.get(i).getKey()));
+            squares_wires[i / ex.getWireSize()][i % ex.getWireSize()].setBackground(Color.red);
+            squares_wires[i / ex.getWireSize()][i % ex.getWireSize()].setOpaque(true);
+            wires.get(i).dir = direction;
+            if (direction == 0) {
+                squares_wires[i / ex.getWireSize()][i % ex.getWireSize()].setSize(15,  640/ex.getGraphSize()/2);
+                int x_pos = (i / (ex.getWireSize() * ex.getGraphSize())) * 640 / ex.getGraphSize() + (i % ex.getWireSize()) * 50 + 640 / ex.getGraphSize() / 2 + 640 / ex.getGraphSize() / 16;
+                int y_pos = 3 + 640 / ex.getGraphSize() * (i % (ex.getWireSize() * ex.getGraphSize()) / ex.getWireSize());
+                squares_wires[i / ex.getWireSize()][i % ex.getWireSize()].setLocation(x_pos, y_pos);
+            } else if (direction == 1) {
+                int x_pos = 640 / ex.getGraphSize() * ((i - array_size) / (ex.getWireSize() * ex.getGraphSize()));
+                int y_pos = 640 / ex.getGraphSize() / 2 + 640 / ex.getGraphSize() / 16 + (i % ex.getWireSize()) * 50 + (i - array_size) % (ex.getWireSize() *ex.getGraphSize()) / ex.getWireSize() * 640 / ex.getGraphSize();
+                squares_wires[i / ex.getWireSize()][i % ex.getWireSize()].setSize( 640/ex.getGraphSize() / 2, 10);
+                squares_wires[i / ex.getWireSize()][i % ex.getWireSize()].setLocation(x_pos, y_pos);
+            }
+            squares_wires[i / ex.getWireSize()][i % ex.getWireSize()].addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    JLabel l = (JLabel) e.getSource();
+                    String state = "";
+                    state = "wire";
+                    int num = Integer.parseInt(l.getText());
+                    double history_get = ex.drawGraph().get(num).getHistory();
+                    int history = 0;
+                    if (history_get != 0) {
+                        history = (int) (Math.log(ex.drawGraph().get(num).getHistory()) / Math.log(1.1));
+                    }
+                    showInfo.setText("<html>" + state + "<br>" + "congestion history" + history + "<br>" + "congestion" + ex.drawGraph().get(num).getOther() + "</html>");
+                }
+            });
+            j++;
         }
         showInfo.setFont(new Font("Courier", Font.PLAIN, 13));
     }
+    public void showGraph() {
+        ArrayList<RoutingGraph<Integer>.Node<Integer>> wires = ex.getGraph().getWire();
+        ArrayList<RoutingGraph<Integer>.Node<Integer>> sources = new ArrayList<RoutingGraph<Integer>.Node<Integer>>();
+        for (int i = 0; i < ex.getGraph().getGraph().size(); i++) {
+            if (ex.getGraph().getGraph().get(i).getState() == 0) {
+                sources.add(ex.getGraph().getGraph().get(i));
+            }
+        }
+        ArrayList<RoutingGraph<Integer>.Node<Integer>> sinks = new ArrayList<RoutingGraph<Integer>.Node<Integer>>();
+        for (int i = 0; i < ex.getGraph().getGraph().size(); i++) {
+            if (ex.getGraph().getGraph().get(i).getState() == 2) {
+                sinks.add(ex.getGraph().getGraph().get(i));
+            }
+        }
+        for (int i = 0; i < sources.size(); i++) {
+            graphPanel.add(squares[i / ex.getGraphSize()][i % ex.getGraphSize()]);
+        }
+        for (int i = 0; i < sinks.size(); i++) {
+            graphPanel.add(squares_sinks[i / ex.getGraphSize()][i % ex.getGraphSize()]);
+        }
+        for (int i = 0; i < wires.size(); i++) {
+            graphPanel.add(squares_wires[i/ex.getWireSize()][i%ex.getWireSize()]);
+        }
+        showInfo.setFont(new Font("Courier", Font.PLAIN, 13));
+    }
+
     //show whether the congestion has been resolved in the panel 
-         public void showCong() {
+    public void showCong() {
         if (!ex.getGraph().testCong()) {
             showState.setText("STILL CONGESTED");
         } else {
@@ -327,7 +423,9 @@ public class RoutingResourceGraph extends javax.swing.JFrame {
         }
     }
     private RunGraph ex;
-    private JToggleButton squares[][];
+    private JLabel squares[][];
+    private JLabel squares_sinks[][];
+    private JLabel squares_wires[][];
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem about;
     private javax.swing.JMenuItem exit;

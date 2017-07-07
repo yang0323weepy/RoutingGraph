@@ -137,6 +137,9 @@ public class RoutingGraph<K> {
     int base = 0;
     double min_distance = Integer.MAX_VALUE;
     double find_distance = 0;
+    int pos_x;
+    int pos_y;
+    int dir = 0;
     K key;
     LinkedList<Edge<K>> edge;
     LinkedList<ArrayList<Node<Integer>>> paths;
@@ -166,7 +169,7 @@ public class RoutingGraph<K> {
         state = num;
         if(state == 1){
             Random random = new Random();
-            base = random.nextInt(5) + 1;
+            base = random.nextInt(10) + 1;
             changeCost();
         }
         else{
