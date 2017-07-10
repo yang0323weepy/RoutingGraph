@@ -3,45 +3,91 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
+import java.util.*;
+import java.text.DecimalFormat;
 /**
  *
  * @author yangy
  */
-
-import java.util.*;
-import java.text.DecimalFormat;
-
-public class RoutingGraph<K> {
-    ArrayList<Node<K>> nodes;
-    
-    public RoutingGraph(){
-        nodes = new ArrayList<Node<K>>(); 
+public class Tile<K> {
+    private int source_num;
+    private int sink_num;
+    private int wire_num;
+    private int start_num;
+    ArrayList<Node<K>> sources;
+    ArrayList<Node<K>> sinks;
+    ArrayList<Node<K>> wires;
+    public Tile(int num1, int num2, int num3, int start){
+        sources = new ArrayList<Node<K>>();
+        sinks = new ArrayList<Node<K>>();
+        wires = new ArrayList<Node<K>>();
+        source_num = num1;
+        sink_num = num2;
+        wire_num = num3;
+        start_num = start;
     }
     
-    public boolean AddNode(K k){
-        nodes.add(new Node<K>(k));
+    public void generate() {
+        for (int i = 0; i < source_num; i++) {
+            Node<K> src = new Node<K>(start_num);
+            src.setState(0);
+            sources.add(src);
+            start_num++;
+        }
+        for (int i = 0; i < sink_num; i++) {
+            Node<K> si = new Node<K>(start_num);
+            si.setState(2);
+            sinks.add(si);
+            start_num++;
+        }
+        for (int i = 0; i < 2*wire_num; i++) {
+            Node<K> w = new Node<K>(start_num);
+            w.setState(1);
+            if (i < wire_num ) {
+                w.dir = 0;
+                for (int j = 0; j < sources.size(); j++) {
+                    Edge edge1 = new Edge(w, w.getCost());
+                    sources.get(j).addEdge(edge1);
+                }
+            } else {
+                w.dir = 1;
+                for (int j = 0; j < sinks.size(); j++) {
+                    Edge edge1 = new Edge(sinks.get(j), w.getCost());
+                    w.addEdge(edge1);
+                }
+            }
+            wires.add(w);
+            start_num++;
+        }
+    }
+    
+    public boolean add_edge(Node<K> node1,Node<K> node2,double weight){
+        for(int i = 0; i < node1.getEdge().size(); i++){
+            if(node1.getEdge().get(i).getNode().getKey()== node2.getKey()){
+                return false;
+            }
+        }
+        node1.addEdge(new Edge(node2, weight));
         return true;
     }
     
-    public boolean AddEdge(K k1, K k2, Double value) {
-        for (int i = 0; i < nodes.size(); i++) {
-            if (k1.equals(nodes.get(i).getKey())) {
-                for (int j = 0; j < nodes.get(i).getEdge().size(); j++) {
-                    if (k2.equals(nodes.get(i).getEdge().get(j).getNode().getKey())) {
-                        return false;
-                    }
-                }
-                for (int j = 0; j < nodes.size(); j++) {
-                    if (k2.equals(nodes.get(j).getKey())) {
-                        Edge<K> edge1 = new Edge<K>(nodes.get(j), value);
-                        nodes.get(i).addEdge(edge1);
-                        return true;
-                    }
-                }
+    public Node<K> findNode(int key) {
+        for (int i = 0; i < sources.size(); i++) {
+            if (sources.get(i).getKey() == key) {
+                return sources.get(i);
             }
         }
-        return false;
+        for (int i = 0; i < sinks.size(); i++) {
+            if (sinks.get(i).getKey() == key) {
+                return sinks.get(i);
+            }
+        }
+        for (int i = 0; i < wires.size(); i++) {
+            if (wires.get(i).getKey() == key) {
+                return wires.get(i);
+            }
+        }
+        return null;
     }
     
     public void computePath(Node<K> pin){
@@ -63,7 +109,7 @@ public class RoutingGraph<K> {
             }
         }
     }
-    public ArrayList<Node<K>> findShortestPath(K k1, K k2) {
+    public ArrayList<Node<K>> findShortestPath(K k1, K k2, ArrayList<Node<K>> nodes) {
         ArrayList<Node<K>> path = new ArrayList<Node<K>>();
         Node<K> start;
         Node<K> end;
@@ -95,38 +141,36 @@ public class RoutingGraph<K> {
         }
         return path;
     }
-
-    public ArrayList<Node<K>> getGraph(){
-        return nodes;
+    
+    public int getSourceNum(){
+        return source_num;
     }
     
-    public void changeEdges(){
-        for(int i = 0; i < nodes.size(); i++){
-            for(int j = 0; j < nodes.get(i).getEdge().size(); j++){
-                nodes.get(i).changeWeight(j);
-            }
-    }    
+    public int getSinkNum(){
+        return sink_num;
+    }
+        
+    public int getWireNum(){
+        return wire_num;
     }
     
-    public ArrayList<Node<K>> getWire(){
-        ArrayList<Node<K>> wires = new ArrayList<Node<K>>();
-        for(int i = 0; i < nodes.size(); i++){
-        if(nodes.get(i).getState()==1){
-            wires.add(nodes.get(i));
-        }
-        }
+    public int getStartNum(){
+        return start_num;
+    }
+    
+    public ArrayList<Node<K>> getSources(){
+        return sources;
+    }
+    
+    public ArrayList<Node<K>> getSinks(){
+        return sinks;
+    }
+        
+    public ArrayList<Node<K>> getWires(){
         return wires;
     }
     
-        public boolean testCong() {
-        ArrayList<Node<K>> wires = getWire();
-        for (int i = 0; i < wires.size(); i++) {
-            if (wires.get(i).getOther() > 2) return false;
-        }
-        return true;
-    }
-    
-    public class Node<K> implements Comparable<Node<K>>{
+     public class Node<K> implements Comparable<Node<K>>{
     Node<K> prev;
     int state = 0;
     double cost = 0;
@@ -138,19 +182,19 @@ public class RoutingGraph<K> {
     int pos_x;
     int pos_y;
     int dir = 0;
-    K key;
+    int key;
     LinkedList<Edge<K>> edge;
     LinkedList<Node<K>> neighbour;
     LinkedList<ArrayList<Node<Integer>>> paths;
     LinkedList<Double> distance;
-    public Node(K k){
+    public Node(int k){
         edge = new LinkedList<Edge<K>> ();
         this.key = k;
         this.paths = new LinkedList<ArrayList<Node<Integer>>>();
         this.distance = new LinkedList<Double>();
         this.neighbour = new LinkedList<Node<K>>();
     }
-    public K getKey(){
+    public int getKey(){
         return key;
     }
     public int getState(){

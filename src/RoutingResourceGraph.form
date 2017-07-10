@@ -186,7 +186,7 @@
         </Property>
       </Properties>
       <AuxValues>
-        <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new DrawGraph(ex,squares,squares_sinks,squares_wires);"/>
+        <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new DrawGraph(ex,squares,squares_sinks,squares_wires,switches);"/>
         <AuxValue name="JavaCodeGenerator_SerializeTo" type="java.lang.String" value="RoutingResourceGraph_graphPanel"/>
       </AuxValues>
 

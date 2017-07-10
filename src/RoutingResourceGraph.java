@@ -7,6 +7,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import javax.swing.*;
 import static javax.swing.SwingConstants.CENTER;
+import java.util.*;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -27,9 +28,12 @@ public class RoutingResourceGraph extends javax.swing.JFrame {
         squares = new JLabel[ex.getGraphSize()][ex.getGraphSize()];
         squares_sinks = new JLabel[ex.getGraphSize()][ex.getGraphSize()];
         squares_wires = new JLabel[2 * ex.getGraphSize() * ex.getGraphSize()][ex.getWireSize()];
+        switches = new JToggleButton[ex.getGraphSize()][ex.getGraphSize()];
         ex.initialize();
         initComponents();
         initialize();
+        add_edge();
+        ex.find_shortest_path();
         showCong();
         showGraph();
     }
@@ -47,7 +51,7 @@ public class RoutingResourceGraph extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         prosperity = new javax.swing.JTextArea();
         exitD = new javax.swing.JButton();
-        graphPanel = new DrawGraph(ex,squares,squares_sinks,squares_wires);
+        graphPanel = new DrawGraph(ex,squares,squares_sinks,squares_wires,switches);
         route = new javax.swing.JButton();
         reroute = new javax.swing.JButton();
         showState = new javax.swing.JLabel();
@@ -235,6 +239,9 @@ public class RoutingResourceGraph extends javax.swing.JFrame {
         // TODO add your handling code here:
         ex.initialize();
         showInfo.setText("");
+        initialize();
+        add_edge();
+        ex.find_shortest_path();
         showCong();
         graphPanel.repaint();
     }//GEN-LAST:event_rerouteActionPerformed
@@ -359,11 +366,13 @@ public class RoutingResourceGraph extends javax.swing.JFrame {
             squares_wires[i / ex.getWireSize()][i % ex.getWireSize()].setOpaque(true);
             wires.get(i).dir = direction;
             if (direction == 0) {
-                squares_wires[i / ex.getWireSize()][i % ex.getWireSize()].setSize(15,  640/ex.getGraphSize()/2);
+                sources.get(i / ex.getWireSize()).addNeighbour(wires.get(i));
+                squares_wires[i / ex.getWireSize()][i % ex.getWireSize()].setSize(15,640/ex.getGraphSize()/2);
                 int x_pos = (i / (ex.getWireSize() * ex.getGraphSize())) * 640 / ex.getGraphSize() + (i % ex.getWireSize()) * 50 + 640 / ex.getGraphSize() / 2 + 640 / ex.getGraphSize() / 16;
                 int y_pos = 3 + 640 / ex.getGraphSize() * (i % (ex.getWireSize() * ex.getGraphSize()) / ex.getWireSize());
                 squares_wires[i / ex.getWireSize()][i % ex.getWireSize()].setLocation(x_pos, y_pos);
             } else if (direction == 1) {
+                sources.get((i-array_size)/ ex.getWireSize()).addNeighbour(wires.get(i));
                 int x_pos = 640 / ex.getGraphSize() * ((i - array_size) / (ex.getWireSize() * ex.getGraphSize()));
                 int y_pos = 640 / ex.getGraphSize() / 2 + 640 / ex.getGraphSize() / 16 + (i % ex.getWireSize()) * 50 + (i - array_size) % (ex.getWireSize() *ex.getGraphSize()) / ex.getWireSize() * 640 / ex.getGraphSize();
                 squares_wires[i / ex.getWireSize()][i % ex.getWireSize()].setSize( 640/ex.getGraphSize() / 2, 10);
@@ -413,6 +422,79 @@ public class RoutingResourceGraph extends javax.swing.JFrame {
         }
         showInfo.setFont(new Font("Courier", Font.PLAIN, 13));
     }
+    public void add_edge() {
+        ArrayList<RoutingGraph<Integer>.Node<Integer>> sources = new ArrayList<RoutingGraph<Integer>.Node<Integer>>();
+        for (int i = 0; i < ex.getGraph().getGraph().size(); i++) {
+            if (ex.getGraph().getGraph().get(i).getState() == 0) {
+                sources.add(ex.getGraph().getGraph().get(i));
+            }
+        }
+        int size_w = ex.getWireSize();
+        int size_g = ex.getGraphSize();
+        ArrayList<ArrayList<Integer>> list = new ArrayList<ArrayList<Integer>>();
+        
+        for (int i = 0; i < size_g; i++) {
+            for (int j = 0; j < size_g; j++) {
+                ArrayList<Integer> num_list = new ArrayList<Integer>();
+                for (int k = 0; k < sources.get(i * size_g + j).neighbour.size(); k++) {
+                    num_list.add(sources.get(i * size_g + j).neighbour.get(k).getKey());
+                }
+                if (i + 1 < size_g) {
+                    for (int k = 0; k < sources.get((i + 1) * size_g + j).neighbour.size(); k++) {
+                        if (sources.get((i + 1) * size_g + j).neighbour.get(k).dir == 1) {
+                            num_list.add(sources.get((i + 1) * size_g + j).neighbour.get(k).getKey());
+                        }
+                    }
+                }
+                if (j+1 < size_g) {
+                    for (int k = 0; k < sources.get(i * size_g + j+1).neighbour.size(); k++) {
+                        if (sources.get(i* size_g + j+1).neighbour.get(k).dir == 0) {
+                            num_list.add(sources.get(i * size_g + j+1).neighbour.get(k).getKey());
+                        }
+                    }
+                }
+                list.add(num_list);
+            }
+        }
+       
+        for (int i = 0; i < list.size(); i++) {
+            for (int j = 0; j < list.get(i).size(); j++) {
+                System.out.print("list " + list.get(i).get(j));
+            }
+            System.out.println();
+            }
+      for(int i = 0; i < size_g*size_g; i++){
+          for(int k = 0; k < size_w*size_w*size_g; k++){
+            Random random = new Random();
+            int city1 = random.nextInt(list.get(i).size()) + 0;
+            int city2 = random.nextInt(list.get(i).size()) + 0;
+            double weight = random.nextDouble()+2;
+            if(city1 != city2 && list.get(i).get(city1) < size_g*size_g+2*(size_g*size_g*size_w) && list.get(i).get(city2) < size_g*size_g+2*(size_g*size_g*size_w)){
+                ex.getGraph().AddEdge(list.get(i).get(city1),list.get(i).get(city2),weight);
+            } 
+              System.out.println("edge test1 " + list.get(i).get(city1)+" "+list.get(i).get(city2)+" " + weight);             
+        }
+    }
+         
+    int num = size_g*size_g;
+     for(int i = 0; i < size_g*size_g; i++){
+        ex.getGraph().AddEdge(i,num, ex.getGraph().getGraph().get(num).getCost()); 
+       num++;
+       ex.getGraph().AddEdge(i,num, ex.getGraph().getGraph().get(num).getCost()); 
+       num++;
+        }
+     
+     int num_s = size_g*size_g+size_g*size_g*size_w;
+      for(int i = size_g*size_g+2*(size_g*size_g*size_w); i < (size_g*size_g*2+2*size_g*size_g*size_w); i++){       
+       ex.getGraph().AddEdge(num_s,i,ex.getGraph().getGraph().get(num_s).getCost());  
+       System.out.println("edge test2 " + num_s + " " + i);
+       num_s++;
+       ex.getGraph().AddEdge(num_s,i,ex.getGraph().getGraph().get(num_s).getCost()); 
+              System.out.println("edge test2 " + num_s + " " + i);
+       num_s++;
+        }
+    }
+
 
     //show whether the congestion has been resolved in the panel 
     public void showCong() {
@@ -426,6 +508,7 @@ public class RoutingResourceGraph extends javax.swing.JFrame {
     private JLabel squares[][];
     private JLabel squares_sinks[][];
     private JLabel squares_wires[][];
+    private JToggleButton switches[][];
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem about;
     private javax.swing.JMenuItem exit;

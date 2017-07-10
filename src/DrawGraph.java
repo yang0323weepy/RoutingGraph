@@ -18,13 +18,13 @@ import javax.swing.*;
  */
 public class DrawGraph extends JPanel {
 
-    public DrawGraph(RunGraph ex, JLabel square[][], JLabel square_sink[][], JLabel square_wire[][]) {
+    public DrawGraph(RunGraph ex, JLabel square[][], JLabel square_sink[][], JLabel square_wire[][], JToggleButton square_switch[][]) {
         this.run = ex;
         graph = ex.getGraph();
         sources_a = square;
         sinks_a = square_sink; 
         wires_a = square_wire; 
-        switches = new JToggleButton[1][1];
+        switches = square_switch;
     }
 
 
@@ -36,6 +36,10 @@ public class DrawGraph extends JPanel {
         for (int i = 0; i < run.getGraphSize(); i++) {
             for (int j = 0; j < run.getGraphSize(); j++) {               
                g.drawRect(Xpos+i*640/run.getGraphSize(), Ypos+j*640/run.getGraphSize(), 640/run.getGraphSize() / 2, 640/run.getGraphSize()/2);
+               switches[i][j] = new JToggleButton();
+               switches[i][j].setLocation(Xpos+(640*i+320)/run.getGraphSize(),Ypos+(640*j+320)/run.getGraphSize());
+               switches[i][j].setSize( 640/run.getGraphSize()/2, 640/run.getGraphSize()/2);
+               switches[i][j].setOpaque(true);
             }
         }
         paintRoute(g);
@@ -86,7 +90,7 @@ public class DrawGraph extends JPanel {
             }
         }
     }
-    
+
     private RunGraph run;
     private RoutingGraph<Integer> graph;
     private JLabel sources_a[][];

@@ -31,8 +31,6 @@ public class RunGraph {
                 graph.getGraph().get(j).setState(2);
             }
         }
-        add_edge();
-        find_shortest_path();
      }
   
     /**
@@ -41,38 +39,20 @@ public class RunGraph {
      */
     //the method to add edge (the node and the weight) between two random city in the graph
     public void add_edge(){
-        ArrayList<ArrayList<Integer>> list = new ArrayList<ArrayList<Integer>> ();
-        int init = size_g*size_g;
-        for(int i = 0; i <size_g*size_g;i++){
-            ArrayList<Integer> num_list = new ArrayList<Integer> ();
-            for(int j = 0; j < size_w; j++){
-            num_list.add(init+j);
-            num_list.add(init+size_w+j);
-            num_list.add(init+size_g*size_g*size_w+j);
-            num_list.add(init+size_g*size_g*size_w+size_g*size_w+j);
+    ArrayList<RoutingGraph<Integer>.Node<Integer>> sources = new ArrayList<RoutingGraph<Integer>.Node<Integer>>();
+        for(int i = 0; i < graph.getGraph().size(); i++){
+            if(graph.getGraph().get(i).getState() == 0){
+                sources.add(graph.getGraph().get(i));
+            }
         }
-            init = init+size_w;
+        ArrayList<ArrayList<Integer>> list = new ArrayList<ArrayList<Integer>> ();
+        ArrayList<Integer> num_list = new ArrayList<Integer> ();
+        for(int i = 0; i < size_g*size_g; i++){
+            for(int k = 0; k < sources.get(i).neighbour.size();k++){
+                num_list.add(sources.get(i).neighbour.get(k).getKey());
+            }
             list.add(num_list);
         }
-        for(int i = 0; i < list.size();i++){
-            for(int j = 0; j < list.get(i).size();j++){
-                System.out.print("list"+ list.get(i).get(j)+" ");
-            }
-            System.out.println();
-        }
-        //generate edges and add them into the graph
-        for(int i = 0; i < size_g*size_g; i++){
-          for(int k = 0; k < size_w*size_w*size_g; k++){
-            Random random = new Random();
-            int city1 = random.nextInt(list.get(i).size()) + 0;
-            int city2 = random.nextInt(list.get(i).size()) + 0;
-            double weight = random.nextDouble()+2;
-            if(city1 != city2 && list.get(i).get(city1) < size_g*size_g+2*(size_g*size_g*size_w) && list.get(i).get(city2) < size_g*size_g+2*(size_g*size_g*size_w)){
-                graph.AddEdge(list.get(i).get(city1),list.get(i).get(city2),weight);
-            } 
-              System.out.println("edge test1 " + list.get(i).get(city1)+" "+list.get(i).get(city2)+" " + weight);             
-        }
-    }
     int num = size_g*size_g;
      for(int i = 0; i < size_g*size_g; i++){
        graph.AddEdge(i,num,graph.getGraph().get(num).getCost()); 
