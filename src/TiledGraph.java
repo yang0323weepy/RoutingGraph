@@ -17,6 +17,10 @@ public class TiledGraph {
         size_g = num1;
         size_w = num2;
         graph = new Tile[size_g][size_g];
+        graphList = new ArrayList<Tile<Integer>.Node<Integer>>();
+        wireList = new ArrayList<Tile<Integer>.Node<Integer>>();
+        sinkList = new ArrayList<Tile<Integer>.Node<Integer>>();
+        sourceList = new ArrayList<Tile<Integer>.Node<Integer>>();
     }
     
     public void initialize(){
@@ -25,10 +29,12 @@ public class TiledGraph {
             for(int j = 0; j < size_g; j++){
                 graph[i][j] = new Tile<Integer>(1,1,size_w,index);
                 graph[i][j].generate();
-                index = graph[i][j].getStartNum();
-                
+                index = graph[i][j].getStartNum();  
             }
         }
+        connectTile();
+        makeGraph();
+        addDest();
     }
 
     public void connectTile() {
@@ -39,15 +45,21 @@ public class TiledGraph {
                         Random random = new Random();
                         int city1 = random.nextInt(graph[i][j].getWires().size()) + 0;
                         int city2 = random.nextInt(graph[i+1][j].getWires().size()) + 0;
-                        double weight = random.nextDouble() + 2;
-                        graph[i][j].add_edge(graph[i][j].findNode(city1),graph[i+1][j].findNode(city2),weight);
+                        int key1 = graph[i][j].getWires().get(city1).getKey();
+                        int key2 = graph[i+1][j].getWires().get(city2).getKey();
+                        double weight = random.nextDouble();
+                        if(graph[i+1][j].findNode(key2).dir == 1)
+                        graph[i][j].add_edge(graph[i][j].findNode(key1),graph[i+1][j].findNode(key2),weight);
                     }
                     for (int k = 0; k < size_w * size_w; k++) {
                         Random random = new Random();
                         int city1 = random.nextInt(graph[i+1][j].getWires().size()) + 0;
                         int city2 = random.nextInt(graph[i][j].getWires().size()) + 0;
-                        double weight = random.nextDouble() + 2;
-                        graph[i+1][j].add_edge(graph[i+1][j].findNode(city1),graph[i][j].findNode(city2),weight);
+                        int key1 = graph[i+1][j].getWires().get(city1).getKey();
+                        int key2 = graph[i][j].getWires().get(city2).getKey();
+                        double weight = random.nextDouble();
+                        if(graph[i+1][j].findNode(key1).dir == 1)
+                        graph[i+1][j].add_edge(graph[i+1][j].findNode(key1),graph[i][j].findNode(key2),weight);
                     }
                 }
                 if (j + 1 < size_g) {
@@ -55,15 +67,21 @@ public class TiledGraph {
                         Random random = new Random();
                         int city1 = random.nextInt(graph[i][j].getWires().size()) + 0;
                         int city2 = random.nextInt(graph[i][j+1].getWires().size()) + 0;
-                        double weight = random.nextDouble() + 2;
-                        graph[i][j].add_edge(graph[i][j].findNode(city1),graph[i][j+1].findNode(city2),weight);
+                        double weight = random.nextDouble();
+                        int key1 = graph[i][j].getWires().get(city1).getKey();
+                        int key2 = graph[i][j+1].getWires().get(city2).getKey();
+                        if(graph[i][j+1].findNode(key2).dir == 0)
+                        graph[i][j].add_edge(graph[i][j].findNode(key1),graph[i][j+1].findNode(key2),weight);
                     }
                     for (int k = 0; k < size_w * size_w; k++) {
                         Random random = new Random();
                         int city1 = random.nextInt(graph[i][j+1].getWires().size()) + 0;
                         int city2 = random.nextInt(graph[i][j].getWires().size()) + 0;
-                        double weight = random.nextDouble() + 2;
-                        graph[i][j+1].add_edge(graph[i][j+1].findNode(city1),graph[i][j].findNode(city2),weight);
+                        int key1 = graph[i][j+1].getWires().get(city1).getKey();
+                        int key2 = graph[i][j].getWires().get(city2).getKey();
+                        double weight = random.nextDouble();
+                        if(graph[i][j+1].findNode(key1).dir == 0)
+                        graph[i][j+1].add_edge(graph[i][j+1].findNode(key1),graph[i][j].findNode(key2),weight);
                     }
                 }
             }
@@ -71,21 +89,91 @@ public class TiledGraph {
     }
     
     public void makeGraph(){
-        graphList = new ArrayList<Tile<Integer>.Node<Integer>>();
+        graphList.clear();
+        wireList.clear();
+        sinkList.clear();
          for(int i = 0; i < size_g; i++){
             for(int j = 0; j < size_g; j++){
                 for(int k = 0; k < graph[i][j].getSources().size(); k++){
                     graphList.add(graph[i][j].getSources().get(k));
+                    sourceList.add(graph[i][j].getSources().get(k));
                 }
                 for(int k = 0; k < graph[i][j].getSinks().size(); k++){
                     graphList.add(graph[i][j].getSinks().get(k));
+                    sinkList.add(graph[i][j].getSinks().get(k));
                 }
                 for(int k = 0; k < graph[i][j].getWires().size(); k++){
                     graphList.add(graph[i][j].getWires().get(k));
+                    wireList.add(graph[i][j].getWires().get(k));
                 }
             }
         }
     }
+    
+    public void addDest(){
+        Random random = new Random();
+        for(int i = 0; i < size_g; i++){
+            for(int j = 0; j < size_g; j++){
+                for(int k = 0; k < graph[i][j].getSources().size();k++){
+                    int num =  random.nextInt(sinkList.size()) + 0;
+                    graph[i][j].getSources().get(k).dest.add(sinkList.get(num));
+                }  
+            }
+        }
+    }
+   
+    
+    public void find_shortest_path() {
+        for (int i = 0; i < wireList.size(); i++) {
+            wireList.get(i).resetOther();
+        }
+        for (int i = 0; i < size_g; i++) {
+            for (int j = 0; j < size_g; j++) {
+                for (int k = 0; k < graph[i][j].getSources().size(); k++) {                    
+                    graph[i][j].getSources().get(k).paths.clear();
+                    graph[i][j].getSources().get(k).distance.clear();
+                    System.out.println("path from" +graph[i][j].getSources().get(k).getKey() + " to" + graph[i][j].getSources().get(k).dest.get(0).getKey());
+                    ArrayList<Tile<Integer>.Node<Integer>> path_find = graph[i][j].findShortestPath(graph[i][j].getSources().get(k).getKey(),graph[i][j].getSources().get(k).dest.get(0).getKey(),graphList);
+                    for (int m = 0; m < path_find.size(); m++) {
+                        System.out.println("path" + path_find.get(m).getKey());
+                        if(path_find.get(m).getState()==1){
+                            path_find.get(m).changeOther();
+                        }
+                    }
+                    graph[i][j].getSources().get(k).paths.add(path_find);
+                    graph[i][j].getSources().get(k).distance.add(graph[i][j].getSources().get(k).dest.get(0).min_distance);
+                }
+            }
+        }
+    }
+    
+    public boolean testCong() {
+        for (int i = 0; i < wireList.size(); i++) {
+            if (wireList.get(i).getOther() > 2) return false;
+        }
+        return true;
+    }
+    
+    public void runIteration(){
+        for(int i = 0; i < size_g; i++){
+            for(int j = 0; j < size_g; j++){
+                for(int k = 0; k < graph[i][j].getWires().size();k++){
+                    if(graph[i][j].getWires().get(k).getOther() > 2){
+                        graph[i][j].getWires().get(k).changeHistory();
+                        graph[i][j].getWires().get(k).changeCost();
+                        System.out.println("show other: " + graph[i][j].getWires().get(k).getOther() + "show cost: " + graph[i][j].getWires().get(k).getCost() + "node" + graph[i][j].getWires().get(k).getKey());
+                    }
+                }
+            }
+        }
+        for (int i = 0; i < size_g; i++) {
+            for (int j = 0; j < size_g; j++) {
+                graph[i][j].changeEdges();
+            }
+        }
+        find_shortest_path();
+    }
+   
 
     public int getGraphSize(){
         return size_g;
@@ -97,8 +185,23 @@ public class TiledGraph {
     public Tile[][] getGraph(){
         return graph;
     }
+    
+    public ArrayList<Tile<Integer>.Node<Integer>> getWireList(){
+        return wireList;
+    }
+    
+    public ArrayList<Tile<Integer>.Node<Integer>> getGraphList(){
+        return graphList;
+    }
+    
+    public ArrayList<Tile<Integer>.Node<Integer>> getSourceList(){
+        return sourceList;
+    }
     private int size_g;
     private int size_w;
     private Tile<Integer>[][] graph;
     ArrayList<Tile<Integer>.Node<Integer>> graphList;
+    ArrayList<Tile<Integer>.Node<Integer>> sourceList;
+    ArrayList<Tile<Integer>.Node<Integer>> wireList;
+    ArrayList<Tile<Integer>.Node<Integer>> sinkList;
 }

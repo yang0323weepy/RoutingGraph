@@ -29,8 +29,11 @@ public class TiledRouting extends javax.swing.JFrame {
         sinks_a = new JLabel[tile_graph.getGraphSize()][tile_graph.getGraphSize()];
         wires_a = new JLabel[2 * tile_graph.getGraphSize() * tile_graph.getGraphSize()][2*tile_graph.getWireSize()];                
         tile_graph.initialize();
+//        setUp();
         initComponents();
-        showGraph();
+        tile_graph.find_shortest_path();
+        showCong();
+//        showGraph();
     }
 
     /**
@@ -42,9 +45,11 @@ public class TiledRouting extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        showPanel = new DrawTile(tile_graph);
         showInfo = new javax.swing.JLabel();
         showState = new javax.swing.JLabel();
+        showPanel = new DrawTile(tile_graph,showInfo);
+        route = new javax.swing.JButton();
+        reroute = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -61,6 +66,20 @@ public class TiledRouting extends javax.swing.JFrame {
             .addGap(0, 640, Short.MAX_VALUE)
         );
 
+        route.setText("start");
+        route.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                routeActionPerformed(evt);
+            }
+        });
+
+        reroute.setText("restart");
+        reroute.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                rerouteActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -69,33 +88,56 @@ public class TiledRouting extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(42, 42, 42)
-                        .addComponent(showInfo, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 45, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(showState)
-                        .addGap(96, 96, 96)))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(showState, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(showInfo, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(81, 81, 81)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(reroute)
+                            .addComponent(route, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 45, Short.MAX_VALUE)
                 .addComponent(showPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+                .addGap(70, 70, 70)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(70, 70, 70)
-                        .addComponent(showPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(92, 92, 92)
-                        .addComponent(showState)
-                        .addGap(143, 143, 143)
-                        .addComponent(showInfo, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(showState, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(route)
+                        .addGap(8, 8, 8)
+                        .addComponent(reroute)
+                        .addGap(18, 18, 18)
+                        .addComponent(showInfo, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(showPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
+
+    private void routeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_routeActionPerformed
+        // TODO add your handling code here:
+        System.out.println("===============================");
+        showInfo.setText("");
+        tile_graph.runIteration();
+        showCong();
+        showPanel.repaint();
+    }//GEN-LAST:event_routeActionPerformed
+
+    private void rerouteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rerouteActionPerformed
+        // TODO add your handling code here:
+        showInfo.setText("");
+        tile_graph.initialize();
+        tile_graph.find_shortest_path();
+        showCong();
+        showPanel.repaint();
+    }//GEN-LAST:event_rerouteActionPerformed
 
     /**
      * @param args the command line arguments
@@ -132,35 +174,24 @@ public class TiledRouting extends javax.swing.JFrame {
         });
     }
 
-    public void showGraph(){
-       ArrayList<Tile<Integer>.Node<Integer>> wires = new ArrayList<Tile<Integer>.Node<Integer>>();
-       ArrayList<Tile<Integer>.Node<Integer>> sources = new ArrayList<Tile<Integer>.Node<Integer>>();
-       ArrayList<Tile<Integer>.Node<Integer>> sinks = new ArrayList<Tile<Integer>.Node<Integer>>();
+    public void setUp(){
         for (int i = 0; i < tile_graph.getGraphSize(); i++) {
             for (int j = 0; j < tile_graph.getGraphSize(); j++) {
                 Tile<Integer> tile = tile_graph.getGraph()[i][j];
                 int x_pos = 2 + i*640/tile_graph.getGraphSize();
                 int y_pos = 2 + j*640/tile_graph.getGraphSize();
-                sources.add(tile.getSources().get(0));
-                sinks.add(tile.getSinks().get(0));
-                for(int k = 0; k < tile.getWires().size();k++){
-                    wires.add(tile.getWires().get(k));
-                    System.out.println(tile.getWires().get(k).getKey());
-                } 
             sources_a[i][j] = new JLabel("", CENTER);
             sources_a[i][j].setText(Integer.toString(tile.getSources().get(0).getKey()));
             sources_a[i][j].setBackground(Color.green);
             sources_a[i][j].setOpaque(true);
             sources_a[i][j].setLocation(x_pos + 640/tile_graph.getGraphSize()/2 -25,y_pos+1);
             sources_a[i][j].setSize(25, 25);
-            showPanel.add(sources_a[i][j]);
             sinks_a[i][j] = new JLabel("", CENTER);
             sinks_a[i][j].setText(Integer.toString(tile.getSinks().get(0).getKey()));
             sinks_a[i][j].setBackground(Color.yellow);
             sinks_a[i][j].setOpaque(true);
             sinks_a[i][j].setLocation(x_pos+1,y_pos+ 640/tile_graph.getGraphSize()/2 -25);
             sinks_a[i][j].setSize(25, 25);
-            showPanel.add(sinks_a[i][j]);
             int gap_x = 0;
             int gap_y = 0;
                 for (int m = 0; m < tile.getWires().size(); m++) {
@@ -178,6 +209,17 @@ public class TiledRouting extends javax.swing.JFrame {
                     wires_a[i * tile_graph.getGraphSize() + j][m].setSize(640/tile_graph.getGraphSize()/ 2, 15);
                     gap_y = gap_y + 640/tile_graph.getGraphSize()/ 4;
                     }
+                }
+            }
+        }
+    }
+    public void showGraph(){
+        for (int i = 0; i < tile_graph.getGraphSize(); i++) {
+            for (int j = 0; j < tile_graph.getGraphSize(); j++) {
+                Tile<Integer> tile = tile_graph.getGraph()[i][j];
+            showPanel.add(sources_a[i][j]);
+            showPanel.add(sinks_a[i][j]);
+                for (int m = 0; m < tile.getWires().size(); m++) {
                     showPanel.add(wires_a[i * tile_graph.getGraphSize() + j][m]);
                 }
             }
@@ -187,11 +229,11 @@ public class TiledRouting extends javax.swing.JFrame {
     
     
     public void showCong() {
-//        if (!ex.getGraph().testCong()) {
-//            showState.setText("STILL CONGESTED");
-//        } else {
-//            showState.setText("This circuit has no congestion");
-//        }
+        if (!tile_graph.testCong()) {
+            showState.setText("STILL CONGESTED");
+        } else {
+            showState.setText("This circuit has no congestion");
+        }
     }
 
     TiledGraph tile_graph;
@@ -199,6 +241,8 @@ public class TiledRouting extends javax.swing.JFrame {
     private JLabel sinks_a[][];
     private JLabel wires_a[][];
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton reroute;
+    private javax.swing.JButton route;
     private javax.swing.JLabel showInfo;
     private javax.swing.JPanel showPanel;
     private javax.swing.JLabel showState;

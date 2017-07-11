@@ -109,12 +109,12 @@ public class Tile<K> {
             }
         }
     }
-    public ArrayList<Node<K>> findShortestPath(K k1, K k2, ArrayList<Node<K>> nodes) {
+    public ArrayList<Node<K>> findShortestPath(int k1, int k2, ArrayList<Node<K>> nodes) {
         ArrayList<Node<K>> path = new ArrayList<Node<K>>();
         Node<K> start;
         Node<K> end;
         for (int i = 0; i < nodes.size(); i++) {
-            if (k1.equals(nodes.get(i).getKey())) {
+            if (k1==(nodes.get(i).getKey())) {
                 start = nodes.get(i);
                 for (int k = 0; k < nodes.size(); k++) {
                     nodes.get(k).prev = null;
@@ -122,7 +122,7 @@ public class Tile<K> {
                 }
                 computePath(start);
                 for (int j = 0; j < nodes.size(); j++) {
-                    if (k2.equals(nodes.get(j).getKey())) {
+                    if (k2==(nodes.get(j).getKey())) {
                         end = nodes.get(j);
                         start.find_distance = end.min_distance;
                         if (start.find_distance != Integer.MAX_VALUE) {
@@ -141,6 +141,20 @@ public class Tile<K> {
         }
         return path;
     }
+    
+    public void changeEdges() {
+        for (int i = 0; i < wires.size(); i++) {
+            for (int j = 0; j < wires.get(i).getEdge().size(); j++) {
+                wires.get(i).changeWeight(j);
+            }
+        }
+                for (int i = 0; i < sources.size(); i++) {
+            for (int j = 0; j < sources.get(i).getEdge().size(); j++) {
+                sources.get(i).changeWeight(j);
+            }
+        }
+    }
+    
     
     public int getSourceNum(){
         return source_num;
@@ -179,11 +193,14 @@ public class Tile<K> {
     int base = 0;
     double min_distance = Integer.MAX_VALUE;
     double find_distance = 0;
-    int pos_x;
-    int pos_y;
+    int pos_x_s = 0;
+    int pos_y_s = 0;
+    int pos_x_e = 0;
+    int pos_y_e = 0;
     int dir = 0;
     int key;
     LinkedList<Edge<K>> edge;
+    LinkedList<Node<K>> dest;
     LinkedList<Node<K>> neighbour;
     LinkedList<ArrayList<Node<Integer>>> paths;
     LinkedList<Double> distance;
@@ -193,6 +210,7 @@ public class Tile<K> {
         this.paths = new LinkedList<ArrayList<Node<Integer>>>();
         this.distance = new LinkedList<Double>();
         this.neighbour = new LinkedList<Node<K>>();
+        this.dest = new LinkedList<Node<K>>();
     }
     public int getKey(){
         return key;
@@ -213,7 +231,7 @@ public class Tile<K> {
         state = num;
         if(state == 1){
             Random random = new Random();
-            base = random.nextInt(10) + 1;
+            base = random.nextInt(5) + 1;
             changeCost();
         }
         else{
@@ -237,18 +255,19 @@ public class Tile<K> {
         other = 1;
         return other;
     }
-        public void changeWeight(int num) {
-            if (state == 0) {
-                edge.get(num).setWeight(edge.get(num).getNode().getCost());
-            } else if (state == 1) {
-                if (edge.get(num).getNode().getState()==2) {
-                    edge.get(num).setWeight(cost);
-                }
-            }
-    }
-    public LinkedList<Edge<K>> getEdge(){
-        return edge;
-    }
+         public void changeWeight(int num) {
+             if (state == 0) {
+                 edge.get(num).setWeight(edge.get(num).getNode().getCost());
+             } else if (state == 1) {
+                 if (edge.get(num).getNode().getState() == 2) {
+                     edge.get(num).setWeight(cost);
+                 }
+             }
+         }
+
+         public LinkedList<Edge<K>> getEdge() {
+             return edge;
+         }
     public void addEdge(Edge e){
         edge.add(e);
     }
