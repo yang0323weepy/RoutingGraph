@@ -31,6 +31,7 @@ public class Tile<K> {
         for (int i = 0; i < source_num; i++) {
             Node<K> src = new Node<K>(start_num);
             src.setState(0);
+            src.setTile(this);
             sources.add(src);
             start_num++;
         }
@@ -38,6 +39,7 @@ public class Tile<K> {
             Node<K> si = new Node<K>(start_num);
             si.setState(2);
             sinks.add(si);
+            si.setTile(this);
             start_num++;
         }
         for (int i = 0; i < 2*wire_num; i++) {
@@ -56,8 +58,17 @@ public class Tile<K> {
                     w.addEdge(edge1);
                 }
             }
+            w.setTile(this);
             wires.add(w);
             start_num++;
+        }
+        for(int i = 0; i < wires.size();i++){
+            for(int j = 0; j < wires.size(); j++){
+              if(i != j){
+               Edge edge1 = new Edge(wires.get(j), wires.get(j).getCost());
+               wires.get(i).addEdge(edge1);
+              }
+            }
         }
     }
     
@@ -148,7 +159,7 @@ public class Tile<K> {
                 wires.get(i).changeWeight(j);
             }
         }
-                for (int i = 0; i < sources.size(); i++) {
+        for (int i = 0; i < sources.size(); i++) {
             for (int j = 0; j < sources.get(i).getEdge().size(); j++) {
                 sources.get(i).changeWeight(j);
             }
@@ -186,6 +197,7 @@ public class Tile<K> {
     
      public class Node<K> implements Comparable<Node<K>>{
     Node<K> prev;
+    Tile<K> parent;
     int state = 0;
     double cost = 0;
     double history = 0;
@@ -201,15 +213,13 @@ public class Tile<K> {
     int key;
     LinkedList<Edge<K>> edge;
     LinkedList<Node<K>> dest;
-    LinkedList<Node<K>> neighbour;
-    LinkedList<ArrayList<Node<Integer>>> paths;
+    LinkedList<ArrayList<Node<K>>> paths;
     LinkedList<Double> distance;
     public Node(int k){
         edge = new LinkedList<Edge<K>> ();
         this.key = k;
-        this.paths = new LinkedList<ArrayList<Node<Integer>>>();
+        this.paths = new LinkedList<ArrayList<Node<K>>>();
         this.distance = new LinkedList<Double>();
-        this.neighbour = new LinkedList<Node<K>>();
         this.dest = new LinkedList<Node<K>>();
     }
     public int getKey(){
@@ -227,6 +237,11 @@ public class Tile<K> {
     public double getCost(){
         return cost;
     }
+    
+    public Tile<K> getTile(){
+        return parent;
+    }
+    
     public void setState(int num){
         state = num;
         if(state == 1){
@@ -237,6 +252,10 @@ public class Tile<K> {
         else{
             cost = 0;
         }
+    }
+    
+    public void setTile(Tile<K> tile){
+        this.parent = tile;
     }
     public void changeCost(){
         cost = base + history + other;
@@ -255,24 +274,20 @@ public class Tile<K> {
         other = 1;
         return other;
     }
-         public void changeWeight(int num) {
-             if (state == 0) {
-                 edge.get(num).setWeight(edge.get(num).getNode().getCost());
-             } else if (state == 1) {
-                 if (edge.get(num).getNode().getState() == 2) {
-                     edge.get(num).setWeight(cost);
-                 }
-             }
+    
+    public void changeWeight(int num) {
+        if (state == 0) {
+          edge.get(num).setWeight(edge.get(num).getNode().getCost());
+         } else if (state == 1) {
+            edge.get(num).setWeight(cost);
          }
+    }
 
-         public LinkedList<Edge<K>> getEdge() {
-             return edge;
-         }
+    public LinkedList<Edge<K>> getEdge() {
+       return edge;
+    }
     public void addEdge(Edge e){
         edge.add(e);
-    }
-    public void addNeighbour(Node<K> nei){
-        neighbour.add(nei);
     }
     public int compareTo(Node<K> other){
         return Double.compare(min_distance, other.min_distance);

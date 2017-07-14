@@ -1,10 +1,15 @@
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.Graphics;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import static javax.swing.SwingConstants.CENTER;
 
@@ -29,9 +34,10 @@ public class TiledRouting extends javax.swing.JFrame {
         sinks_a = new JLabel[tile_graph.getGraphSize()][tile_graph.getGraphSize()];
         wires_a = new JLabel[2 * tile_graph.getGraphSize() * tile_graph.getGraphSize()][2*tile_graph.getWireSize()];                
         tile_graph.initialize();
-//        setUp();
+        iter = 0;
+ //       setUp();
         initComponents();
-        tile_graph.find_shortest_path();
+        tile_graph.find_shortest_path_list();
         showCong();
 //        showGraph();
     }
@@ -45,13 +51,32 @@ public class TiledRouting extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        showInfo = new javax.swing.JLabel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        showInfo = new javax.swing.JTextArea();
         showState = new javax.swing.JLabel();
         showPanel = new DrawTile(tile_graph,showInfo);
         route = new javax.swing.JButton();
         reroute = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
+        show = new javax.swing.JButton();
+        add = new javax.swing.JButton();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        showSrc = new javax.swing.JTextArea();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        showDest = new javax.swing.JTextArea();
+        jMenuBar1 = new javax.swing.JMenuBar();
+        menu = new javax.swing.JMenu();
+        jMenuItem1 = new javax.swing.JMenuItem();
+        exit = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        jScrollPane2.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+
+        showInfo.setBackground(new java.awt.Color(204, 204, 204));
+        showInfo.setColumns(20);
+        showInfo.setRows(5);
+        jScrollPane2.setViewportView(showInfo);
 
         showPanel.setPreferredSize(new java.awt.Dimension(640, 640));
 
@@ -59,11 +84,11 @@ public class TiledRouting extends javax.swing.JFrame {
         showPanel.setLayout(showPanelLayout);
         showPanelLayout.setHorizontalGroup(
             showPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 640, Short.MAX_VALUE)
+            .addGap(0, 681, Short.MAX_VALUE)
         );
         showPanelLayout.setVerticalGroup(
             showPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 640, Short.MAX_VALUE)
+            .addGap(0, 0, Short.MAX_VALUE)
         );
 
         route.setText("start");
@@ -80,41 +105,114 @@ public class TiledRouting extends javax.swing.JFrame {
             }
         });
 
+        jLabel1.setText("Input net");
+
+        show.setText("SHOW");
+        show.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                showActionPerformed(evt);
+            }
+        });
+
+        add.setText("INPUT");
+        add.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addActionPerformed(evt);
+            }
+        });
+
+        jScrollPane3.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+
+        showSrc.setColumns(20);
+        showSrc.setRows(5);
+        showSrc.setPreferredSize(new java.awt.Dimension(98, 94));
+        jScrollPane3.setViewportView(showSrc);
+
+        jScrollPane1.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+
+        showDest.setColumns(20);
+        showDest.setRows(5);
+        jScrollPane1.setViewportView(showDest);
+
+        menu.setText("Menu");
+
+        jMenuItem1.setText("Info");
+        menu.add(jMenuItem1);
+
+        exit.setText("Exit");
+        exit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                exitActionPerformed(evt);
+            }
+        });
+        menu.add(exit);
+
+        jMenuBar1.add(menu);
+
+        setJMenuBar(jMenuBar1);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(42, 42, 42)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(showState, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(showInfo, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(show, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(add, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(155, 155, 155))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(81, 81, 81)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(reroute)
-                            .addComponent(route, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 45, Short.MAX_VALUE)
-                .addComponent(showPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                            .addGroup(layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(18, 18, 18)
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(73, 73, 73)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(reroute)
+                                    .addComponent(route, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGroup(layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 237, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(19, 19, 19)
+                                .addComponent(showState, javax.swing.GroupLayout.PREFERRED_SIZE, 213, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 26, Short.MAX_VALUE)))
+                .addComponent(showPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 681, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(101, 101, 101))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(70, 70, 70)
+                .addGap(34, 34, 34)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(showPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 656, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(showState, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(showState, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(route)
-                        .addGap(8, 8, 8)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(reroute)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 203, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(27, 27, 27)
+                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
-                        .addComponent(showInfo, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(showPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(add)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(show)
+                        .addGap(0, 42, Short.MAX_VALUE)))
+                .addContainerGap())
         );
 
         pack();
@@ -126,18 +224,67 @@ public class TiledRouting extends javax.swing.JFrame {
         System.out.println("===============================");
         showInfo.setText("");
         tile_graph.runIteration();
+        showNode();
         showCong();
+        showPanel.removeAll();
+        showPanel.revalidate();
         showPanel.repaint();
     }//GEN-LAST:event_routeActionPerformed
 
     private void rerouteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rerouteActionPerformed
         // TODO add your handling code here:
         showInfo.setText("");
+        showSrc.setText("");
+        showDest.setText("");
+        iter = 0;
         tile_graph.initialize();
-        tile_graph.find_shortest_path();
+        showNode();
         showCong();
+        showPanel.removeAll();
+        showPanel.revalidate();
         showPanel.repaint();
     }//GEN-LAST:event_rerouteActionPerformed
+
+    private void showActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showActionPerformed
+        // TODO add your handling code here:
+        tile_graph.find_shortest_path_list();
+        showCong();
+        showNode();
+        showPanel.removeAll();
+        showPanel.revalidate();
+        showPanel.repaint();
+    }//GEN-LAST:event_showActionPerformed
+
+    private void addActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addActionPerformed
+        // TODO add your handling code here:
+        showSrc.setText("");
+        showDest.setText("");
+        JFileChooser chooser = new JFileChooser();
+        chooser.showOpenDialog(null);
+        File f = chooser.getSelectedFile();
+        String filename = f.getAbsolutePath();
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader(filename));
+            String line;
+            while ((line = reader.readLine()) != null) {
+              String[] temp = line.split(",");
+            for(int i = 1; i <temp.length;i++){
+                showSrc.append(temp[0]+"\n");
+                showDest.append(temp[i]+"\n");
+                tile_graph.addNet(Integer.parseInt(temp[0]),Integer.parseInt(temp[i]));
+              }
+            }
+            reader.close();
+        } catch (Exception e) {
+            System.err.format("Exception occurred trying to read '%s'.", filename);
+            e.printStackTrace();
+        }
+    }//GEN-LAST:event_addActionPerformed
+
+    private void exitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitActionPerformed
+        // TODO add your handling code here:
+        System.exit(0);
+    }//GEN-LAST:event_exitActionPerformed
 
     /**
      * @param args the command line arguments
@@ -175,7 +322,7 @@ public class TiledRouting extends javax.swing.JFrame {
     }
 
     public void setUp(){
-        for (int i = 0; i < tile_graph.getGraphSize(); i++) {
+              for (int i = 0; i < tile_graph.getGraphSize(); i++) {
             for (int j = 0; j < tile_graph.getGraphSize(); j++) {
                 Tile<Integer> tile = tile_graph.getGraph()[i][j];
                 int x_pos = 2 + i*640/tile_graph.getGraphSize();
@@ -185,12 +332,54 @@ public class TiledRouting extends javax.swing.JFrame {
             sources_a[i][j].setBackground(Color.green);
             sources_a[i][j].setOpaque(true);
             sources_a[i][j].setLocation(x_pos + 640/tile_graph.getGraphSize()/2 -25,y_pos+1);
+            tile.getSources().get(0).pos_x_e = x_pos + 640/tile_graph.getGraphSize()/2;
+            tile.getSources().get(0).pos_y_e = y_pos+1;
             sources_a[i][j].setSize(25, 25);
+            sources_a[i][j].addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    JLabel l = (JLabel) e.getSource();
+                    String state = "";
+                    int num = Integer.parseInt(l.getText());
+                    state = "source";
+                    String path = "path from";
+                    String cost = "cost ";
+                    int key = 0;
+                    for(int i = 0; i < tile_graph.getSourceList().size();i++){
+                        if(tile_graph.getSourceList().get(i).getKey() == num){
+                            key = i;
+                        }
+                    }
+                                                        
+                    for (int i = 0; i < tile_graph.getSourceList().get(key).paths.size(); i++) {
+                        for (int m = 0; m < tile_graph.getSourceList().get(key).paths.get(i).size(); m++) {
+                            path = path + " " + tile_graph.getSourceList().get(key).paths.get(i).get(m).getKey();
+                        }
+                        DecimalFormat numformat = new DecimalFormat("#.00");
+                        cost = cost+numformat.format(tile_graph.getSourceList().get(key).distance.get(i));
+                    }
+                    
+                    for(int i = 0; i < tile_graph.getGraphSize(); i++){
+                        for(int j = 0; j < tile_graph.getGraphSize(); j++){
+                            for(int k = 0; k <tile_graph.getGraph()[i][j].getSources().size();k++){
+                                Tile<Integer> temp = tile_graph.getGraph()[i][j];
+                                if(temp.getSources().get(k).getKey() == num){
+                                    System.out.println("hello drawing");
+                                }
+                            }
+                        }
+                    }
+                    showInfo.setText("<html>" + state + "<br>" + path + "<br>" + cost + "</html>");
+                    
+                }
+            });
             sinks_a[i][j] = new JLabel("", CENTER);
             sinks_a[i][j].setText(Integer.toString(tile.getSinks().get(0).getKey()));
             sinks_a[i][j].setBackground(Color.yellow);
             sinks_a[i][j].setOpaque(true);
             sinks_a[i][j].setLocation(x_pos+1,y_pos+ 640/tile_graph.getGraphSize()/2 -25);
+            tile.getSinks().get(0).pos_x_e = x_pos;
+            tile.getSinks().get(0).pos_y_e = y_pos+ 640/tile_graph.getGraphSize()/2;
             sinks_a[i][j].setSize(25, 25);
             int gap_x = 0;
             int gap_y = 0;
@@ -199,14 +388,43 @@ public class TiledRouting extends javax.swing.JFrame {
                     wires_a[i * tile_graph.getGraphSize() + j][m].setText(Integer.toString(tile.getWires().get(m).getKey()));
                     wires_a[i * tile_graph.getGraphSize() + j][m].setBackground(Color.red);
                     wires_a[i * tile_graph.getGraphSize() + j][m].setOpaque(true);
+                    wires_a[i * tile_graph.getGraphSize() + j][m].addMouseListener(new MouseAdapter() {
+                        @Override
+                        public void mouseClicked(MouseEvent e) {
+                        JLabel l = (JLabel) e.getSource();
+                        String state = "";
+                        state = "wire";
+                        int num = Integer.parseInt(l.getText());
+                        int key = 0;
+                        for(int i = 0; i < tile_graph.getSourceList().size();i++){
+                           if(tile_graph.getWireList().get(i).getKey() == num){
+                            key = i;
+                         }
+                        }
+                        double history_get = tile_graph.getWireList().get(key).getHistory();
+                        int history = 0;
+                        if (history_get != 0) {
+                        history = (int) (Math.log(tile_graph.getWireList().get(key).getHistory()) / Math.log(1.1));
+                    }
+                    showInfo.setText("<html>" + state +" " +num+ "<br>" + "congestion history" + history + "<br>" + "congestion" + tile_graph.getWireList().get(key).getOther() + "<br>" + "cost" + tile_graph.getWireList().get(key).getCost() +"</html>");
+                }
+            });
                     if(tile.getWires().get(m).dir == 0) {
                     wires_a[i * tile_graph.getGraphSize() + j][m].setLocation(x_pos + gap_x + 640/tile_graph.getGraphSize()/ 2 + 640/tile_graph.getGraphSize()/ 16, y_pos);
-                    wires_a[i * tile_graph.getGraphSize() + j][m].setSize(15,640/tile_graph.getGraphSize()/ 2);     
+                    wires_a[i * tile_graph.getGraphSize() + j][m].setSize(15,640/tile_graph.getGraphSize()/ 2);    
+                    tile.getWires().get(m).pos_x_s = x_pos + gap_x + 640/tile_graph.getGraphSize()/ 2 + 640/tile_graph.getGraphSize()/ 16;
+                    tile.getWires().get(m).pos_y_s = y_pos;
+                    tile.getWires().get(m).pos_x_e = x_pos + gap_x + 640/tile_graph.getGraphSize()/ 2 + 640/tile_graph.getGraphSize()/ 16;
+                    tile.getWires().get(m).pos_y_e = y_pos + 640/tile_graph.getGraphSize()/ 2;
                     gap_x = gap_x + 640/tile_graph.getGraphSize()/ 4;
                     }
                     else{
                     wires_a[i * tile_graph.getGraphSize() + j][m].setLocation(x_pos, y_pos+ gap_y +640/tile_graph.getGraphSize()/ 2 + 640/tile_graph.getGraphSize()/ 16);
                     wires_a[i * tile_graph.getGraphSize() + j][m].setSize(640/tile_graph.getGraphSize()/ 2, 15);
+                    tile.getWires().get(m).pos_x_s = x_pos;
+                    tile.getWires().get(m).pos_y_s = y_pos+ gap_y +640/tile_graph.getGraphSize()/ 2 + 640/tile_graph.getGraphSize()/ 16;
+                    tile.getWires().get(m).pos_x_e = x_pos +640/tile_graph.getGraphSize()/ 2;
+                    tile.getWires().get(m).pos_y_e = y_pos+ gap_y +640/tile_graph.getGraphSize()/ 2 + 640/tile_graph.getGraphSize()/ 16;
                     gap_y = gap_y + 640/tile_graph.getGraphSize()/ 4;
                     }
                 }
@@ -230,9 +448,27 @@ public class TiledRouting extends javax.swing.JFrame {
     
     public void showCong() {
         if (!tile_graph.testCong()) {
+            iter++;
             showState.setText("STILL CONGESTED");
         } else {
             showState.setText("This circuit has no congestion");
+            showInfo.append("iteration number: " + iter);
+            iter = 0;
+        }
+    }
+    
+    public void showNode(){
+        showInfo.setText("");
+        for(int i = 0; i < tile_graph.getGraphSize(); i++){
+            for(int j = 0; j < tile_graph.getGraphSize(); j++){
+                Tile<Integer> temp = tile_graph.getGraph()[i][j];
+                for(int k = 0; k < temp.getWires().size();k++){
+                    if(temp.getWires().get(k).getOther() > 2){
+                        DecimalFormat numformat = new DecimalFormat("#.00");
+                        showInfo.append("show node: " +temp.getWires().get(k).getKey() + "\n" +"show cost: " + numformat.format(temp.getWires().get(k).getCost()) +"\n"+ "congestion" + temp.getWires().get(k).getOther()+"\n");
+                    }
+                }
+            }
         }
     }
 
@@ -240,11 +476,24 @@ public class TiledRouting extends javax.swing.JFrame {
     private JLabel sources_a[][];
     private JLabel sinks_a[][];
     private JLabel wires_a[][];
+    private int iter;
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton add;
+    private javax.swing.JMenuItem exit;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JMenu menu;
     private javax.swing.JButton reroute;
     private javax.swing.JButton route;
-    private javax.swing.JLabel showInfo;
+    private javax.swing.JButton show;
+    private javax.swing.JTextArea showDest;
+    private javax.swing.JTextArea showInfo;
     private javax.swing.JPanel showPanel;
+    private javax.swing.JTextArea showSrc;
     private javax.swing.JLabel showState;
     // End of variables declaration//GEN-END:variables
 }
