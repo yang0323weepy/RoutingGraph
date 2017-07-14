@@ -1,14 +1,12 @@
 
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.Graphics;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import static javax.swing.SwingConstants.CENTER;
