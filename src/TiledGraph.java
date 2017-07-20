@@ -178,7 +178,7 @@ public class TiledGraph {
                         }
                     }
                     sourceinList.get(i).paths.add(path_find);
-                    sourceinList.get(i).distance.add(sourceinList.get(i).dest.get(0).min_distance);
+                    sourceinList.get(i).distance.add(sourceinList.get(i).dest.get(j).min_distance);
                     }
                 }
     }

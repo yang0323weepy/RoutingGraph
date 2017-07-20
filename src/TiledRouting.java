@@ -7,6 +7,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.text.DecimalFormat;
+import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import static javax.swing.SwingConstants.CENTER;
@@ -27,13 +28,13 @@ public class TiledRouting extends javax.swing.JFrame {
      * Creates new form TiledRouting
      */
     public TiledRouting() {
-        tile_graph = new TiledGraph(3,2);
+        tile_graph = new TiledGraph(8,2);
         sources_a = new JLabel[tile_graph.getGraphSize()][tile_graph.getGraphSize()];
         sinks_a = new JLabel[tile_graph.getGraphSize()][tile_graph.getGraphSize()];
         wires_a = new JLabel[2 * tile_graph.getGraphSize() * tile_graph.getGraphSize()][2*tile_graph.getWireSize()];                
         tile_graph.initialize();
         iter = 0;
- //       setUp();
+//       setUp();
         initComponents();
         tile_graph.find_shortest_path_list();
         showCong();
@@ -332,7 +333,7 @@ public class TiledRouting extends javax.swing.JFrame {
             sources_a[i][j].setLocation(x_pos + 640/tile_graph.getGraphSize()/2 -25,y_pos+1);
             tile.getSources().get(0).pos_x_e = x_pos + 640/tile_graph.getGraphSize()/2;
             tile.getSources().get(0).pos_y_e = y_pos+1;
-            sources_a[i][j].setSize(25, 25);
+            sources_a[i][j].setSize(640/tile_graph.getGraphSize()/8, 640/tile_graph.getGraphSize()/8);
             sources_a[i][j].addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseClicked(MouseEvent e) {
@@ -404,7 +405,7 @@ public class TiledRouting extends javax.swing.JFrame {
                         if (history_get != 0) {
                         history = (int) (Math.log(tile_graph.getWireList().get(key).getHistory()) / Math.log(1.1));
                     }
-                    showInfo.setText("<html>" + state +" " +num+ "<br>" + "congestion history" + history + "<br>" + "congestion" + tile_graph.getWireList().get(key).getOther() + "<br>" + "cost" + tile_graph.getWireList().get(key).getCost() +"</html>");
+                    showInfo.setText(state +" " +num+ "\n" + "congestion history" + history + "<br>" + "congestion" + tile_graph.getWireList().get(key).getOther() + "\n" + "cost" + tile_graph.getWireList().get(key).getCost());
                 }
             });
                     if(tile.getWires().get(m).dir == 0) {
@@ -470,6 +471,11 @@ public class TiledRouting extends javax.swing.JFrame {
         }
     }
 
+    public void zoom() {
+        showPanel.addMouseListener(new MouseAdapter() {
+  
+        });
+    }
     TiledGraph tile_graph;
     private JLabel sources_a[][];
     private JLabel sinks_a[][];
