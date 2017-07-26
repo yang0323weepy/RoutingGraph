@@ -1,4 +1,5 @@
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -37,7 +38,6 @@ public class TiledGraph {
         }
         connectTile();
         makeGraph();
-        //addDest();
     }
 
     public void connectTile() {
@@ -50,9 +50,8 @@ public class TiledGraph {
                         int city2 = random.nextInt(graph[i+1][j].getWires().size()) + 0;
                         int key1 = graph[i][j].getWires().get(city1).getKey();
                         int key2 = graph[i+1][j].getWires().get(city2).getKey();
-                        double weight = random.nextDouble()+random.nextInt(5);
                         if(graph[i+1][j].findNode(key2).dir == 1)
-                        graph[i][j].add_edge(graph[i][j].findNode(key1),graph[i+1][j].findNode(key2),weight);
+                        graph[i][j].add_edge(graph[i][j].findNode(key1),graph[i+1][j].findNode(key2),graph[i+1][j].findNode(key2).getCost());
                     }
                     for (int k = 0; k < size_w * size_w* size_w*size_w; k++) {
                         Random random = new Random();
@@ -60,9 +59,8 @@ public class TiledGraph {
                         int city2 = random.nextInt(graph[i][j].getWires().size()) + 0;
                         int key1 = graph[i+1][j].getWires().get(city1).getKey();
                         int key2 = graph[i][j].getWires().get(city2).getKey();
-                        double weight = random.nextDouble()+random.nextInt(5);
                         if(graph[i+1][j].findNode(key1).dir == 1)
-                        graph[i+1][j].add_edge(graph[i+1][j].findNode(key1),graph[i][j].findNode(key2),weight);
+                        graph[i+1][j].add_edge(graph[i+1][j].findNode(key1),graph[i][j].findNode(key2),graph[i][j].findNode(key2).getCost());
                     }
                 }
                 if (j + 1 < size_g) {
@@ -74,7 +72,7 @@ public class TiledGraph {
                         int key1 = graph[i][j].getWires().get(city1).getKey();
                         int key2 = graph[i][j+1].getWires().get(city2).getKey();
                         if(graph[i][j+1].findNode(key2).dir == 0)
-                        graph[i][j].add_edge(graph[i][j].findNode(key1),graph[i][j+1].findNode(key2),weight);
+                        graph[i][j].add_edge(graph[i][j].findNode(key1),graph[i][j+1].findNode(key2),graph[i][j+1].findNode(key2).getCost());
                     }
                     for (int k = 0; k < size_w * size_w * size_w*size_w; k++) {
                         Random random = new Random();
@@ -82,9 +80,8 @@ public class TiledGraph {
                         int city2 = random.nextInt(graph[i][j].getWires().size()) + 0;
                         int key1 = graph[i][j+1].getWires().get(city1).getKey();
                         int key2 = graph[i][j].getWires().get(city2).getKey();
-                        double weight = random.nextDouble()+random.nextInt(5);
                         if(graph[i][j+1].findNode(key1).dir == 0)
-                        graph[i][j+1].add_edge(graph[i][j+1].findNode(key1),graph[i][j].findNode(key2),weight);
+                        graph[i][j+1].add_edge(graph[i][j+1].findNode(key1),graph[i][j].findNode(key2),graph[i][j].findNode(key2).getCost());
                     }
                 }
             }
@@ -120,7 +117,6 @@ public class TiledGraph {
     
     public void addDest(){
         Random random = new Random();
-        ArrayList<Integer> num_list = new ArrayList<Integer>();
         for(int i = 0; i < size_g; i++){
             for(int j = 0; j < size_g; j++){
                 for(int k = 0; k < graph[i][j].getSources().size();k++){
@@ -158,29 +154,33 @@ public class TiledGraph {
     }
     
     public void find_shortest_path_list() {
-        for (int i = 0; i < wireList.size(); i++) {
-            wireList.get(i).resetOther();
-        }
-        for(int i = 0; i < sourceList.size();i++){
-            sourceList.get(i).paths.clear();
-            sourceList.get(i).distance.clear();
-        }
-        for (int i = 0; i < sourceinList.size(); i++) {                  
-                    sourceinList.get(i).paths.clear();
-                    sourceinList.get(i).distance.clear();
-                    for(int j = 0; j < sourceinList.get(i).dest.size(); j++){
-                    System.out.println("path from" +sourceinList.get(i).getKey() + " to" +sourceinList.get(i).dest.get(j).getKey());
-                    ArrayList<Tile<Integer>.Node<Integer>> path_find = graph[0][0].findShortestPath(sourceinList.get(i).getKey(),sourceinList.get(i).dest.get(j).getKey(),graphList);
-                    for (int m = 0; m < path_find.size(); m++) {
-                        System.out.println("path" + path_find.get(m).getKey());
-                        if(path_find.get(m).getState()==1){
-                            path_find.get(m).changeOther();
+        for (int i = 0; i < sourceinList.size(); i++) {
+            for (int m = 0; m < sourceinList.get(i).paths.size(); m++) {
+                for (int n = 0; n < sourceinList.get(i).paths.get(m).size(); n++) {
+                    sourceinList.get(i).paths.get(m).get(n).relaxOther();
+                    sourceinList.get(i).paths.get(m).get(n).changeCost();
+                    System.out.println("test" + sourceinList.get(i).paths.get(m).get(n).getKey() + " " + sourceinList.get(i).paths.get(m).get(n).getCost());
+                    for (int a = 0; a < size_g; a++) {
+                        for (int b = 0; b < size_g; b++) {
+                            graph[a][b].changeEdges();
                         }
                     }
-                    sourceinList.get(i).paths.add(path_find);
-                    sourceinList.get(i).distance.add(sourceinList.get(i).dest.get(j).min_distance);
-                    }
                 }
+                sourceinList.get(i).paths.get(m).clear();
+            }
+            sourceinList.get(i).paths.clear();
+            sourceinList.get(i).distance.clear();
+            for (int j = 0; j < sourceinList.get(i).dest.size(); j++) {
+                System.out.println("path from" + sourceinList.get(i).getKey() + " to" + sourceinList.get(i).dest.get(j).getKey());
+                ArrayList<Tile<Integer>.Node<Integer>> path_find = graph[0][0].findShortestPath(sourceinList.get(i).getKey(), sourceinList.get(i).dest.get(j).getKey(), graphList);
+                for (int m = 0; m < path_find.size(); m++) {
+                    DecimalFormat numformat = new DecimalFormat("#.00");
+                    System.out.println("path" + path_find.get(m).getKey() + " " + numformat.format(path_find.get(m).getCost()));
+                }
+                sourceinList.get(i).paths.add(path_find);
+                sourceinList.get(i).distance.add(sourceinList.get(i).dest.get(j).min_distance);
+            }
+        }
     }
         
     public void addNet(int index1, int index2) {

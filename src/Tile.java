@@ -143,6 +143,61 @@ public class Tile<K> {
                             System.out.println("no path found");
                         }
                         for (Node<K> visit = end; visit != null; visit = visit.prev) {
+                            visit.changeOther();
+                            visit.changeCost();
+                            path.add(visit);
+                        }
+                        changeEdges();
+                        Collections.reverse(path);
+                    }
+                }
+            }
+        }
+        return path;
+    }
+    
+    public void negotiationCongestion(Node<K> pin,Node<K> pout){
+        pin.min_distance = 0;
+        PriorityQueue<Node<K>> node_queue = new PriorityQueue<Node<K>>();
+        node_queue.add(pin);
+        while (!node_queue.peek().equals(pout)){
+            Node<K> vertex = node_queue.poll();
+            for(int i = 0; i < vertex.getEdge().size(); i++){
+                Edge<K> edge = vertex.getEdge().get(i);
+                Node<K> neighbor = edge.getNode();
+                double total_distance = edge.getWeight() + vertex.min_distance;
+                if(total_distance < neighbor.min_distance){
+                    node_queue.remove(neighbor);
+                    neighbor.min_distance = total_distance;
+                    neighbor.prev = vertex;
+                    node_queue.add(neighbor);
+                }
+            }
+        }
+    }
+    public ArrayList<Node<K>> findpath(int k1, int k2, ArrayList<Node<K>> nodes) {
+        ArrayList<Node<K>> path = new ArrayList<Node<K>>();
+        Node<K> start;
+        Node<K> end;
+        for (int i = 0; i < nodes.size(); i++) {
+            if (k1==(nodes.get(i).getKey())) {
+                start = nodes.get(i);
+                for (int k = 0; k < nodes.size(); k++) {
+                    nodes.get(k).prev = null;
+                    nodes.get(k).min_distance = Integer.MAX_VALUE;
+                }
+                computePath(start);
+                for (int j = 0; j < nodes.size(); j++) {
+                    if (k2==(nodes.get(j).getKey())) {
+                        end = nodes.get(j);
+                        start.find_distance = end.min_distance;
+                        if (start.find_distance != Integer.MAX_VALUE) {
+                            DecimalFormat numformat = new DecimalFormat("#.00");
+                            System.out.println("final distance" + numformat.format(end.min_distance) + " !");
+                        } else {
+                            System.out.println("no path found");
+                        }
+                        for (Node<K> visit = end; visit != null; visit = visit.prev) {
                             path.add(visit);
                         }
                         Collections.reverse(path);
@@ -258,7 +313,7 @@ public class Tile<K> {
         this.parent = tile;
     }
     public void changeCost(){
-        cost = base + history + other;
+        cost = (base + history)*other;
     }
     public double changeHistory(){
         if (history==0) history = 1;
@@ -269,7 +324,10 @@ public class Tile<K> {
         other++;
         return other;
     }
-    
+    public int relaxOther(){
+        other--;
+        return other;
+    }
     public int resetOther(){
         other = 1;
         return other;
@@ -279,7 +337,7 @@ public class Tile<K> {
         if (state == 0) {
           edge.get(num).setWeight(edge.get(num).getNode().getCost());
          } else if (state == 1) {
-            edge.get(num).setWeight(cost);
+            edge.get(num).setWeight(edge.get(num).getNode().getCost());
          }
     }
 
