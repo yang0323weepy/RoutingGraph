@@ -23,66 +23,79 @@ import static javax.swing.SwingConstants.CENTER;
 public class DrawTile extends JPanel {
 
      public DrawTile(TiledGraph ex, JTextArea label,JLabel[][] a,JLabel[][] b, JLabel[][] c) {
- //   public DrawTile(TiledGraph ex, JTextArea label) {
+//   public DrawTile(TiledGraph ex, JTextArea label) {
         this.graph = ex;
-//        sources_a = new JLabel[graph.getGraphSize()][graph.getGraphSize()];
-//        sinks_a = new JLabel[graph.getGraphSize()][graph.getGraphSize()];
-//        wires_a = new JLabel[graph.getGraphSize() * graph.getGraphSize()][2 * graph.getWireSize()];
+        sources_a = new JLabel[graph.getGraphSize()][graph.getGraphSize()];
+        sinks_a = new JLabel[graph.getGraphSize()][graph.getGraphSize()];
+        wires_a = new JLabel[graph.getGraphSize() * graph.getGraphSize()][2 * graph.getWireSize()];
+        tile_a = new DrawTileLabel[graph.getGraphSize()][graph.getGraphSize()];
         switchbox = new JToggleButton[graph.getGraphSize()][graph.getGraphSize()];
         showInfo = label; 
-        sources_a = a;
-        sinks_a = b;
-        wires_a = c;
+//        sources_a = a;
+//        sinks_a = b;
+//        wires_a = c;
+//        tile_a = d;
         transform = new AffineTransform();
         this.addMouseListener(new MouseAdapter() {
             @Override
-            public void mouseClicked(MouseEvent e) {    
+            public void mouseClicked(MouseEvent e) { 
+//              if (e.getModifiers() == MouseEvent.BUTTON3_MASK){
                 x_test = e.getX();
                 y_test = e.getY();
+                 System.out.println("repainttttttt" + x_test + " "+ y_test);
                 repaint();
+//                }
             }
         });
         this.addMouseWheelListener(new MouseAdapter() {
            @Override
             public void mouseWheelMoved(MouseWheelEvent e) {
              if(e.getWheelRotation() == 1){
-                 scale+=0.1;
+                 scale=0.5;
                  System.out.println("scale" + scale);
              }
              else{
-                 scale-=0.1;
+                 scale=2;
                  System.out.println("scale" + scale);
-             }
-            }
+             } }
             });
+            setUp();
     }
 
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-//        Graphics2D g2 = (Graphics2D)g;
-//        g2.transform(transform);
-//        transform.scale(scale, scale);        
-        int Xpos = 2;
-        int Ypos = 2;   
-        showGraph();
-        paintRoute(g);
-        for (int i = 0; i < graph.getGraphSize(); i++) {
+        Graphics2D g2 = (Graphics2D)g;
+        g2.transform(transform);
+        transform.scale(scale, scale);   
+    if(!zoom){
+        removeAll();
+               for (int i = 0; i < graph.getGraphSize(); i++) {
             for (int j = 0; j < graph.getGraphSize(); j++) {
-                g.drawRect(Xpos + i * drawBorder / graph.getGraphSize(), Ypos + j * drawBorder / graph.getGraphSize(), drawBorder / graph.getGraphSize() / 2, drawBorder / graph.getGraphSize() / 2);
-                switchbox[i][j] = new JToggleButton("");
-                switchbox[i][j].setOpaque(true);
-                switchbox[i][j].setLocation(Xpos + i * drawBorder / graph.getGraphSize() + drawBorder / graph.getGraphSize() / 2, Ypos + j * drawBorder / graph.getGraphSize() + drawBorder / graph.getGraphSize() / 2);
-                switchbox[i][j].setSize(drawBorder / graph.getGraphSize() / 2, drawBorder / graph.getGraphSize() / 2);
+                g.drawRect( i * drawBorder / graph.getGraphSize(),  j * drawBorder / graph.getGraphSize(), drawBorder / graph.getGraphSize() / 2, drawBorder / graph.getGraphSize() / 2);
                 g.setColor(Color.blue);
-                g.drawRect(Xpos + i * drawBorder / graph.getGraphSize() + drawBorder / graph.getGraphSize() / 2, Ypos + j * drawBorder / graph.getGraphSize() + drawBorder / graph.getGraphSize() / 2, drawBorder / graph.getGraphSize() / 2, drawBorder / graph.getGraphSize() / 2);
+                g.drawRect( i * drawBorder / graph.getGraphSize() + drawBorder / graph.getGraphSize() / 2,  j * drawBorder / graph.getGraphSize() + drawBorder / graph.getGraphSize() / 2, drawBorder / graph.getGraphSize() / 2, drawBorder / graph.getGraphSize() / 2);
                 g.setColor(Color.black);
             }
         }
+        paintRoute(g);
+        showGraph();  
+    }
+    else{
+        removeAll();
+        DrawTileLabel tile_zoom = new DrawTileLabel(graph,sources_a,sinks_a,wires_a,need_zoom/graph.getGraphSize(),need_zoom%graph.getGraphSize());
+        tile_zoom.changeRedraw();
+        this.add(tile_zoom);
+        tile_zoom.setOpaque(true);
+        tile_zoom.setLocation( drawBorder / 4, drawBorder / 4);
+        tile_zoom.setSize(drawBorder / 4, drawBorder / 4);
+        zoom = false;
+     }
+        setUp();
     }
 
     //draw the route between the nodes
     public void paintRoute(Graphics g) {
-//         //update cost in the tooltip for each wire
+         //update cost in the tooltip for each wire
         for (int i = 0; i < graph.getGraphSize() * graph.getGraphSize(); i++) {
             for (int j = 0; j < 2 * graph.getWireSize(); j++) {
                 DecimalFormat numformat = new DecimalFormat("#.00");
@@ -101,13 +114,13 @@ public class DrawTile extends JPanel {
         for (int i = 0; i < graph.getGraphSize(); i++) {
             for (int j = 0; j < graph.getGraphSize(); j++) {
                 Tile<Integer> tile = graph.getGraph()[i][j];
-                int x_pos = 2 + i * drawBorder / graph.getGraphSize();
-                int y_pos = 2 + j * drawBorder / graph.getGraphSize();
+                int x_pos = 0 + i * drawBorder / graph.getGraphSize();
+                int y_pos = 0 + j * drawBorder / graph.getGraphSize();
                 sources_a[i][j] = new JLabel("", CENTER);
                 sources_a[i][j].setText(Integer.toString(tile.getSources().get(0).getKey()));
                 sources_a[i][j].setBackground(Color.green);
                 sources_a[i][j].setOpaque(true);
-                sources_a[i][j].setLocation(x_pos + drawBorder / graph.getGraphSize() / 2 - drawBorder / graph.getGraphSize()/8, y_pos + 1);
+                sources_a[i][j].setLocation( drawBorder / graph.getGraphSize() / 2 - drawBorder / graph.getGraphSize()/8,  1);
                 tile.getSources().get(0).pos_x_e = x_pos + drawBorder / graph.getGraphSize() / 2;
                 tile.getSources().get(0).pos_y_e = y_pos + 1;
                 sources_a[i][j].setSize(drawBorder / graph.getGraphSize() /8, drawBorder / graph.getGraphSize()/8);
@@ -127,7 +140,7 @@ public class DrawTile extends JPanel {
                                 key = i;
                             }
                         }
-
+                        
                         for (int i = 0; i < graph.getSourceList().get(key).paths.size(); i++) {
                             path = "path from";
                             cost = "cost";
@@ -157,7 +170,7 @@ public class DrawTile extends JPanel {
                 sinks_a[i][j].setText(Integer.toString(tile.getSinks().get(0).getKey()));
                 sinks_a[i][j].setBackground(Color.green);
                 sinks_a[i][j].setOpaque(true);
-                sinks_a[i][j].setLocation(x_pos + 1, y_pos + drawBorder / graph.getGraphSize() / 2 - drawBorder / graph.getGraphSize() /8);
+                sinks_a[i][j].setLocation(1,  drawBorder / graph.getGraphSize() / 2 - drawBorder / graph.getGraphSize() /8);
                 tile.getSinks().get(0).pos_x_e = x_pos;
                 tile.getSinks().get(0).pos_y_e = y_pos + drawBorder / graph.getGraphSize() / 2;
                 sinks_a[i][j].setSize(drawBorder / graph.getGraphSize() /8, drawBorder / graph.getGraphSize() /8);
@@ -196,7 +209,7 @@ public class DrawTile extends JPanel {
                         }
                     });
                     if (tile.getWires().get(m).dir == 0) {
-                        wires_a[i * graph.getGraphSize() + j][m].setLocation(x_pos + gap_x + drawBorder / graph.getGraphSize() / 2 + drawBorder / graph.getGraphSize() / 16, y_pos);
+                        wires_a[i * graph.getGraphSize() + j][m].setLocation(gap_x + drawBorder / graph.getGraphSize() / 2 + drawBorder / graph.getGraphSize() / 16, 0);
                         wires_a[i * graph.getGraphSize() + j][m].setSize(drawBorder / graph.getGraphSize() / 8/(graph.getWireSize()-1), drawBorder / graph.getGraphSize() / 2);
                         tile.getWires().get(m).pos_x_s = x_pos + gap_x + drawBorder / graph.getGraphSize() / 2 + drawBorder / graph.getGraphSize() / 16;
                         tile.getWires().get(m).pos_y_s = y_pos;
@@ -204,7 +217,7 @@ public class DrawTile extends JPanel {
                         tile.getWires().get(m).pos_y_e = y_pos + drawBorder / graph.getGraphSize() / 2;
                         gap_x = gap_x + drawBorder / graph.getGraphSize() / 4/(graph.getWireSize()-1);
                     } else {
-                        wires_a[i * graph.getGraphSize() + j][m].setLocation(x_pos, y_pos + gap_y + drawBorder / graph.getGraphSize() / 2 + drawBorder / graph.getGraphSize() / 16);
+                        wires_a[i * graph.getGraphSize() + j][m].setLocation(0,  gap_y + drawBorder / graph.getGraphSize() / 2 + drawBorder / graph.getGraphSize() / 16);
                         wires_a[i * graph.getGraphSize() + j][m].setSize(drawBorder / graph.getGraphSize() / 2,drawBorder / graph.getGraphSize() / 8/(graph.getWireSize()-1));
                         tile.getWires().get(m).pos_x_s = x_pos;
                         tile.getWires().get(m).pos_y_s = y_pos + gap_y + drawBorder / graph.getGraphSize() / 2 + drawBorder / graph.getGraphSize() / 16;
@@ -221,18 +234,43 @@ public class DrawTile extends JPanel {
         for (int i = 0; i < graph.getGraphSize(); i++) {
             for (int j = 0; j < graph.getGraphSize(); j++) {
                 Tile<Integer> tile = graph.getGraph()[i][j];
-                add(sources_a[i][j]);
-                add(sinks_a[i][j]);
-                for (int m = 0; m < tile.getWires().size(); m++) {
-                    int rc = (int)tile.getWires().get(m).getCost();
-                    int gc = (int)tile.getWires().get(m).getCost()*10;
-                    int bc = 255-(int)tile.getWires().get(m).getCost();
-                    if (rc > 255) rc = 255;
-                    if (gc > 255) gc = 255;
-                    if (bc < 0)     bc = 0;
-                    wires_a[i * graph.getGraphSize() + j][m].setBackground(new Color(rc,gc,bc));
-                    add(wires_a[i * graph.getGraphSize() + j][m]);
-                }
+                tile_a[i][j] = new DrawTileLabel(graph,sources_a,sinks_a,wires_a,i,j);
+                tile_a[i][j].setName(Integer.toString(i*graph.getGraphSize()+j));
+                tile_a[i][j].setOpaque(true);
+                tile_a[i][j].setLocation(i * drawBorder / graph.getGraphSize(),j * drawBorder / graph.getGraphSize());
+                tile_a[i][j].setSize(drawBorder / graph.getGraphSize(), drawBorder / graph.getGraphSize());
+                tile_a[i][j].addMouseListener(new MouseAdapter() {
+                    @Override
+                    public void mouseClicked(MouseEvent e) {
+                        JLabel l = (JLabel) e.getSource();
+                        if(e.getClickCount() == 2 && e.getModifiers() == MouseEvent.BUTTON3_MASK){
+                            need_zoom = Integer.parseInt(l.getName());
+                            System.out.println("textttttttttttttttttttttttttttttttttttttttttttttttttt");
+                            zoom = true;
+                            repaint();
+                        }
+                        else {
+                            x_test = e.getX();
+                            y_test = e.getY();
+                            System.out.println("repainttttttt" + x_test + " " + y_test);
+                            repaint();
+                        }
+                    }
+                });
+                add(tile_a[i][j]);
+                //add(sources_a[i][j]);
+                //add(sinks_a[i][j]);               
+//                for (int m = 0; m < tile.getWires().size(); m++) {
+//                    int rc = (int)tile.getWires().get(m).getCost();
+//                    int gc = (int)tile.getWires().get(m).getCost()*10;
+//                    int bc = 255-(int)tile.getWires().get(m).getCost();
+//                    if (rc > 255) rc = 255;
+//                    if (gc > 255) gc = 255;
+//                    if (bc < 0)     bc = 0;
+//                    wires_a[i * graph.getGraphSize() + j][m].setBackground(new Color(rc,gc,bc));
+//                    //add(wires_a[i * graph.getGraphSize() + j][m]);
+//                }
+                                
             }
         }
         showInfo.setFont(new Font("Courier", Font.PLAIN, 13));
@@ -316,11 +354,14 @@ public class DrawTile extends JPanel {
     private JLabel[][] sources_a;
     private JLabel[][] sinks_a;
     private JLabel[][] wires_a;
+    private DrawTileLabel[][] tile_a;
     private JTextArea showInfo;
     private JToggleButton[][] switchbox;
     private AffineTransform transform;
     private double scale = 1;
     private final int drawBorder = 640;
+    private boolean zoom = false;
+    private int need_zoom;
     private int x_test;
     private int y_test;
 }

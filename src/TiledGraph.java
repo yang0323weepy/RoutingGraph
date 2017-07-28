@@ -68,7 +68,6 @@ public class TiledGraph {
                         Random random = new Random();
                         int city1 = random.nextInt(graph[i][j].getWires().size()) + 0;
                         int city2 = random.nextInt(graph[i][j+1].getWires().size()) + 0;
-                        double weight = random.nextDouble()+random.nextInt(5);
                         int key1 = graph[i][j].getWires().get(city1).getKey();
                         int key2 = graph[i][j+1].getWires().get(city2).getKey();
                         if(graph[i][j+1].findNode(key2).dir == 0)
