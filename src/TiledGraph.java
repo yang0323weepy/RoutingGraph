@@ -1,4 +1,4 @@
-
+ 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Random;
@@ -29,9 +29,11 @@ public class TiledGraph {
     
     public void initialize(){
         int index = 0;
+        source_num = 3;
+        sink_num = 3;
         for(int i = 0; i < size_g; i++){
             for(int j = 0; j < size_g; j++){
-                graph[i][j] = new Tile<Integer>(1,1,size_w,index);
+                graph[i][j] = new Tile<Integer>(source_num,sink_num,size_w,index);
                 graph[i][j].generate();
                 index = graph[i][j].getStartNum();  
             }
@@ -44,7 +46,7 @@ public class TiledGraph {
         for (int i = 0; i < size_g; i++) {
             for (int j = 0; j < size_g; j++) {
                 if (i + 1 < size_g) {
-                    for (int k = 0; k < size_w * size_w * size_w*size_w; k++) {
+                    for (int k = 0; k < size_w * size_w * size_w *size_w; k++) {
                         Random random = new Random();
                         int city1 = random.nextInt(graph[i][j].getWires().size()) + 0;
                         int city2 = random.nextInt(graph[i+1][j].getWires().size()) + 0;
@@ -234,6 +236,13 @@ public class TiledGraph {
         return graph;
     }
     
+    public int getSourceSize(){
+        return source_num;
+    }
+    
+    public int getSinkSize(){
+        return sink_num;
+    }
     public ArrayList<Tile<Integer>.Node<Integer>> getWireList(){
         return wireList;
     }
@@ -247,6 +256,8 @@ public class TiledGraph {
     }
     private int size_g;
     private int size_w;
+    private int source_num;
+    private int sink_num;
     private Tile<Integer>[][] graph;
     ArrayList<Tile<Integer>.Node<Integer>> graphList;
     ArrayList<Tile<Integer>.Node<Integer>> sourceList;

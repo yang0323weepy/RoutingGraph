@@ -1,6 +1,9 @@
 
+import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -45,9 +48,9 @@ public class TiledRouting extends javax.swing.JFrame {
                 tile_graph.runIteration();
                 showNode();
                 if(showCong()) run_num = Integer.parseInt(num_field.getText());
-                showPane.removeAll();
-                showPane.revalidate();
-                showPane.repaint();
+                showPanel.removeAll();
+                showPanel.revalidate();
+                showPanel.repaint();
             }
             else{
                 Timer tim = (Timer) evt.getSource();
@@ -58,6 +61,7 @@ public class TiledRouting extends javax.swing.JFrame {
     });
     
     public TiledRouting() {
+        
         tile_graph = new TiledGraph(8,2);
         sources_a = new JLabel[tile_graph.getGraphSize()][tile_graph.getGraphSize()];
         sinks_a = new JLabel[tile_graph.getGraphSize()][tile_graph.getGraphSize()];
@@ -66,6 +70,10 @@ public class TiledRouting extends javax.swing.JFrame {
         iter = 0;
 //        setUp_b();
         initComponents();
+        showPanel = new DrawTile(tile_graph,showInfo,sources_a,sinks_a,wires_a);
+        this.add(showPanel);
+        showPane.setViewportView(showPanel);
+
         tile_graph.find_shortest_path_list();
         showCong();
     }
@@ -79,11 +87,11 @@ public class TiledRouting extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        dialog = new javax.swing.JDialog();
         jScrollPane2 = new javax.swing.JScrollPane();
         showInfo = new javax.swing.JTextArea();
         showState = new javax.swing.JLabel();
-        showPanel = new javax.swing.JScrollPane();
-        showPane = new DrawTile(tile_graph,showInfo,sources_a,sinks_a,wires_a);
+        showPane = new javax.swing.JScrollPane(showPanel);
         route = new javax.swing.JButton();
         reroute = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
@@ -95,10 +103,26 @@ public class TiledRouting extends javax.swing.JFrame {
         showDest = new javax.swing.JTextArea();
         num_field = new javax.swing.JTextField();
         stopr = new javax.swing.JButton();
+        zoom = new javax.swing.JToggleButton();
+        zoom_in = new javax.swing.JButton();
+        zoom_out = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         menu = new javax.swing.JMenu();
-        jMenuItem1 = new javax.swing.JMenuItem();
+        info = new javax.swing.JMenuItem();
         exit = new javax.swing.JMenuItem();
+
+        dialog.setCursor(new java.awt.Cursor(java.awt.Cursor.CROSSHAIR_CURSOR));
+
+        javax.swing.GroupLayout dialogLayout = new javax.swing.GroupLayout(dialog.getContentPane());
+        dialog.getContentPane().setLayout(dialogLayout);
+        dialogLayout.setHorizontalGroup(
+            dialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 400, Short.MAX_VALUE)
+        );
+        dialogLayout.setVerticalGroup(
+            dialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 300, Short.MAX_VALUE)
+        );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -107,22 +131,7 @@ public class TiledRouting extends javax.swing.JFrame {
         showInfo.setRows(5);
         jScrollPane2.setViewportView(showInfo);
 
-        showPanel.setRequestFocusEnabled(false);
-
-        showPane.setPreferredSize(new java.awt.Dimension(640, 640));
-
-        javax.swing.GroupLayout showPaneLayout = new javax.swing.GroupLayout(showPane);
-        showPane.setLayout(showPaneLayout);
-        showPaneLayout.setHorizontalGroup(
-            showPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 640, Short.MAX_VALUE)
-        );
-        showPaneLayout.setVerticalGroup(
-            showPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 643, Short.MAX_VALUE)
-        );
-
-        showPanel.setViewportView(showPane);
+        showPane.setRequestFocusEnabled(false);
 
         route.setText("start");
         route.addActionListener(new java.awt.event.ActionListener() {
@@ -174,10 +183,36 @@ public class TiledRouting extends javax.swing.JFrame {
             }
         });
 
+        zoom.setText("zoom");
+        zoom.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                zoomActionPerformed(evt);
+            }
+        });
+
+        zoom_in.setText("zoom in");
+        zoom_in.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                zoom_inActionPerformed(evt);
+            }
+        });
+
+        zoom_out.setText("zoom out");
+        zoom_out.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                zoom_outActionPerformed(evt);
+            }
+        });
+
         menu.setText("Menu");
 
-        jMenuItem1.setText("Info");
-        menu.add(jMenuItem1);
+        info.setText("Info");
+        info.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                infoActionPerformed(evt);
+            }
+        });
+        menu.add(info);
 
         exit.setText("Exit");
         exit.addActionListener(new java.awt.event.ActionListener() {
@@ -198,11 +233,14 @@ public class TiledRouting extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addContainerGap(25, Short.MAX_VALUE)
+                        .addContainerGap()
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 237, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 40, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(show, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(add, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(343, 343, 343))
+                            .addComponent(zoom_in, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(zoom_out, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(zoom))
+                        .addGap(24, 24, 24))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
@@ -217,19 +255,21 @@ public class TiledRouting extends javax.swing.JFrame {
                                 .addComponent(showState, javax.swing.GroupLayout.PREFERRED_SIZE, 213, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(layout.createSequentialGroup()
                                 .addContainerGap()
-                                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 237, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addContainerGap()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                     .addComponent(route, javax.swing.GroupLayout.DEFAULT_SIZE, 65, Short.MAX_VALUE)
                                     .addComponent(stopr, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                 .addGap(26, 26, 26)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(reroute)
-                                    .addComponent(num_field, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                    .addComponent(num_field, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(102, 102, 102)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(show, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(add, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE))))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                .addComponent(showPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 640, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(24, 24, 24))
+                .addComponent(showPane, javax.swing.GroupLayout.PREFERRED_SIZE, 650, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -244,20 +284,30 @@ public class TiledRouting extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(reroute)
                     .addComponent(stopr))
-                .addGap(27, 27, 27)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 203, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(27, 27, 27)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 203, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(zoom)
+                        .addGap(18, 18, 18)
+                        .addComponent(zoom_in)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(zoom_out)
+                        .addGap(69, 69, 69)))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 148, Short.MAX_VALUE)
                     .addComponent(jScrollPane3))
                 .addGap(18, 18, 18)
                 .addComponent(add)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(show)
-                .addContainerGap(14, Short.MAX_VALUE))
-            .addComponent(showPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 662, Short.MAX_VALUE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addComponent(showPane, javax.swing.GroupLayout.DEFAULT_SIZE, 679, Short.MAX_VALUE)
         );
 
         pack();
@@ -268,6 +318,7 @@ public class TiledRouting extends javax.swing.JFrame {
         if(restart)    {
 //            setUp_b();
             tile_graph.find_shortest_path_list();
+            showPanel.setScale(1);
             restart = false;
         }  
         timer.start();
@@ -283,9 +334,9 @@ public class TiledRouting extends javax.swing.JFrame {
         restart = true;
         showNode();
         showCong();
-        showPane.removeAll();
-        showPane.revalidate();
-        showPane.repaint();
+        showPanel.removeAll();
+        showPanel.revalidate();
+        showPanel.repaint();
     }//GEN-LAST:event_rerouteActionPerformed
 
     private void showActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showActionPerformed
@@ -293,9 +344,9 @@ public class TiledRouting extends javax.swing.JFrame {
         tile_graph.find_shortest_path_list();
         showCong();
         showNode();
-        showPane.removeAll();
-        showPane.revalidate();
-        showPane.repaint();
+        showPanel.removeAll();
+        showPanel.revalidate();
+        showPanel.repaint();
     }//GEN-LAST:event_showActionPerformed
 
     private void addActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addActionPerformed
@@ -333,6 +384,43 @@ public class TiledRouting extends javax.swing.JFrame {
         // TODO add your handling code here:
         timer.stop();
     }//GEN-LAST:event_stoprActionPerformed
+
+    private void zoomActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_zoomActionPerformed
+        // TODO add your handling code here:
+        if(zoom.isSelected()){
+           showPanel.setZoomView();
+        }
+        else{
+            showPanel.setScale(1);
+            showPanel.setZoomView();
+        }
+    }//GEN-LAST:event_zoomActionPerformed
+
+    private void zoom_outActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_zoom_outActionPerformed
+        // TODO add your handling code here:
+        showPanel.setScale(0.5);
+        showPanel.setZoomView();
+        showPane.repaint();
+    }//GEN-LAST:event_zoom_outActionPerformed
+
+    private void zoom_inActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_zoom_inActionPerformed
+        // TODO add your handling code here:
+        showPanel.setScale(2);
+        showPanel.setZoomView();
+        showPane.repaint();
+    }//GEN-LAST:event_zoom_inActionPerformed
+
+    private void infoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_infoActionPerformed
+        // TODO add your handling code here:
+        pack();
+        dialog.setSize(new Dimension(500,500));
+        dialog.setLocationRelativeTo(this);
+        JLabel text1 = new JLabel("User Manual");
+        text1.setSize(100,50);
+        dialog.add(text1,BorderLayout.CENTER);
+        dialog.setVisible(true);
+        
+    }//GEN-LAST:event_infoActionPerformed
 
     /**
      * @param args the command line arguments
@@ -645,12 +733,14 @@ public class TiledRouting extends javax.swing.JFrame {
     private int iter;
     private boolean restart = false;
     private final int drawBorder = 640;
+    private DrawTile showPanel;
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton add;
+    private javax.swing.JDialog dialog;
     private javax.swing.JMenuItem exit;
+    private javax.swing.JMenuItem info;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JMenuBar jMenuBar1;
-    private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
@@ -661,10 +751,12 @@ public class TiledRouting extends javax.swing.JFrame {
     private javax.swing.JButton show;
     private javax.swing.JTextArea showDest;
     private javax.swing.JTextArea showInfo;
-    private javax.swing.JPanel showPane;
-    private javax.swing.JScrollPane showPanel;
+    private javax.swing.JScrollPane showPane;
     private javax.swing.JTextArea showSrc;
     private javax.swing.JLabel showState;
     private javax.swing.JButton stopr;
+    private javax.swing.JToggleButton zoom;
+    private javax.swing.JButton zoom_in;
+    private javax.swing.JButton zoom_out;
     // End of variables declaration//GEN-END:variables
 }
