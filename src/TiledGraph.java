@@ -14,9 +14,11 @@ import java.util.Random;
  * @author yangy
  */
 public class TiledGraph {
-    public TiledGraph(int num1, int num2){
+    public TiledGraph(int num1, int num2,int num3,int num4){
         size_g = num1;
         size_w = num2;
+        source_num = num3;
+        sink_num = num4;
         graph = new Tile[size_g][size_g];
         graphList = new ArrayList<Tile<Integer>.Node<Integer>>();
         wireList = new ArrayList<Tile<Integer>.Node<Integer>>();
@@ -29,8 +31,6 @@ public class TiledGraph {
     
     public void initialize(){
         int index = 0;
-        source_num = 3;
-        sink_num = 3;
         for(int i = 0; i < size_g; i++){
             for(int j = 0; j < size_g; j++){
                 graph[i][j] = new Tile<Integer>(source_num,sink_num,size_w,index);

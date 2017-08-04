@@ -1,9 +1,6 @@
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -12,12 +9,8 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.text.DecimalFormat;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
-import javax.swing.SwingConstants;
 import static javax.swing.SwingConstants.CENTER;
 import javax.swing.Timer;
 
@@ -60,9 +53,8 @@ public class TiledRouting extends javax.swing.JFrame {
         }
     });
     
-    public TiledRouting() {
-        
-        tile_graph = new TiledGraph(8,2);
+    public TiledRouting() {      
+        tile_graph = new TiledGraph(16,2,1,1);
         sources_a = new JLabel[tile_graph.getGraphSize()][tile_graph.getGraphSize()];
         sinks_a = new JLabel[tile_graph.getGraphSize()][tile_graph.getGraphSize()];
         wires_a = new JLabel[2 * tile_graph.getGraphSize() * tile_graph.getGraphSize()][2*tile_graph.getWireSize()];                
@@ -71,9 +63,7 @@ public class TiledRouting extends javax.swing.JFrame {
 //        setUp_b();
         initComponents();
         showPanel = new DrawTile(tile_graph,showInfo,sources_a,sinks_a,wires_a);
-        this.add(showPanel);
         showPane.setViewportView(showPanel);
-
         tile_graph.find_shortest_path_list();
         showCong();
     }
@@ -88,6 +78,10 @@ public class TiledRouting extends javax.swing.JFrame {
     private void initComponents() {
 
         dialog = new javax.swing.JDialog();
+        manualPane = new javax.swing.JScrollPane();
+        manual = new javax.swing.JTextArea();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
         showInfo = new javax.swing.JTextArea();
         showState = new javax.swing.JLabel();
@@ -113,15 +107,51 @@ public class TiledRouting extends javax.swing.JFrame {
 
         dialog.setCursor(new java.awt.Cursor(java.awt.Cursor.CROSSHAIR_CURSOR));
 
+        manualPane.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+
+        manual.setEditable(false);
+        manual.setColumns(20);
+        manual.setLineWrap(true);
+        manual.setRows(5);
+        manual.setText("The applet is designed for presenting how PathFinder FPGA routing algorithm works in a simplfied FPGA architecture. ");
+        manual.setWrapStyleWord(true);
+        manualPane.setViewportView(manual);
+
+        jLabel2.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        jLabel2.setText("User Manual");
+
+        jLabel3.setFont(new java.awt.Font("Euphemia", 0, 18)); // NOI18N
+        jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel3.setText("A visulization of the PathFinder FPGA routing Algorithm");
+
         javax.swing.GroupLayout dialogLayout = new javax.swing.GroupLayout(dialog.getContentPane());
         dialog.getContentPane().setLayout(dialogLayout);
         dialogLayout.setHorizontalGroup(
             dialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, dialogLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(manualPane, javax.swing.GroupLayout.PREFERRED_SIZE, 446, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(80, 80, 80))
+            .addGroup(dialogLayout.createSequentialGroup()
+                .addGroup(dialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(dialogLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(dialogLayout.createSequentialGroup()
+                        .addGap(23, 23, 23)
+                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 520, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(45, Short.MAX_VALUE))
         );
         dialogLayout.setVerticalGroup(
             dialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+            .addGroup(dialogLayout.createSequentialGroup()
+                .addGap(16, 16, 16)
+                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(manualPane, javax.swing.GroupLayout.PREFERRED_SIZE, 351, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(57, Short.MAX_VALUE))
         );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -398,28 +428,23 @@ public class TiledRouting extends javax.swing.JFrame {
 
     private void zoom_outActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_zoom_outActionPerformed
         // TODO add your handling code here:
-        showPanel.setScale(0.5);
         showPanel.setZoomView();
-        showPane.repaint();
+        showPanel.setScale(0.5);
     }//GEN-LAST:event_zoom_outActionPerformed
 
     private void zoom_inActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_zoom_inActionPerformed
         // TODO add your handling code here:
-        showPanel.setScale(2);
         showPanel.setZoomView();
-        showPane.repaint();
+        showPanel.setScale(2);
+        
     }//GEN-LAST:event_zoom_inActionPerformed
 
     private void infoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_infoActionPerformed
         // TODO add your handling code here:
         pack();
-        dialog.setSize(new Dimension(500,500));
+        dialog.setSize(new Dimension(600,600));
         dialog.setLocationRelativeTo(this);
-        JLabel text1 = new JLabel("User Manual");
-        text1.setSize(100,50);
-        dialog.add(text1,BorderLayout.CENTER);
         dialog.setVisible(true);
-        
     }//GEN-LAST:event_infoActionPerformed
 
     /**
@@ -456,7 +481,7 @@ public class TiledRouting extends javax.swing.JFrame {
             }
         });
     }
-
+ 
  public void setUp() {
         for (int i = 0; i < tile_graph.getGraphSize(); i++) {
             for (int j = 0; j < tile_graph.getGraphSize(); j++) {       
@@ -740,10 +765,14 @@ public class TiledRouting extends javax.swing.JFrame {
     private javax.swing.JMenuItem exit;
     private javax.swing.JMenuItem info;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JTextArea manual;
+    private javax.swing.JScrollPane manualPane;
     private javax.swing.JMenu menu;
     private javax.swing.JTextField num_field;
     private javax.swing.JButton reroute;

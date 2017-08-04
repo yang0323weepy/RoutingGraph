@@ -54,19 +54,19 @@ public class DrawTileLabel extends JLabel {
         } else {
             int Xpos = 0;
             int Ypos = 0;
-            g.drawRect(Xpos, Ypos, drawBorder / 8, drawBorder / 8);
+            g.drawRect(Xpos, Ypos, drawBorder / 4, drawBorder / 4);
             g.setColor(Color.blue);
-            g.drawRect(drawBorder / 8, Ypos + drawBorder / 8, drawBorder / 8 - 1, drawBorder / 8 - 1);
+            g.drawRect(drawBorder / 4, Ypos + drawBorder / 4, drawBorder / 4 - 1, drawBorder / 4 - 1);
             g.setColor(Color.black);
             Tile<Integer> tile = graph.getGraph()[i][j];
             for(int m = 0; m < graph.getSourceSize(); m++){
-            sources_a[i*graph.getGraphSize()+j][m].setLocation(Xpos + drawBorder / 8 - drawBorder / 25, Ypos + 1 + m *drawBorder/25);
-            sources_a[i*graph.getGraphSize()+j][m].setSize(drawBorder / 25, drawBorder / 25);
+            sources_a[i*graph.getGraphSize()+j][m].setLocation(Xpos + drawBorder / 4 - drawBorder / 16, Ypos + 1 + m *drawBorder/12);
+            sources_a[i*graph.getGraphSize()+j][m].setSize(drawBorder /16, drawBorder / 16);
             add(sources_a[i*graph.getGraphSize()+j][m]);
               }
             for(int m = 0; m < graph.getSourceSize(); m++){
-            sinks_a[i*graph.getGraphSize()+j][m].setLocation(Xpos + 1 , Ypos + drawBorder / 8 - drawBorder / 20 - m *drawBorder/25);
-            sinks_a[i*graph.getGraphSize()+j][m].setSize(drawBorder / 25, drawBorder / 25);
+            sinks_a[i*graph.getGraphSize()+j][m].setLocation(Xpos + 1 , Ypos + drawBorder / 4 - drawBorder / 16 - m *drawBorder/12);
+            sinks_a[i*graph.getGraphSize()+j][m].setSize(drawBorder / 16, drawBorder / 16);
             add(sinks_a[i*graph.getGraphSize()+j][m]);
             }
             int gap_x = 0;
@@ -86,28 +86,18 @@ public class DrawTileLabel extends JLabel {
                 }
                 wires_a[i * graph.getGraphSize() + j][m].setBackground(new Color(rc, gc, bc));
                 if (tile.getWires().get(m).dir == 0) {
-                    wires_a[i * graph.getGraphSize() + j][m].setLocation(gap_x + drawBorder / 8 + 5, 0);
-                    wires_a[i * graph.getGraphSize() + j][m].setSize(drawBorder / 24 / (graph.getWireSize() - 1), drawBorder / 8);
-//                        tile.getWires().get(m).pos_x_s =  gap_x + drawBorder / graph.getGraphSize() / 2 + drawBorder / graph.getGraphSize() / 16;
-//                        tile.getWires().get(m).pos_y_s = 0;
-//                        tile.getWires().get(m).pos_x_e =  gap_x + drawBorder / graph.getGraphSize() / 2 + drawBorder / graph.getGraphSize() / 16;
-//                        tile.getWires().get(m).pos_y_e =  drawBorder / graph.getGraphSize() / 2;
-                    gap_x = gap_x + drawBorder / 16 / (graph.getWireSize() - 1);
+                    wires_a[i * graph.getGraphSize() + j][m].setLocation(gap_x + drawBorder / 4 + 5, 0);
+                    wires_a[i * graph.getGraphSize() + j][m].setSize(drawBorder / 12 / (graph.getWireSize() - 1), drawBorder / 4);
+                    gap_x = gap_x + drawBorder / 8 / (graph.getWireSize() - 1);
                 } else {
-                    wires_a[i * graph.getGraphSize() + j][m].setLocation(0, gap_y + drawBorder / 8 + 5);
-                    wires_a[i * graph.getGraphSize() + j][m].setSize(drawBorder / 8, drawBorder / 24 / (graph.getWireSize() - 1));
-//                        tile.getWires().get(m).pos_x_s = x_pos;
-//                        tile.getWires().get(m).pos_y_s = y_pos + gap_y + drawBorder / graph.getGraphSize() / 2 + drawBorder / graph.getGraphSize() / 16;
-//                        tile.getWires().get(m).pos_x_e = x_pos + drawBorder / graph.getGraphSize() / 2;
-//                        tile.getWires().get(m).pos_y_e = y_pos + gap_y + drawBorder / graph.getGraphSize() / 2 + drawBorder / graph.getGraphSize() / 16;
-                    gap_y = gap_y + drawBorder / 16 / (graph.getWireSize() - 1);
+                    wires_a[i * graph.getGraphSize() + j][m].setLocation(0, gap_y + drawBorder / 4 + 5);
+                    wires_a[i * graph.getGraphSize() + j][m].setSize(drawBorder / 4, drawBorder / 12 / (graph.getWireSize() - 1));
+                    gap_y = gap_y + drawBorder / 8 / (graph.getWireSize() - 1);
                 }
                 add(wires_a[i * graph.getGraphSize() + j][m]);
             }
             changeRedraw();
         }
-//       showInfo.setFont(new Font("Courier", Font.PLAIN, 13));
-//        paintRoute(g);
     }
 
     public void paintRoute(Graphics g) {

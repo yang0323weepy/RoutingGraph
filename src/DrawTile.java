@@ -5,10 +5,8 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Point;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseWheelEvent;
 import java.awt.geom.AffineTransform;
 import java.text.DecimalFormat;
 import static javax.swing.SwingConstants.CENTER;
@@ -27,14 +25,13 @@ public class DrawTile extends JPanel {
     public DrawTile(TiledGraph ex, JTextArea label, JLabel[][] a, JLabel[][] b, JLabel[][] c) {
 //   public DrawTile(TiledGraph ex, JTextArea label) {
         this.graph = ex;
-        this.setSize(640, 640);
+        this.setPreferredSize(new Dimension(640, 640));
         sources_a = new JLabel[graph.getGraphSize() * graph.getGraphSize()][graph.getSourceSize()];
         sinks_a = new JLabel[graph.getGraphSize() * graph.getGraphSize()][graph.getSinkSize()];
         wires_a = new JLabel[graph.getGraphSize() * graph.getGraphSize()][2 * graph.getWireSize()];
         tile_a = new DrawTileLabel[graph.getGraphSize()][graph.getGraphSize()];
         switchbox = new JToggleButton[graph.getGraphSize()][graph.getGraphSize()];
         showInfo = label;
-        transform = new AffineTransform();
         this.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -45,11 +42,17 @@ public class DrawTile extends JPanel {
         setUp();
     }
 
+    @Override
     public void paintComponent(Graphics g) {
-        super.paintComponent(g);
+    super.paintComponent(g);
+       if(zoom_view){
         Graphics2D g2 = (Graphics2D) g;
-        g2.transform(transform);
+        transform = g2.getTransform();
         transform.scale(scale, scale);
+        g2.setTransform(transform);
+        System.out.println("transform");
+        }
+      
         if (!zoom) {
             removeAll();
             for (int i = 0; i < graph.getGraphSize(); i++) {
@@ -69,10 +72,11 @@ public class DrawTile extends JPanel {
             this.add(tile_zoom);
             tile_zoom.setOpaque(true);
             tile_zoom.setLocation(drawBorder / 4, drawBorder / 4);
-            tile_zoom.setSize(drawBorder / 4, drawBorder / 4);
+            tile_zoom.setSize(drawBorder / 2, drawBorder / 2);
             zoom = false;
-        }
+        }     
         setUp();
+//        zoom_view = false;
     }
 
     //draw the route between the nodes
@@ -251,19 +255,6 @@ public class DrawTile extends JPanel {
                     }
                 });
                 add(tile_a[i][j]);
-                //add(sources_a[i][j]);
-                //add(sinks_a[i][j]);               
-//                for (int m = 0; m < tile.getWires().size(); m++) {
-//                    int rc = (int)tile.getWires().get(m).getCost();
-//                    int gc = (int)tile.getWires().get(m).getCost()*10;
-//                    int bc = 255-(int)tile.getWires().get(m).getCost();
-//                    if (rc > 255) rc = 255;
-//                    if (gc > 255) gc = 255;
-//                    if (bc < 0)     bc = 0;
-//                    wires_a[i * graph.getGraphSize() + j][m].setBackground(new Color(rc,gc,bc));
-//                    //add(wires_a[i * graph.getGraphSize() + j][m]);
-//                }
-
             }
         }
         showInfo.setFont(new Font("Courier", Font.PLAIN, 13));
@@ -342,6 +333,13 @@ public class DrawTile extends JPanel {
 
     public void setScale(double num) {
         scale = num;
+        int width = (int) (getWidth() * num);
+        int height = (int) (getHeight() * num);
+        setPreferredSize(new Dimension(width, height));
+        revalidate();
+        repaint();
+        System.out.println("transform1");
+        
     }
 
     public void setZoomView() {
@@ -355,12 +353,10 @@ public class DrawTile extends JPanel {
     private DrawTileLabel[][] tile_a;
     private JTextArea showInfo;
     private JToggleButton[][] switchbox;
-    private AffineTransform transform;
     private double scale = 1;
     private final int drawBorder = 640;
     private boolean zoom = false;
     private boolean zoom_view = false;
     private int need_zoom;
-    private int x_test;
-    private int y_test;
+    private AffineTransform transform;
 }
