@@ -1,17 +1,13 @@
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.text.DecimalFormat;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
-import static javax.swing.SwingConstants.CENTER;
 import javax.swing.Timer;
 
 /*
@@ -53,14 +49,13 @@ public class TiledRouting extends javax.swing.JFrame {
         }
     });
     
-    public TiledRouting() {      
-        tile_graph = new TiledGraph(16,2,1,1);
+    public TiledRouting(int num1,int num2,int num3,int num4) {      
+        tile_graph = new TiledGraph(num1,num2,num3,num4);
         sources_a = new JLabel[tile_graph.getGraphSize()][tile_graph.getGraphSize()];
         sinks_a = new JLabel[tile_graph.getGraphSize()][tile_graph.getGraphSize()];
         wires_a = new JLabel[2 * tile_graph.getGraphSize() * tile_graph.getGraphSize()][2*tile_graph.getWireSize()];                
         tile_graph.initialize();
         iter = 0;
-//        setUp_b();
         initComponents();
         showPanel = new DrawTile(tile_graph,showInfo,sources_a,sinks_a,wires_a);
         showPane.setViewportView(showPanel);
@@ -196,8 +191,9 @@ public class TiledRouting extends javax.swing.JFrame {
         jScrollPane3.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 
         showSrc.setColumns(20);
+        showSrc.setLineWrap(true);
         showSrc.setRows(5);
-        showSrc.setPreferredSize(new java.awt.Dimension(98, 94));
+        showSrc.setWrapStyleWord(true);
         jScrollPane3.setViewportView(showSrc);
 
         jScrollPane1.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
@@ -346,7 +342,6 @@ public class TiledRouting extends javax.swing.JFrame {
 
     private void routeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_routeActionPerformed
         if(restart)    {
-//            setUp_b();
             tile_graph.find_shortest_path_list();
             showPanel.setScale(1);
             restart = false;
@@ -435,8 +430,7 @@ public class TiledRouting extends javax.swing.JFrame {
     private void zoom_inActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_zoom_inActionPerformed
         // TODO add your handling code here:
         showPanel.setZoomView();
-        showPanel.setScale(2);
-        
+        showPanel.setScale(2);  
     }//GEN-LAST:event_zoom_inActionPerformed
 
     private void infoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_infoActionPerformed
@@ -477,249 +471,9 @@ public class TiledRouting extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new TiledRouting().setVisible(true);
+                new TiledRouting(8,2,1,1).setVisible(true);
             }
         });
-    }
- 
- public void setUp() {
-        for (int i = 0; i < tile_graph.getGraphSize(); i++) {
-            for (int j = 0; j < tile_graph.getGraphSize(); j++) {       
-                Tile<Integer> tile = tile_graph.getGraph()[i][j];
-                int x_pos = 2 + i * drawBorder / tile_graph.getGraphSize();
-                int y_pos = 2 + j * drawBorder / tile_graph.getGraphSize();
-                sources_a[i][j] = new JLabel("", CENTER);
-                sources_a[i][j].setText(Integer.toString(tile.getSources().get(0).getKey()));
-                sources_a[i][j].setBackground(Color.green);
-                sources_a[i][j].setOpaque(true);
-                sources_a[i][j].setLocation(x_pos + drawBorder / tile_graph.getGraphSize() / 2 - drawBorder / tile_graph.getGraphSize()/8, y_pos + 1);
-                tile.getSources().get(0).pos_x_e = x_pos + drawBorder / tile_graph.getGraphSize() / 2;
-                tile.getSources().get(0).pos_y_e = y_pos + 1;
-                sources_a[i][j].setSize(drawBorder / tile_graph.getGraphSize() /8, drawBorder / tile_graph.getGraphSize()/8);
-                sources_a[i][j].addMouseListener(new MouseAdapter() {
-                    @Override
-                    public void mouseClicked(MouseEvent e) {
-                        JLabel l = (JLabel) e.getSource();
-                        showInfo.setText("");
-                        String state = "";
-                        int num = Integer.parseInt(l.getText());
-                        state = "source";
-                        String path = "path from";
-                        String cost = "cost ";
-                        int key = 0;
-                        for (int i = 0; i < tile_graph.getSourceList().size(); i++) {
-                            if (tile_graph.getSourceList().get(i).getKey() == num) {
-                                key = i;
-                            }
-                        }
-                        for (int i = 0; i < tile_graph.getSourceList().get(key).paths.size(); i++) {
-                            path = "path from";
-                            cost = "cost";
-                            for (int m = 0; m < tile_graph.getSourceList().get(key).paths.get(i).size(); m++) {
-                                path = path + " " + tile_graph.getSourceList().get(key).paths.get(i).get(m).getKey();
-                            }
-                            DecimalFormat numformat = new DecimalFormat("#.00");
-                            cost = cost + numformat.format(tile_graph.getSourceList().get(key).distance.get(i));
-                            showInfo.append(state + "\n" + path + "\n" + cost + "!" + "\n");
-                        }
-
-                        for (int i = 0; i < tile_graph.getGraphSize(); i++) {
-                            for (int j = 0; j < tile_graph.getGraphSize(); j++) {
-                                for (int k = 0; k < tile_graph.getGraph()[i][j].getSources().size(); k++) {
-                                    Tile<Integer> temp = tile_graph.getGraph()[i][j];
-                                    if (temp.getSources().get(k).getKey() == num) {
-                                        System.out.println("hello drawing");
-
-                                    }
-                                }
-                            }
-                        }
-
-                    }
-                });
-                sinks_a[i][j] = new JLabel("", CENTER);
-                sinks_a[i][j].setText(Integer.toString(tile.getSinks().get(0).getKey()));
-                sinks_a[i][j].setBackground(Color.green);
-                sinks_a[i][j].setOpaque(true);
-                sinks_a[i][j].setLocation(x_pos + 1, y_pos + drawBorder / tile_graph.getGraphSize() / 2 - drawBorder / tile_graph.getGraphSize() /8);
-                tile.getSinks().get(0).pos_x_e = x_pos;
-                tile.getSinks().get(0).pos_y_e = y_pos + drawBorder / tile_graph.getGraphSize() / 2;
-                sinks_a[i][j].setSize(drawBorder/ tile_graph.getGraphSize() /8, drawBorder / tile_graph.getGraphSize() /8);
-                int gap_x = 0;
-                int gap_y = 0;
-                for (int m = 0; m < tile.getWires().size(); m++) {
-                    wires_a[i * tile_graph.getGraphSize() + j][m] = new JLabel("", CENTER);
-                    wires_a[i * tile_graph.getGraphSize() + j][m].setText(Integer.toString(tile.getWires().get(m).getKey()));
-                    int rc = (int)tile.getWires().get(m).getCost();
-                    int gc = (int)tile.getWires().get(m).getCost()*10;
-                    int bc = 255-(int)tile.getWires().get(m).getCost();
-                    if (rc > 255) rc = 255;
-                    if (gc > 255) gc = 255;
-                    if (bc < 0)     bc = 0;
-                    wires_a[i * tile_graph.getGraphSize() + j][m].setBackground(new Color(rc,gc,bc));
-                    wires_a[i * tile_graph.getGraphSize() + j][m].setOpaque(true);
-                    wires_a[i * tile_graph.getGraphSize() + j][m].addMouseListener(new MouseAdapter() {
-                        @Override
-                        public void mouseClicked(MouseEvent e) {
-                            JLabel l = (JLabel) e.getSource();
-                            String state = "";
-                            state = "wire";
-                            int num = Integer.parseInt(l.getText());
-                            int key = 0;
-                            for (int i = 0; i < tile_graph.getWireList().size(); i++) {
-                                if (tile_graph.getWireList().get(i).getKey() == num) {
-                                    key = i;
-                                }
-                            }
-                            double history_get = tile_graph.getWireList().get(key).getHistory();
-                            int history = 0;
-                            if (history_get != 0) {
-                                history = (int) (Math.log(tile_graph.getWireList().get(key).getHistory()) / Math.log(1.1));
-                            }
-                            DecimalFormat numformat = new DecimalFormat("#.00");
-                            showInfo.setText(state + " " + num + "\n" + "congestion history" + history + "\n" + "congestion" + tile_graph.getWireList().get(key).getOther() + "\n" + "cost" +numformat.format(tile_graph.getWireList().get(key).getCost())  + "");
-                        }
-                    });
-                    if (tile.getWires().get(m).dir == 0) {
-                        wires_a[i * tile_graph.getGraphSize() + j][m].setLocation(x_pos + gap_x + drawBorder / tile_graph.getGraphSize() / 2 + drawBorder / tile_graph.getGraphSize() / 16, y_pos);
-                        wires_a[i * tile_graph.getGraphSize() + j][m].setSize(drawBorder / tile_graph.getGraphSize() / 8/(tile_graph.getWireSize()-1), drawBorder / tile_graph.getGraphSize() / 2);
-                        tile.getWires().get(m).pos_x_s = x_pos + gap_x + drawBorder / tile_graph.getGraphSize() / 2 + drawBorder / tile_graph.getGraphSize() / 16;
-                        tile.getWires().get(m).pos_y_s = y_pos;
-                        tile.getWires().get(m).pos_x_e = x_pos + gap_x + drawBorder / tile_graph.getGraphSize() / 2 + drawBorder / tile_graph.getGraphSize() / 16;
-                        tile.getWires().get(m).pos_y_e = y_pos + drawBorder / tile_graph.getGraphSize() / 2;
-                        gap_x = gap_x + drawBorder / tile_graph.getGraphSize() / 4/(tile_graph.getWireSize()-1);
-                    } else {
-                        wires_a[i * tile_graph.getGraphSize() + j][m].setLocation(x_pos, y_pos + gap_y + drawBorder / tile_graph.getGraphSize() / 2 + drawBorder / tile_graph.getGraphSize() / 16);
-                        wires_a[i * tile_graph.getGraphSize() + j][m].setSize(drawBorder / tile_graph.getGraphSize() / 2, drawBorder / tile_graph.getGraphSize() / 8/(tile_graph.getWireSize()-1));
-                        tile.getWires().get(m).pos_x_s = x_pos;
-                        tile.getWires().get(m).pos_y_s = y_pos + gap_y + drawBorder / tile_graph.getGraphSize() / 2 + drawBorder / tile_graph.getGraphSize() / 16;
-                        tile.getWires().get(m).pos_x_e = x_pos + drawBorder / tile_graph.getGraphSize() / 2;
-                        tile.getWires().get(m).pos_y_e = y_pos + gap_y + drawBorder /tile_graph.getGraphSize() / 2 + drawBorder / tile_graph.getGraphSize() / 16;
-                        gap_y = gap_y + drawBorder / tile_graph.getGraphSize() / 4/(tile_graph.getWireSize()-1);
-                    }
-                }
-            }
-        }
-    }
- 
- public void setUp_b() {
-        for (int i = 0; i < tile_graph.getGraphSize(); i++) {
-            for (int j = 0; j < tile_graph.getGraphSize(); j++) {       
-                Tile<Integer> tile = tile_graph.getGraph()[i][j];
-                int x_pos =  i * drawBorder / tile_graph.getGraphSize();
-                int y_pos =  j * drawBorder / tile_graph.getGraphSize();
-                sources_a[i][j] = new JLabel("", CENTER);
-                sources_a[i][j].setText(Integer.toString(tile.getSources().get(0).getKey()));
-                sources_a[i][j].setBackground(Color.green);
-                sources_a[i][j].setOpaque(true);
-                sources_a[i][j].setLocation( drawBorder / tile_graph.getGraphSize() / 2 - drawBorder / tile_graph.getGraphSize()/8,  1);
-                tile.getSources().get(0).pos_x_e = x_pos + drawBorder / tile_graph.getGraphSize() / 2;
-                tile.getSources().get(0).pos_y_e = y_pos + 1;
-                sources_a[i][j].setSize(drawBorder / tile_graph.getGraphSize() /8, drawBorder / tile_graph.getGraphSize()/8);
-                sources_a[i][j].addMouseListener(new MouseAdapter() {
-                    @Override
-                    public void mouseClicked(MouseEvent e) {
-                        JLabel l = (JLabel) e.getSource();
-                        showInfo.setText("");
-                        String state = "";
-                        int num = Integer.parseInt(l.getText());
-                        state = "source";
-                        String path = "path from";
-                        String cost = "cost ";
-                        int key = 0;
-                        for (int i = 0; i < tile_graph.getSourceList().size(); i++) {
-                            if (tile_graph.getSourceList().get(i).getKey() == num) {
-                                key = i;
-                            }
-                        }
-                        for (int i = 0; i < tile_graph.getSourceList().get(key).paths.size(); i++) {
-                            path = "path from";
-                            cost = "cost";
-                            for (int m = 0; m < tile_graph.getSourceList().get(key).paths.get(i).size(); m++) {
-                                path = path + " " + tile_graph.getSourceList().get(key).paths.get(i).get(m).getKey();
-                            }
-                            DecimalFormat numformat = new DecimalFormat("#.00");
-                            cost = cost + numformat.format(tile_graph.getSourceList().get(key).distance.get(i));
-                            showInfo.append(state + "\n" + path + "\n" + cost + "!" + "\n");
-                        }
-
-                        for (int i = 0; i < tile_graph.getGraphSize(); i++) {
-                            for (int j = 0; j < tile_graph.getGraphSize(); j++) {
-                                for (int k = 0; k < tile_graph.getGraph()[i][j].getSources().size(); k++) {
-                                    Tile<Integer> temp = tile_graph.getGraph()[i][j];
-                                    if (temp.getSources().get(k).getKey() == num) {
-                                        System.out.println("hello drawing");
-
-                                    }
-                                }
-                            }
-                        }
-
-                    }
-                });
-                sinks_a[i][j] = new JLabel("", CENTER);
-                sinks_a[i][j].setText(Integer.toString(tile.getSinks().get(0).getKey()));
-                sinks_a[i][j].setBackground(Color.green);
-                sinks_a[i][j].setOpaque(true);
-                sinks_a[i][j].setLocation( 1,  drawBorder / tile_graph.getGraphSize() / 2 - drawBorder / tile_graph.getGraphSize() /8);
-                tile.getSinks().get(0).pos_x_e = x_pos;
-                tile.getSinks().get(0).pos_y_e = y_pos + drawBorder / tile_graph.getGraphSize() / 2;
-                sinks_a[i][j].setSize(drawBorder/ tile_graph.getGraphSize() /8, drawBorder / tile_graph.getGraphSize() /8);
-                int gap_x = 0;
-                int gap_y = 0;
-                for (int m = 0; m < tile.getWires().size(); m++) {
-                    wires_a[i * tile_graph.getGraphSize() + j][m] = new JLabel("", CENTER);
-                    wires_a[i * tile_graph.getGraphSize() + j][m].setText(Integer.toString(tile.getWires().get(m).getKey()));
-                    int rc = (int)tile.getWires().get(m).getCost();
-                    int gc = (int)tile.getWires().get(m).getCost()*10;
-                    int bc = 255-(int)tile.getWires().get(m).getCost();
-                    if (rc > 255) rc = 255;
-                    if (gc > 255) gc = 255;
-                    if (bc < 0)     bc = 0;
-                    wires_a[i * tile_graph.getGraphSize() + j][m].setBackground(new Color(rc,gc,bc));
-                    wires_a[i * tile_graph.getGraphSize() + j][m].setOpaque(true);
-                    wires_a[i * tile_graph.getGraphSize() + j][m].addMouseListener(new MouseAdapter() {
-                        @Override
-                        public void mouseClicked(MouseEvent e) {
-                            JLabel l = (JLabel) e.getSource();
-                            String state = "";
-                            state = "wire";
-                            int num = Integer.parseInt(l.getText());
-                            int key = 0;
-                            for (int i = 0; i < tile_graph.getWireList().size(); i++) {
-                                if (tile_graph.getWireList().get(i).getKey() == num) {
-                                    key = i;
-                                }
-                            }
-                            double history_get = tile_graph.getWireList().get(key).getHistory();
-                            int history = 0;
-                            if (history_get != 0) {
-                                history = (int) (Math.log(tile_graph.getWireList().get(key).getHistory()) / Math.log(1.1));
-                            }
-                            DecimalFormat numformat = new DecimalFormat("#.00");
-                            showInfo.setText(state + " " + num + "\n" + "congestion history" + history + "\n" + "congestion" + tile_graph.getWireList().get(key).getOther() + "\n" + "cost" +numformat.format(tile_graph.getWireList().get(key).getCost())  + "");
-                        }
-                    });
-                    if (tile.getWires().get(m).dir == 0) {
-                        wires_a[i * tile_graph.getGraphSize() + j][m].setLocation( gap_x + drawBorder / tile_graph.getGraphSize() / 2 + drawBorder / tile_graph.getGraphSize() / 16, 0);
-                        wires_a[i * tile_graph.getGraphSize() + j][m].setSize(drawBorder / tile_graph.getGraphSize() / 8/(tile_graph.getWireSize()-1), drawBorder / tile_graph.getGraphSize() / 2);
-                        tile.getWires().get(m).pos_x_s = x_pos + gap_x + drawBorder / tile_graph.getGraphSize() / 2 + drawBorder / tile_graph.getGraphSize() / 16;
-                        tile.getWires().get(m).pos_y_s = y_pos;
-                        tile.getWires().get(m).pos_x_e = x_pos + gap_x + drawBorder / tile_graph.getGraphSize() / 2 + drawBorder / tile_graph.getGraphSize() / 16;
-                        tile.getWires().get(m).pos_y_e = y_pos + drawBorder / tile_graph.getGraphSize() / 2;
-                        gap_x = gap_x + drawBorder / tile_graph.getGraphSize() / 4/(tile_graph.getWireSize()-1);
-                    } else {
-                        wires_a[i * tile_graph.getGraphSize() + j][m].setLocation(0,  gap_y + drawBorder / tile_graph.getGraphSize() / 2 + drawBorder / tile_graph.getGraphSize() / 16);
-                        wires_a[i * tile_graph.getGraphSize() + j][m].setSize(drawBorder / tile_graph.getGraphSize() / 2, drawBorder / tile_graph.getGraphSize() / 8/(tile_graph.getWireSize()-1));
-                        tile.getWires().get(m).pos_x_s = x_pos;
-                        tile.getWires().get(m).pos_y_s = y_pos + gap_y + drawBorder / tile_graph.getGraphSize() / 2 + drawBorder / tile_graph.getGraphSize() / 16;
-                        tile.getWires().get(m).pos_x_e = x_pos + drawBorder / tile_graph.getGraphSize() / 2;
-                        tile.getWires().get(m).pos_y_e = y_pos + gap_y + drawBorder /tile_graph.getGraphSize() / 2 + drawBorder / tile_graph.getGraphSize() / 16;
-                        gap_y = gap_y + drawBorder / tile_graph.getGraphSize() / 4/(tile_graph.getWireSize()-1);
-                    }
-                }
-            }
-        }
     }
     
  public boolean showCong() {

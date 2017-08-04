@@ -23,7 +23,6 @@ import static javax.swing.SwingConstants.CENTER;
 public class DrawTile extends JPanel {
 
     public DrawTile(TiledGraph ex, JTextArea label, JLabel[][] a, JLabel[][] b, JLabel[][] c) {
-//   public DrawTile(TiledGraph ex, JTextArea label) {
         this.graph = ex;
         this.setPreferredSize(new Dimension(640, 640));
         sources_a = new JLabel[graph.getGraphSize() * graph.getGraphSize()][graph.getSourceSize()];
@@ -52,7 +51,6 @@ public class DrawTile extends JPanel {
         g2.setTransform(transform);
         System.out.println("transform");
         }
-      
         if (!zoom) {
             removeAll();
             for (int i = 0; i < graph.getGraphSize(); i++) {
@@ -76,7 +74,6 @@ public class DrawTile extends JPanel {
             zoom = false;
         }     
         setUp();
-//        zoom_view = false;
     }
 
     //draw the route between the nodes
@@ -109,7 +106,7 @@ public class DrawTile extends JPanel {
                     sources_a[i * graph.getGraphSize() + j][m].setOpaque(true);
                     sources_a[i * graph.getGraphSize() + j][m].setLocation(drawBorder / graph.getGraphSize() / 2 - drawBorder / graph.getGraphSize() / 8, 1 + m * drawBorder / graph.getGraphSize() / 8);
                     tile.getSources().get(m).pos_x_e = x_pos + drawBorder / graph.getGraphSize() / 2;
-                    tile.getSources().get(m).pos_y_e = y_pos + 1 + drawBorder / graph.getGraphSize() / 8;
+                    tile.getSources().get(m).pos_y_e = y_pos + 1 + drawBorder / graph.getGraphSize() / 8 +  m * drawBorder / graph.getGraphSize() / 8;
                     sources_a[i * graph.getGraphSize() + j][m].setSize(drawBorder / graph.getGraphSize() / 8, drawBorder / graph.getGraphSize() / 8);
                     sources_a[i * graph.getGraphSize() + j][m].addMouseListener(new MouseAdapter() {
                         @Override
@@ -160,7 +157,7 @@ public class DrawTile extends JPanel {
                     sinks_a[i * graph.getGraphSize() + j][m].setBackground(Color.green);
                     sinks_a[i * graph.getGraphSize() + j][m].setOpaque(true);
                     sinks_a[i * graph.getGraphSize() + j][m].setLocation(1, drawBorder / graph.getGraphSize() / 2 - drawBorder / graph.getGraphSize() / 8 - m * drawBorder / graph.getGraphSize() / 8);
-                    tile.getSinks().get(m).pos_x_e = x_pos;
+                    tile.getSinks().get(m).pos_x_e = x_pos + m * drawBorder / graph.getGraphSize() / 8;
                     tile.getSinks().get(m).pos_y_e = y_pos + drawBorder / graph.getGraphSize() / 2;
                     sinks_a[i * graph.getGraphSize() + j][m].setSize(drawBorder / graph.getGraphSize() / 8, drawBorder / graph.getGraphSize() / 8);
                 }
@@ -245,13 +242,6 @@ public class DrawTile extends JPanel {
                             zoom = true;
                             repaint();
                         }
-//else {
-//                            x_test = e.getX();
-//                            y_test = e.getY();
-//                            System.out.println("repainttttttt" + x_test + " " + y_test);
-//                            repaint();
-//
-//                        }
                     }
                 });
                 add(tile_a[i][j]);
@@ -280,55 +270,57 @@ public class DrawTile extends JPanel {
     }
 
     public void drawRoute(Graphics g, Tile<Integer> temp, int i, int j) {
-        for (int k = 0; k < temp.getSources().get(0).paths.size(); k++) {
+      for(int a = 0; a < temp.getSources().size(); a++){
+        for (int k = 0; k < temp.getSources().get(a).paths.size(); k++) {
             int prev_x = 0;
             int prev_y = 0;
             int prev_key = 0;
-            for (int m = 0; m < temp.getSources().get(0).paths.get(k).size(); m++) {
+            for (int m = 0; m < temp.getSources().get(a).paths.get(k).size(); m++) {
                 if (m == 0) {
-                    prev_x = temp.getSources().get(0).paths.get(k).get(m).pos_x_e;
-                    prev_y = temp.getSources().get(0).paths.get(k).get(m).pos_y_e;
+                    prev_x = temp.getSources().get(a).paths.get(k).get(m).pos_x_e;
+                    prev_y = temp.getSources().get(a).paths.get(k).get(m).pos_y_e;
                 } else if (m == 1) {
-                    g.drawLine(prev_x, prev_y, temp.getSources().get(0).paths.get(k).get(m).pos_x_e, prev_y);
-                    prev_key = temp.getSources().get(0).paths.get(k).get(m).getKey();
-                    prev_x = temp.getSources().get(0).paths.get(k).get(m).pos_x_e;
-                    prev_y = temp.getSources().get(0).paths.get(k).get(m).pos_y_e;
-                } else if (m != 0 && m == temp.getSources().get(0).paths.get(k).size() - 1) {
-                    g.drawLine(temp.getSources().get(0).paths.get(k).get(m).pos_x_e, graph.getGraphList().get(prev_key).pos_y_s, temp.getSources().get(0).paths.get(k).get(m).pos_x_e, temp.getSources().get(0).paths.get(k).get(m).pos_y_e);
+                    g.drawLine(prev_x, prev_y, temp.getSources().get(a).paths.get(k).get(m).pos_x_e, prev_y);
+                    prev_key = temp.getSources().get(a).paths.get(k).get(m).getKey();
+                    prev_x = temp.getSources().get(a).paths.get(k).get(m).pos_x_e;
+                    prev_y = temp.getSources().get(a).paths.get(k).get(m).pos_y_e;
+                } else if (m != 0 && m == temp.getSources().get(a).paths.get(k).size() - 1) {
+                    g.drawLine(temp.getSources().get(a).paths.get(k).get(m).pos_x_e, graph.getGraphList().get(prev_key).pos_y_s, temp.getSources().get(a).paths.get(k).get(m).pos_x_e, temp.getSources().get(a).paths.get(k).get(m).pos_y_e);
                 } else {
-                    if (temp.getSources().get(0).paths.get(k).get(m).dir == graph.getGraphList().get(prev_key).dir) {
-                        if (prev_key > temp.getSources().get(0).paths.get(k).get(m).getKey()) {
-                            g.drawLine(graph.getGraphList().get(prev_key).pos_x_s, graph.getGraphList().get(prev_key).pos_y_s, temp.getSources().get(0).paths.get(k).get(m).pos_x_e, temp.getSources().get(0).paths.get(k).get(m).pos_y_e);
+                    if (temp.getSources().get(a).paths.get(k).get(m).dir == graph.getGraphList().get(prev_key).dir) {
+                        if (prev_key > temp.getSources().get(a).paths.get(k).get(m).getKey()) {
+                            g.drawLine(graph.getGraphList().get(prev_key).pos_x_s, graph.getGraphList().get(prev_key).pos_y_s, temp.getSources().get(a).paths.get(k).get(m).pos_x_e, temp.getSources().get(a).paths.get(k).get(m).pos_y_e);
                         } else {
-                            g.drawLine(graph.getGraphList().get(prev_key).pos_x_e, graph.getGraphList().get(prev_key).pos_y_e, temp.getSources().get(0).paths.get(k).get(m).pos_x_s, temp.getSources().get(0).paths.get(k).get(m).pos_y_s);
+                            g.drawLine(graph.getGraphList().get(prev_key).pos_x_e, graph.getGraphList().get(prev_key).pos_y_e, temp.getSources().get(a).paths.get(k).get(m).pos_x_s, temp.getSources().get(a).paths.get(k).get(m).pos_y_s);
                         }
                     } else {
-                        if (graph.getGraphList().get(prev_key).getTile().equals(temp.getSources().get(0).paths.get(k).get(m).getTile())) {
-                            g.drawLine(graph.getGraphList().get(prev_key).pos_x_e, graph.getGraphList().get(prev_key).pos_y_e, temp.getSources().get(0).paths.get(k).get(m).pos_x_e, temp.getSources().get(0).paths.get(k).get(m).pos_y_e);
+                        if (graph.getGraphList().get(prev_key).getTile().equals(temp.getSources().get(a).paths.get(k).get(m).getTile())) {
+                            g.drawLine(graph.getGraphList().get(prev_key).pos_x_e, graph.getGraphList().get(prev_key).pos_y_e, temp.getSources().get(a).paths.get(k).get(m).pos_x_e, temp.getSources().get(a).paths.get(k).get(m).pos_y_e);
                         } else {
-                            if (temp.getSources().get(0).paths.get(k).get(m).dir == 0) {
-                                if (prev_key < temp.getSources().get(0).paths.get(k).get(m).getKey()) {
-                                    g.drawLine(graph.getGraphList().get(prev_key).pos_x_e, graph.getGraphList().get(prev_key).pos_y_e, temp.getSources().get(0).paths.get(k).get(m).pos_x_s, temp.getSources().get(0).paths.get(k).get(m).pos_y_s);
+                            if (temp.getSources().get(a).paths.get(k).get(m).dir == 0) {
+                                if (prev_key < temp.getSources().get(a).paths.get(k).get(m).getKey()) {
+                                    g.drawLine(graph.getGraphList().get(prev_key).pos_x_e, graph.getGraphList().get(prev_key).pos_y_e, temp.getSources().get(a).paths.get(k).get(m).pos_x_s, temp.getSources().get(a).paths.get(k).get(m).pos_y_s);
                                 } else if (testDir(i, j, prev_key, 0)) {
-                                    g.drawLine(graph.getGraphList().get(prev_key).pos_x_s, graph.getGraphList().get(prev_key).pos_y_s, temp.getSources().get(0).paths.get(k).get(m).pos_x_s, temp.getSources().get(0).paths.get(k).get(m).pos_y_s);
+                                    g.drawLine(graph.getGraphList().get(prev_key).pos_x_s, graph.getGraphList().get(prev_key).pos_y_s, temp.getSources().get(a).paths.get(k).get(m).pos_x_s, temp.getSources().get(a).paths.get(k).get(m).pos_y_s);
                                 } else {
-                                    g.drawLine(graph.getGraphList().get(prev_key).pos_x_s, graph.getGraphList().get(prev_key).pos_y_s, temp.getSources().get(0).paths.get(k).get(m).pos_x_e, temp.getSources().get(0).paths.get(k).get(m).pos_y_e);
+                                    g.drawLine(graph.getGraphList().get(prev_key).pos_x_s, graph.getGraphList().get(prev_key).pos_y_s, temp.getSources().get(a).paths.get(k).get(m).pos_x_e, temp.getSources().get(a).paths.get(k).get(m).pos_y_e);
                                 }
                             } else {
-                                if (prev_key > temp.getSources().get(0).paths.get(k).get(m).getKey()) {
-                                    g.drawLine(graph.getGraphList().get(prev_key).pos_x_s, graph.getGraphList().get(prev_key).pos_y_s, temp.getSources().get(0).paths.get(k).get(m).pos_x_e, temp.getSources().get(0).paths.get(k).get(m).pos_y_e);
+                                if (prev_key > temp.getSources().get(a).paths.get(k).get(m).getKey()) {
+                                    g.drawLine(graph.getGraphList().get(prev_key).pos_x_s, graph.getGraphList().get(prev_key).pos_y_s, temp.getSources().get(a).paths.get(k).get(m).pos_x_e, temp.getSources().get(a).paths.get(k).get(m).pos_y_e);
                                 } else if (testDir(i, j, prev_key, 1)) {
-                                    g.drawLine(graph.getGraphList().get(prev_key).pos_x_s, graph.getGraphList().get(prev_key).pos_y_s, temp.getSources().get(0).paths.get(k).get(m).pos_x_s, temp.getSources().get(0).paths.get(k).get(m).pos_y_s);
+                                    g.drawLine(graph.getGraphList().get(prev_key).pos_x_s, graph.getGraphList().get(prev_key).pos_y_s, temp.getSources().get(a).paths.get(k).get(m).pos_x_s, temp.getSources().get(a).paths.get(k).get(m).pos_y_s);
                                 } else {
-                                    g.drawLine(graph.getGraphList().get(prev_key).pos_x_e, graph.getGraphList().get(prev_key).pos_y_e, temp.getSources().get(0).paths.get(k).get(m).pos_x_s, temp.getSources().get(0).paths.get(k).get(m).pos_y_s);
+                                    g.drawLine(graph.getGraphList().get(prev_key).pos_x_e, graph.getGraphList().get(prev_key).pos_y_e, temp.getSources().get(a).paths.get(k).get(m).pos_x_s, temp.getSources().get(a).paths.get(k).get(m).pos_y_s);
                                 }
                             }
                         }
                     }
-                    prev_key = temp.getSources().get(0).paths.get(k).get(m).getKey();
+                    prev_key = temp.getSources().get(a).paths.get(k).get(m).getKey();
                 }
             }
         }
+      }
     }
 
     public void setScale(double num) {
