@@ -15,7 +15,6 @@ import javax.swing.Timer;
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 /**
  *
  * @author yangy
@@ -25,40 +24,44 @@ public class TiledRouting extends javax.swing.JFrame {
     /**
      * Creates new form TiledRouting
      */
+    //instantiate a timer to run pathfinder algorithm automatically in the program
     int run_num = 0;
     Timer timer = new Timer(400, new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent evt) {
             //...Perform a task...
-            if(run_num < Integer.parseInt(num_field.getText())) {
+            if (run_num < Integer.parseInt(num_field.getText())) {
                 run_num++;
                 System.out.println("===============================");
                 showInfo.setText("");
                 tile_graph.runIteration();
                 showNode();
-                if(showCong()) run_num = Integer.parseInt(num_field.getText());
+                if (showCong()) {
+                    run_num = Integer.parseInt(num_field.getText());
+                }
                 showPanel.removeAll();
                 showPanel.revalidate();
                 showPanel.repaint();
-            }
-            else{
+            } else {
                 Timer tim = (Timer) evt.getSource();
                 tim.stop();
                 run_num = 0;
             }
         }
     });
-    
-    public TiledRouting(int num1,int num2,int num3,int num4) {      
-        tile_graph = new TiledGraph(num1,num2,num3,num4);
+    //constructor of tiled routing class   
+
+    public TiledRouting(int num1, int num2, int num3, int num4) {
+        tile_graph = new TiledGraph(num1, num2, num3, num4);
         sources_a = new JLabel[tile_graph.getGraphSize()][tile_graph.getGraphSize()];
         sinks_a = new JLabel[tile_graph.getGraphSize()][tile_graph.getGraphSize()];
-        wires_a = new JLabel[2 * tile_graph.getGraphSize() * tile_graph.getGraphSize()][2*tile_graph.getWireSize()];                
+        wires_a = new JLabel[2 * tile_graph.getGraphSize() * tile_graph.getGraphSize()][2 * tile_graph.getWireSize()];
         tile_graph.initialize();
         iter = 0;
         initComponents();
-        showPanel = new DrawTile(tile_graph,showInfo,sources_a,sinks_a,wires_a);
+        showPanel = new DrawTile(tile_graph, showInfo);
         showPane.setViewportView(showPanel);
+        System.out.println("5");
         tile_graph.find_shortest_path_list();
         showCong();
     }
@@ -340,17 +343,17 @@ public class TiledRouting extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
+    //if "start" button is pressed 
     private void routeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_routeActionPerformed
-        if(restart)    {
+        if (restart) {
             tile_graph.find_shortest_path_list();
             showPanel.setScale(1);
             restart = false;
-        }  
+        }
         timer.start();
     }//GEN-LAST:event_routeActionPerformed
 
     private void rerouteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rerouteActionPerformed
-        // TODO add your handling code here:
         showInfo.setText("");
         showSrc.setText("");
         showDest.setText("");
@@ -365,7 +368,6 @@ public class TiledRouting extends javax.swing.JFrame {
     }//GEN-LAST:event_rerouteActionPerformed
 
     private void showActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showActionPerformed
-        // TODO add your handling code here:
         tile_graph.find_shortest_path_list();
         showCong();
         showNode();
@@ -374,8 +376,8 @@ public class TiledRouting extends javax.swing.JFrame {
         showPanel.repaint();
     }//GEN-LAST:event_showActionPerformed
 
+    //read source-destination pairs from input file and show in the text area
     private void addActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addActionPerformed
-        // TODO add your handling code here:
         showSrc.setText("");
         showDest.setText("");
         JFileChooser chooser = new JFileChooser();
@@ -386,12 +388,12 @@ public class TiledRouting extends javax.swing.JFrame {
             BufferedReader reader = new BufferedReader(new FileReader(filename));
             String line;
             while ((line = reader.readLine()) != null) {
-              String[] temp = line.split(",");
-            for(int i = 1; i <temp.length;i++){
-                showSrc.append(temp[0]+"\n");
-                showDest.append(temp[i]+"\n");
-                tile_graph.addNet(Integer.parseInt(temp[0]),Integer.parseInt(temp[i]));
-              }
+                String[] temp = line.split(",");
+                for (int i = 1; i < temp.length; i++) {
+                    showSrc.append(temp[0] + "\n");
+                    showDest.append(temp[i] + "\n");
+                    tile_graph.addNet(Integer.parseInt(temp[0]), Integer.parseInt(temp[i]));
+                }
             }
             reader.close();
         } catch (Exception e) {
@@ -399,23 +401,19 @@ public class TiledRouting extends javax.swing.JFrame {
             e.printStackTrace();
         }
     }//GEN-LAST:event_addActionPerformed
-
+//leave the program by selecting exit choice
     private void exitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitActionPerformed
-        // TODO add your handling code here:
         System.exit(0);
     }//GEN-LAST:event_exitActionPerformed
-
+//stop automatic run of program
     private void stoprActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_stoprActionPerformed
-        // TODO add your handling code here:
         timer.stop();
     }//GEN-LAST:event_stoprActionPerformed
 
     private void zoomActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_zoomActionPerformed
-        // TODO add your handling code here:
-        if(zoom.isSelected()){
-           showPanel.setZoomView();
-        }
-        else{
+        if (zoom.isSelected()) {
+            showPanel.setZoomView();
+        } else {
             showPanel.setScale(1);
             showPanel.setZoomView();
         }
@@ -430,13 +428,12 @@ public class TiledRouting extends javax.swing.JFrame {
     private void zoom_inActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_zoom_inActionPerformed
         // TODO add your handling code here:
         showPanel.setZoomView();
-        showPanel.setScale(2);  
+        showPanel.setScale(2);
     }//GEN-LAST:event_zoom_inActionPerformed
-
+//check user manual by selecting "info" choice
     private void infoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_infoActionPerformed
-        // TODO add your handling code here:
         pack();
-        dialog.setSize(new Dimension(600,600));
+        dialog.setSize(new Dimension(600, 600));
         dialog.setLocationRelativeTo(this);
         dialog.setVisible(true);
     }//GEN-LAST:event_infoActionPerformed
@@ -471,12 +468,13 @@ public class TiledRouting extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new TiledRouting(8,2,1,1).setVisible(true);
+                new TiledRouting(8, 2, 1, 1).setVisible(true);
             }
         });
     }
-    
- public boolean showCong() {
+//test whether there is still duplicate usage of wire nodes and show state on the panel  
+
+    public boolean showCong() {
         if (!tile_graph.testCong()) {
             iter++;
             showState.setText("STILL CONGESTED");
@@ -488,22 +486,22 @@ public class TiledRouting extends javax.swing.JFrame {
             return true;
         }
     }
-    
- public void showNode(){
+//when running the algorithm automatically, show the lists of congestion wire nodes after each iteration on the panel    
+
+    public void showNode() {
         showInfo.setText("");
-        for(int i = 0; i < tile_graph.getGraphSize(); i++){
-            for(int j = 0; j < tile_graph.getGraphSize(); j++){
+        for (int i = 0; i < tile_graph.getGraphSize(); i++) {
+            for (int j = 0; j < tile_graph.getGraphSize(); j++) {
                 Tile<Integer> temp = tile_graph.getGraph()[i][j];
-                for(int k = 0; k < temp.getWires().size();k++){
-                    if(temp.getWires().get(k).getOther() > 2){
+                for (int k = 0; k < temp.getWires().size(); k++) {
+                    if (temp.getWires().get(k).getOther() > 2) {
                         DecimalFormat numformat = new DecimalFormat("#.00");
-                        showInfo.append("show node: " +temp.getWires().get(k).getKey() + "\n" +"show cost: " + numformat.format(temp.getWires().get(k).getCost()) +"\n"+ "congestion" + temp.getWires().get(k).getOther()+"\n");
+                        showInfo.append("show node: " + temp.getWires().get(k).getKey() + "\n" + "show cost: " + numformat.format(temp.getWires().get(k).getCost()) + "\n" + "congestion" + temp.getWires().get(k).getOther() + "\n");
                     }
                 }
             }
         }
     }
-
 
     TiledGraph tile_graph;
     private JLabel sources_a[][];
@@ -511,7 +509,6 @@ public class TiledRouting extends javax.swing.JFrame {
     private JLabel wires_a[][];
     private int iter;
     private boolean restart = false;
-    private final int drawBorder = 640;
     private DrawTile showPanel;
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton add;

@@ -118,6 +118,7 @@ public class StartWindow extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
+    //when start button is clicked, the main window will show up a tiled graph with the constraint we input 
     private void startActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startActionPerformed
         // TODO add your handling code here:
         this.setVisible(false);

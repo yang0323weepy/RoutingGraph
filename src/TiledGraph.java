@@ -14,6 +14,8 @@ import java.util.Random;
  * @author yangy
  */
 public class TiledGraph {
+
+//constructor of tiles graph
     public TiledGraph(int num1, int num2,int num3,int num4){
         size_g = num1;
         size_w = num2;
@@ -28,7 +30,7 @@ public class TiledGraph {
         sinkinList = new ArrayList<Tile<Integer>.Node<Integer>>();
         sourceinList = new ArrayList<Tile<Integer>.Node<Integer>>();
     }
-    
+//initialize the tiled graph by generateing tiles and its nodes, and connect wires nodes randomly within each     
     public void initialize(){
         int index = 0;
         for(int i = 0; i < size_g; i++){
@@ -41,7 +43,7 @@ public class TiledGraph {
         connectTile();
         makeGraph();
     }
-
+//add potential connection between wire nodes from different tiles in each switch box 
     public void connectTile() {
         for (int i = 0; i < size_g; i++) {
             for (int j = 0; j < size_g; j++) {
@@ -88,7 +90,7 @@ public class TiledGraph {
             }
         }
     }
-    
+//clear all the lists and refill the different lists with the different kinds of nodes from all tiles    
     public void makeGraph(){
         graphList.clear();
         wireList.clear();
@@ -115,7 +117,8 @@ public class TiledGraph {
             }
         }
     }
-    
+ 
+// the method is to add a random destination rather than input a source-destination list to source nodes 
     public void addDest(){
         Random random = new Random();
         for(int i = 0; i < size_g; i++){
@@ -129,7 +132,7 @@ public class TiledGraph {
         }
     }
    
-    
+// the method to find shortest path for all source nodes to their destinations    
     public void find_shortest_path() {
         for (int i = 0; i < wireList.size(); i++) {
             wireList.get(i).resetOther();
@@ -153,7 +156,7 @@ public class TiledGraph {
             }
         }
     }
-    
+    //find shortest path for the source nodes we input in the list
     public void find_shortest_path_list() {
         for (int i = 0; i < sourceinList.size(); i++) {
             for (int m = 0; m < sourceinList.get(i).paths.size(); m++) {
@@ -183,7 +186,8 @@ public class TiledGraph {
             }
         }
     }
-        
+    
+//method to add destiantion to source nodes in the list according to the configuration file we input
     public void addNet(int index1, int index2) {
         for (int i = 0; i < sourceList.size(); i++) {
             if (sourceList.get(i).getKey() == index1) {
@@ -196,14 +200,14 @@ public class TiledGraph {
             }
         }
     }
-    
+//method to test whether there still a congestion in the graph from the present usage of wire nodes    
     public boolean testCong() {
         for (int i = 0; i < wireList.size(); i++) {
             if (wireList.get(i).getOther() > 2) return false;
         }
         return true;
     }
-    
+//if there is still a congestion, update the costs of nodes and run algorithm again    
     public void runIteration(){
         for(int i = 0; i < size_g; i++){
             for(int j = 0; j < size_g; j++){
@@ -224,34 +228,37 @@ public class TiledGraph {
         find_shortest_path_list();
     }
    
-
+// return the size of graph
     public int getGraphSize(){
         return size_g;
     }
+    
+// return the size of wire 
     public int getWireSize(){
         return size_w;
     }
-    
+//return tiled graph    
     public Tile[][] getGraph(){
         return graph;
     }
-    
+//return the total number of source nodes    
     public int getSourceSize(){
         return source_num;
     }
-    
+//return the total number of sink nodes    
     public int getSinkSize(){
         return sink_num;
     }
-    public ArrayList<Tile<Integer>.Node<Integer>> getWireList(){
-        return wireList;
-    }
-    
+//return list of all nodes in the graph
     public ArrayList<Tile<Integer>.Node<Integer>> getGraphList(){
         return graphList;
     }
-    
-    public ArrayList<Tile<Integer>.Node<Integer>> getSourceList(){
+//return list of all wires in the graph
+    public ArrayList<Tile<Integer>.Node<Integer>> getWireList() {
+        return wireList;
+    }
+//return list of all sources in the graph
+    public ArrayList<Tile<Integer>.Node<Integer>> getSourceList() {
         return sourceList;
     }
     private int size_g;
