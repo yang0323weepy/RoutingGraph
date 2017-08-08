@@ -76,10 +76,10 @@ public class TiledRouting extends javax.swing.JFrame {
     private void initComponents() {
 
         dialog = new javax.swing.JDialog();
-        manualPane = new javax.swing.JScrollPane();
-        manual = new javax.swing.JTextArea();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        jTextPane1 = new javax.swing.JTextPane();
         jScrollPane2 = new javax.swing.JScrollPane();
         showInfo = new javax.swing.JTextArea();
         showState = new javax.swing.JLabel();
@@ -105,16 +105,6 @@ public class TiledRouting extends javax.swing.JFrame {
 
         dialog.setCursor(new java.awt.Cursor(java.awt.Cursor.CROSSHAIR_CURSOR));
 
-        manualPane.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-
-        manual.setEditable(false);
-        manual.setColumns(20);
-        manual.setLineWrap(true);
-        manual.setRows(5);
-        manual.setText("The applet is designed for presenting how PathFinder FPGA routing algorithm works in a simplfied FPGA architecture. ");
-        manual.setWrapStyleWord(true);
-        manualPane.setViewportView(manual);
-
         jLabel2.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jLabel2.setText("User Manual");
 
@@ -122,14 +112,15 @@ public class TiledRouting extends javax.swing.JFrame {
         jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel3.setText("A visulization of the PathFinder FPGA routing Algorithm");
 
+        jTextPane1.setEditable(false);
+        jTextPane1.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        jTextPane1.setText("The applet is designed for presenting how PathFinder FPGA routing algorithm works in a simplified FPGA architecture.  The program works for any size tiled graph with any number of source nodes, sink nodes, and wire nodes to represent FPGA architecture. It can run PathFinder algorithm to find path between specific source-dest pair and solve illegal connections with negotiated congestion router.The results of each iteration will show on the panel with extra information of congested nodes.\n\nAfter input the parameters of FPGA architecture, the main window with generated architecture shows up.\nThe program makes following assumptions:\nThe length of wire segment is the same. \nThe delay is the same as base cost for each node. \n\n\nThe program utilize Dijkstra’s algorithm to calculate the shortest path for each source-destination pair, and negotiated congestion router to update node cost and eliminate illegal connection. \n\nHow to use the program:\nThe source nodes are painted with green color.\nThe sink nodes are painted with red color.\nThe wire nodes are painted with blue color. The color of wire nodes will change due to the change of cost, which means the cost goes higher, the color goes lighter. When the cost of a node becomes too high, the node will keep yellow. \n\nFirstly, press \"input\" button to select a configuration file to test. \nSecondly, input a number in the text filed next to \"start\" button, and press the button to run algorithm for the input number of iterations. If the problem was solved within the limited iterations, it will stop running automatically, and show how many iterations the pathfinder algorithm used to solve congestion. Otherwise, it will show the number of congestion nodes on the panel, and we can input another number and press “start” again until it finds a final solution.\nIf the congestion is solved or the problem is discarded, press “restart” button, and reload a configuration file to start again. \n\nOther Features:\nTo check details of a specific tile on the panel, double right click the tile and see the index of nodes and color change of wire nodes.\nPress the source nodes, and the paths between source-destination show up. \nPress the wire nodes, and the congestion history and current cost show up. \nTo zoom the whole FPGA architecture, press “zoom in” or “zoom out” button to realize it. However, the program can be zoom only by 2x or 0.5x from the original size. \n\nFuture Improvements of the program:\nAdd delay calculation in the program\nInclude more switch patterns in generating FPGA board\n");
+        jScrollPane4.setViewportView(jTextPane1);
+
         javax.swing.GroupLayout dialogLayout = new javax.swing.GroupLayout(dialog.getContentPane());
         dialog.getContentPane().setLayout(dialogLayout);
         dialogLayout.setHorizontalGroup(
             dialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, dialogLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(manualPane, javax.swing.GroupLayout.PREFERRED_SIZE, 446, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(80, 80, 80))
             .addGroup(dialogLayout.createSequentialGroup()
                 .addGroup(dialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(dialogLayout.createSequentialGroup()
@@ -137,8 +128,11 @@ public class TiledRouting extends javax.swing.JFrame {
                         .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(dialogLayout.createSequentialGroup()
                         .addGap(23, 23, 23)
-                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 520, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(45, Short.MAX_VALUE))
+                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 520, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(dialogLayout.createSequentialGroup()
+                        .addGap(50, 50, 50)
+                        .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 521, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(55, Short.MAX_VALUE))
         );
         dialogLayout.setVerticalGroup(
             dialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -147,9 +141,9 @@ public class TiledRouting extends javax.swing.JFrame {
                 .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(manualPane, javax.swing.GroupLayout.PREFERRED_SIZE, 351, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(57, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 445, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(42, Short.MAX_VALUE))
         );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -420,13 +414,11 @@ public class TiledRouting extends javax.swing.JFrame {
     }//GEN-LAST:event_zoomActionPerformed
 
     private void zoom_outActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_zoom_outActionPerformed
-        // TODO add your handling code here:
         showPanel.setZoomView();
         showPanel.setScale(0.5);
     }//GEN-LAST:event_zoom_outActionPerformed
 
     private void zoom_inActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_zoom_inActionPerformed
-        // TODO add your handling code here:
         showPanel.setZoomView();
         showPanel.setScale(2);
     }//GEN-LAST:event_zoom_inActionPerformed
@@ -522,8 +514,8 @@ public class TiledRouting extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JTextArea manual;
-    private javax.swing.JScrollPane manualPane;
+    private javax.swing.JScrollPane jScrollPane4;
+    private javax.swing.JTextPane jTextPane1;
     private javax.swing.JMenu menu;
     private javax.swing.JTextField num_field;
     private javax.swing.JButton reroute;

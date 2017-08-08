@@ -18,8 +18,10 @@ import static javax.swing.SwingConstants.CENTER;
  * @author yangy
  */
 public class DrawTileLabel extends JLabel {
-
-//constructor of DrawTileLabel this class tries to organize each tile and present it as a jlanel to draw on the jpanel
+    
+/*
+  constructor of DrawTileLabel this class tries to organize each tile and present it as a jlanel to draw on the jpanel  
+    */
     public DrawTileLabel(TiledGraph ex, int x, int y, JTextArea label) {
         this.graph = ex;
         sources_a = new JLabel[graph.getSourceSize()];
@@ -119,8 +121,9 @@ public class DrawTileLabel extends JLabel {
         redraw = !redraw;
         return redraw;
     }
-    
-    //initialize the labels 
+    /*
+      initialize the labels 
+    */
     public void setUp() {
                 Tile<Integer> tile = graph.getGraph()[i][j];
                 int x_pos = 0 + i * drawBorder / graph.getGraphSize();
@@ -139,11 +142,10 @@ public class DrawTileLabel extends JLabel {
                         public void mouseClicked(MouseEvent e) {
                             JLabel l = (JLabel) e.getSource();
                             showInfo.setText("");
-                            String state = "";
+                            String state = "source";
                             int num = Integer.parseInt(l.getText());
-                            state = "source";
-                            String path = "path from";
-                            String cost = "cost ";
+                            String path = "path from";;
+                            String cost= "cost";
                             int key = 0;
                             for (int i = 0; i < graph.getSourceList().size(); i++) {
                                 if (graph.getSourceList().get(i).getKey() == num) {
@@ -151,8 +153,6 @@ public class DrawTileLabel extends JLabel {
                                 }
                             }
                             for (int i = 0; i < graph.getSourceList().get(key).paths.size(); i++) {
-                                path = "path from";
-                                cost = "cost";
                                 for (int m = 0; m < graph.getSourceList().get(key).paths.get(i).size(); m++) {
                                     path = path + " " + graph.getSourceList().get(key).paths.get(i).get(m).getKey();
                                 }
@@ -229,6 +229,7 @@ public class DrawTileLabel extends JLabel {
                     if (tile.getWires().get(m).dir == 0) {
                         wires_a[m].setLocation(gap_x + drawBorder / graph.getGraphSize() / 2 + drawBorder / graph.getGraphSize() / 16, 0);
                         wires_a[m].setSize(drawBorder / graph.getGraphSize() / 8 / (graph.getWireSize() - 1), drawBorder / graph.getGraphSize() / 2);
+                        //give positions to wire nodes for drawing route in the future
                         tile.getWires().get(m).pos_x_s = x_pos + gap_x + drawBorder / graph.getGraphSize() / 2 + drawBorder / graph.getGraphSize() / 16;
                         tile.getWires().get(m).pos_y_s = y_pos;
                         tile.getWires().get(m).pos_x_e = x_pos + gap_x + drawBorder / graph.getGraphSize() / 2 + drawBorder / graph.getGraphSize() / 16;
@@ -237,6 +238,7 @@ public class DrawTileLabel extends JLabel {
                     } else {
                         wires_a[m].setLocation(0, gap_y + drawBorder / graph.getGraphSize() / 2 + drawBorder / graph.getGraphSize() / 16);
                         wires_a[m].setSize(drawBorder / graph.getGraphSize() / 2, drawBorder / graph.getGraphSize() / 8 / (graph.getWireSize() - 1));
+                        //give positions to wire nodes for drawing route in the future
                         tile.getWires().get(m).pos_x_s = x_pos;
                         tile.getWires().get(m).pos_y_s = y_pos + gap_y + drawBorder / graph.getGraphSize() / 2 + drawBorder / graph.getGraphSize() / 16;
                         tile.getWires().get(m).pos_x_e = x_pos + drawBorder / graph.getGraphSize() / 2;

@@ -26,7 +26,7 @@ public class Tile<K> {
         wire_num = num3;
         start_num = start;
     }
-    
+//generate a tile with specific number of source nodes, sink nodes, and wire nodes 
     public void generate() {
         for (int i = 0; i < source_num; i++) {
             Node<K> src = new Node<K>(start_num);
@@ -71,7 +71,8 @@ public class Tile<K> {
             }
         }
     }
-    
+
+//to add edge between two nodes when the key of two nodes are known    
     public boolean add_edge(Node<K> node1,Node<K> node2,double weight){
         for(int i = 0; i < node1.getEdge().size(); i++){
             if(node1.getEdge().get(i).getNode().getKey()== node2.getKey()){
@@ -82,6 +83,7 @@ public class Tile<K> {
         return true;
     }
     
+    //to find node with its known index
     public Node<K> findNode(int key) {
         for (int i = 0; i < sources.size(); i++) {
             if (sources.get(i).getKey() == key) {
@@ -100,7 +102,8 @@ public class Tile<K> {
         }
         return null;
     }
-    
+
+//implement dijkstra's algorithm to compute shortest path for each pair source-dest
     public void computePath(Node<K> pin){
         pin.min_distance = 0;
         PriorityQueue<Node<K>> node_queue = new PriorityQueue<Node<K>>();
@@ -120,6 +123,7 @@ public class Tile<K> {
             }
         }
     }
+    //run algorithm with the source nodes we use and store the results for next iteration and showing up in the panel
     public ArrayList<Node<K>> findShortestPath(int k1, int k2, ArrayList<Node<K>> nodes) {
         ArrayList<Node<K>> path = new ArrayList<Node<K>>();
         Node<K> start;
@@ -155,7 +159,20 @@ public class Tile<K> {
         }
         return path;
     }
-    
+//change the value of edges according to the cost change due to each iteration 
+        public void changeEdges() {
+        for (int i = 0; i < wires.size(); i++) {
+            for (int j = 0; j < wires.get(i).getEdge().size(); j++) {
+                wires.get(i).changeWeight(j);
+            }
+        }
+        for (int i = 0; i < sources.size(); i++) {
+            for (int j = 0; j < sources.get(i).getEdge().size(); j++) {
+                sources.get(i).changeWeight(j);
+            }
+        }
+    }
+//unused methods    
     public void negotiationCongestion(Node<K> pin,Node<K> pout){
         pin.min_distance = 0;
         PriorityQueue<Node<K>> node_queue = new PriorityQueue<Node<K>>();
@@ -208,19 +225,7 @@ public class Tile<K> {
         return path;
     }
     
-    public void changeEdges() {
-        for (int i = 0; i < wires.size(); i++) {
-            for (int j = 0; j < wires.get(i).getEdge().size(); j++) {
-                wires.get(i).changeWeight(j);
-            }
-        }
-        for (int i = 0; i < sources.size(); i++) {
-            for (int j = 0; j < sources.get(i).getEdge().size(); j++) {
-                sources.get(i).changeWeight(j);
-            }
-        }
-    }
-    
+
     
     public int getSourceNum(){
         return source_num;
@@ -258,6 +263,7 @@ public class Tile<K> {
     double history = 0;
     int other = 1;
     int base = 0;
+    int critical = 0;
     double min_distance = Integer.MAX_VALUE;
     double find_distance = 0;
     int pos_x_s = 0;
@@ -308,18 +314,22 @@ public class Tile<K> {
             cost = 0;
         }
     }
-    
+    //set parent tile for the node
     public void setTile(Tile<K> tile){
         this.parent = tile;
     }
+    
+    //the formula to calcualte cost
     public void changeCost(){
         cost = (base + history)*other;
     }
+    //change cost of congestion history
     public double changeHistory(){
         if (history==0) history = 1;
         history = 1.1*history;
         return history;
     }
+    //those three methods below used to monitor the usage of wire nodes
     public int changeOther(){
         other++;
         return other;
@@ -332,7 +342,7 @@ public class Tile<K> {
         other = 1;
         return other;
     }
-    
+    //change weight of connection between nodes
     public void changeWeight(int num) {
         if (state == 0) {
           edge.get(num).setWeight(edge.get(num).getNode().getCost());

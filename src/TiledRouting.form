@@ -12,11 +12,6 @@
       <Layout>
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
-              <Group type="102" alignment="1" attributes="0">
-                  <EmptySpace max="32767" attributes="0"/>
-                  <Component id="manualPane" min="-2" pref="446" max="-2" attributes="0"/>
-                  <EmptySpace min="-2" pref="80" max="-2" attributes="0"/>
-              </Group>
               <Group type="102" attributes="0">
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" attributes="0">
@@ -27,8 +22,12 @@
                           <EmptySpace min="-2" pref="23" max="-2" attributes="0"/>
                           <Component id="jLabel3" min="-2" pref="520" max="-2" attributes="0"/>
                       </Group>
+                      <Group type="102" alignment="0" attributes="0">
+                          <EmptySpace min="-2" pref="50" max="-2" attributes="0"/>
+                          <Component id="jScrollPane4" min="-2" pref="521" max="-2" attributes="0"/>
+                      </Group>
                   </Group>
-                  <EmptySpace pref="45" max="32767" attributes="0"/>
+                  <EmptySpace pref="55" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -39,36 +38,14 @@
                   <Component id="jLabel3" min="-2" pref="35" max="-2" attributes="0"/>
                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
                   <Component id="jLabel2" min="-2" pref="25" max="-2" attributes="0"/>
-                  <EmptySpace max="-2" attributes="0"/>
-                  <Component id="manualPane" min="-2" pref="351" max="-2" attributes="0"/>
-                  <EmptySpace pref="57" max="32767" attributes="0"/>
+                  <EmptySpace type="separate" max="-2" attributes="0"/>
+                  <Component id="jScrollPane4" min="-2" pref="445" max="-2" attributes="0"/>
+                  <EmptySpace pref="42" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
       </Layout>
       <SubComponents>
-        <Container class="javax.swing.JScrollPane" name="manualPane">
-          <Properties>
-            <Property name="horizontalScrollBarPolicy" type="int" value="31"/>
-          </Properties>
-          <AuxValues>
-            <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
-          </AuxValues>
-
-          <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
-          <SubComponents>
-            <Component class="javax.swing.JTextArea" name="manual">
-              <Properties>
-                <Property name="editable" type="boolean" value="false"/>
-                <Property name="columns" type="int" value="20"/>
-                <Property name="lineWrap" type="boolean" value="true"/>
-                <Property name="rows" type="int" value="5"/>
-                <Property name="text" type="java.lang.String" value="The applet is designed for presenting how PathFinder FPGA routing algorithm works in a simplfied FPGA architecture. "/>
-                <Property name="wrapStyleWord" type="boolean" value="true"/>
-              </Properties>
-            </Component>
-          </SubComponents>
-        </Container>
         <Component class="javax.swing.JLabel" name="jLabel2">
           <Properties>
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
@@ -86,6 +63,24 @@
             <Property name="text" type="java.lang.String" value="A visulization of the PathFinder FPGA routing Algorithm"/>
           </Properties>
         </Component>
+        <Container class="javax.swing.JScrollPane" name="jScrollPane4">
+          <AuxValues>
+            <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
+          </AuxValues>
+
+          <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
+          <SubComponents>
+            <Component class="javax.swing.JTextPane" name="jTextPane1">
+              <Properties>
+                <Property name="editable" type="boolean" value="false"/>
+                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                  <Font name="Tahoma" size="12" style="0"/>
+                </Property>
+                <Property name="text" type="java.lang.String" value="The applet is designed for presenting how PathFinder FPGA routing algorithm works in a simplified FPGA architecture.  The program works for any size tiled graph with any number of source nodes, sink nodes, and wire nodes to represent FPGA architecture. It can run PathFinder algorithm to find path between specific source-dest pair and solve illegal connections with negotiated congestion router.The results of each iteration will show on the panel with extra information of congested nodes.&#xa;&#xa;After input the parameters of FPGA architecture, the main window with generated architecture shows up.&#xa;The program makes following assumptions:&#xa;The length of wire segment is the same. &#xa;The delay is the same as base cost for each node. &#xa;&#xa;&#xa;The program utilize Dijkstra&#x2019;s algorithm to calculate the shortest path for each source-destination pair, and negotiated congestion router to update node cost and eliminate illegal connection. &#xa;&#xa;How to use the program:&#xa;The source nodes are painted with green color.&#xa;The sink nodes are painted with red color.&#xa;The wire nodes are painted with blue color. The color of wire nodes will change due to the change of cost, which means the cost goes higher, the color goes lighter. When the cost of a node becomes too high, the node will keep yellow. &#xa;&#xa;Firstly, press &quot;input&quot; button to select a configuration file to test. &#xa;Secondly, input a number in the text filed next to &quot;start&quot; button, and press the button to run algorithm for the input number of iterations. If the problem was solved within the limited iterations, it will stop running automatically, and show how many iterations the pathfinder algorithm used to solve congestion. Otherwise, it will show the number of congestion nodes on the panel, and we can input another number and press &#x201c;start&#x201d; again until it finds a final solution.&#xa;If the congestion is solved or the problem is discarded, press &#x201c;restart&#x201d; button, and reload a configuration file to start again. &#xa;&#xa;Other Features:&#xa;To check details of a specific tile on the panel, double right click the tile and see the index of nodes and color change of wire nodes.&#xa;Press the source nodes, and the paths between source-destination show up. &#xa;Press the wire nodes, and the congestion history and current cost show up. &#xa;To zoom the whole FPGA architecture, press &#x201c;zoom in&#x201d; or &#x201c;zoom out&#x201d; button to realize it. However, the program can be zoom only by 2x or 0.5x from the original size. &#xa;&#xa;Future Improvements of the program:&#xa;Add delay calculation in the program&#xa;Include more switch patterns in generating FPGA board&#xa;"/>
+              </Properties>
+            </Component>
+          </SubComponents>
+        </Container>
       </SubComponents>
     </Container>
     <Menu class="javax.swing.JMenuBar" name="jMenuBar1">

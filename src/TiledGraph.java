@@ -156,7 +156,7 @@ public class TiledGraph {
             }
         }
     }
-    //find shortest path for the source nodes we input in the list
+    //run the algorithm of Negotiated Congestion router
     public void find_shortest_path_list() {
         for (int i = 0; i < sourceinList.size(); i++) {
             for (int m = 0; m < sourceinList.get(i).paths.size(); m++) {
