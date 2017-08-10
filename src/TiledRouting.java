@@ -80,6 +80,10 @@ public class TiledRouting extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
         jScrollPane4 = new javax.swing.JScrollPane();
         jTextPane1 = new javax.swing.JTextPane();
+        dialog1 = new javax.swing.JDialog();
+        jScrollPane5 = new javax.swing.JScrollPane();
+        text2 = new javax.swing.JTextPane();
+        jLabel4 = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
         showInfo = new javax.swing.JTextArea();
         showState = new javax.swing.JLabel();
@@ -98,6 +102,7 @@ public class TiledRouting extends javax.swing.JFrame {
         zoom = new javax.swing.JToggleButton();
         zoom_in = new javax.swing.JButton();
         zoom_out = new javax.swing.JButton();
+        inst = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         menu = new javax.swing.JMenu();
         info = new javax.swing.JMenuItem();
@@ -144,6 +149,36 @@ public class TiledRouting extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 445, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(42, Short.MAX_VALUE))
+        );
+
+        text2.setText("The source nodes are painted with green color.\nThe sink nodes are painted with red color.\nThe wire nodes are painted with blue color. The color of wire nodes will change due to the change of cost, which means the cost goes higher, the color goes lighter. When the cost of a node becomes too high, the node will keep yellow. \n\nFirstly, press \"input\" button to select a configuration file to test. \nSecondly, input a number in the text filed next to \"start\" button, and press the button to run algorithm for the input number of iterations. If the problem was solved within the limited iterations, it will stop running automatically, and show how many iterations the pathfinder algorithm used to solve congestion. Otherwise, it will show the number of congestion nodes on the panel, and we can input another number and press “start” again until it finds a final solution.\nIf the congestion is solved or the problem is discarded, press “restart” button, and reload a configuration file to start again. \n\nOther Features:\nTo check details of a specific tile on the panel, double right click the tile and see the index of nodes and color change of wire nodes.\nPress the source nodes, and the paths between source-destination show up. \nPress the wire nodes, and the congestion history and current cost show up. \nTo zoom the whole FPGA architecture, press “zoom in” or “zoom out” button to realize it. However, the program can be zoom only by 2x or 0.5x from the original size. \n");
+        jScrollPane5.setViewportView(text2);
+
+        jLabel4.setFont(new java.awt.Font("Tekton Pro", 1, 24)); // NOI18N
+        jLabel4.setText("How to use the program");
+
+        javax.swing.GroupLayout dialog1Layout = new javax.swing.GroupLayout(dialog1.getContentPane());
+        dialog1.getContentPane().setLayout(dialog1Layout);
+        dialog1Layout.setHorizontalGroup(
+            dialog1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(dialog1Layout.createSequentialGroup()
+                .addGroup(dialog1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(dialog1Layout.createSequentialGroup()
+                        .addGap(59, 59, 59)
+                        .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 382, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(dialog1Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 247, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(61, Short.MAX_VALUE))
+        );
+        dialog1Layout.setVerticalGroup(
+            dialog1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, dialog1Layout.createSequentialGroup()
+                .addGap(26, 26, 26)
+                .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, 28, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 392, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -227,6 +262,13 @@ public class TiledRouting extends javax.swing.JFrame {
             }
         });
 
+        inst.setText("Instruction");
+        inst.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                instActionPerformed(evt);
+            }
+        });
+
         menu.setText("Menu");
 
         info.setText("Info");
@@ -284,13 +326,16 @@ public class TiledRouting extends javax.swing.JFrame {
                                 .addGap(26, 26, 26)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(reroute)
-                                    .addComponent(num_field, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(num_field, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(inst))))
                             .addGroup(layout.createSequentialGroup()
                                 .addGap(102, 102, 102)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(show, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(add, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addGap(40, 40, 40)))
                 .addComponent(showPane, javax.swing.GroupLayout.PREFERRED_SIZE, 650, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18))
         );
@@ -302,7 +347,8 @@ public class TiledRouting extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(route)
-                    .addComponent(num_field, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(num_field, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(inst))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(reroute)
@@ -430,6 +476,13 @@ public class TiledRouting extends javax.swing.JFrame {
         dialog.setVisible(true);
     }//GEN-LAST:event_infoActionPerformed
 
+    private void instActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_instActionPerformed
+        pack();
+        dialog.setSize(new Dimension(600, 600));
+        dialog.setLocationRelativeTo(this);
+        dialog.setVisible(true);
+    }//GEN-LAST:event_instActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -505,16 +558,20 @@ public class TiledRouting extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton add;
     private javax.swing.JDialog dialog;
+    private javax.swing.JDialog dialog1;
     private javax.swing.JMenuItem exit;
     private javax.swing.JMenuItem info;
+    private javax.swing.JButton inst;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
+    private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JTextPane jTextPane1;
     private javax.swing.JMenu menu;
     private javax.swing.JTextField num_field;
@@ -527,6 +584,7 @@ public class TiledRouting extends javax.swing.JFrame {
     private javax.swing.JTextArea showSrc;
     private javax.swing.JLabel showState;
     private javax.swing.JButton stopr;
+    private javax.swing.JTextPane text2;
     private javax.swing.JToggleButton zoom;
     private javax.swing.JButton zoom_in;
     private javax.swing.JButton zoom_out;

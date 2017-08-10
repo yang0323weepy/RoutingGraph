@@ -35,7 +35,6 @@ public class DrawTileLabel extends JLabel {
 
     public void paintComponent(Graphics g) {
        setUp();
-       System.out.println("hh" + redraw);
         Tile<Integer> tile = graph.getGraph()[i][j];
         if (redraw == false) {   
         g.drawRect(0, 0, drawBorder / graph.getGraphSize() / 2, drawBorder / graph.getGraphSize() / 2);
@@ -66,7 +65,6 @@ public class DrawTileLabel extends JLabel {
             }
         } else {
             removeAll();
-            System.out.println("test repaint on label");
             int Xpos = 0;
             int Ypos = 0;
             g.drawRect(Xpos, Ypos, drawBorder / 4, drawBorder / 4);
@@ -144,8 +142,8 @@ public class DrawTileLabel extends JLabel {
                             showInfo.setText("");
                             String state = "source";
                             int num = Integer.parseInt(l.getText());
-                            String path = "path from";;
-                            String cost= "cost";
+                            String path;
+                            String cost;
                             int key = 0;
                             for (int i = 0; i < graph.getSourceList().size(); i++) {
                                 if (graph.getSourceList().get(i).getKey() == num) {
@@ -153,6 +151,8 @@ public class DrawTileLabel extends JLabel {
                                 }
                             }
                             for (int i = 0; i < graph.getSourceList().get(key).paths.size(); i++) {
+                                path = "path from";
+                                cost = "cost";
                                 for (int m = 0; m < graph.getSourceList().get(key).paths.get(i).size(); m++) {
                                     path = path + " " + graph.getSourceList().get(key).paths.get(i).get(m).getKey();
                                 }
@@ -179,7 +179,7 @@ public class DrawTileLabel extends JLabel {
                 for (int m = 0; m < tile.getSinks().size(); m++) {
                     sinks_a[m] = new JLabel("", CENTER);
                     sinks_a[m].setText(Integer.toString(tile.getSinks().get(m).getKey()));
-                    sinks_a[m].setBackground(Color.green);
+                    sinks_a[m].setBackground(Color.red);
                     sinks_a[m].setOpaque(true);
                     sinks_a[m].setLocation(1, drawBorder / graph.getGraphSize() / 2 - drawBorder / graph.getGraphSize() / 8 - m * drawBorder / graph.getGraphSize() / 8);
                     tile.getSinks().get(m).pos_x_e = x_pos + m * drawBorder / graph.getGraphSize() / 8;

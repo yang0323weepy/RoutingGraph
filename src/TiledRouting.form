@@ -83,6 +83,63 @@
         </Container>
       </SubComponents>
     </Container>
+    <Container class="javax.swing.JDialog" name="dialog1">
+
+      <Layout>
+        <DimensionLayout dim="0">
+          <Group type="103" groupAlignment="0" attributes="0">
+              <Group type="102" attributes="0">
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="102" attributes="0">
+                          <EmptySpace min="-2" pref="59" max="-2" attributes="0"/>
+                          <Component id="jScrollPane5" min="-2" pref="382" max="-2" attributes="0"/>
+                      </Group>
+                      <Group type="102" alignment="0" attributes="0">
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="jLabel4" min="-2" pref="247" max="-2" attributes="0"/>
+                      </Group>
+                  </Group>
+                  <EmptySpace pref="61" max="32767" attributes="0"/>
+              </Group>
+          </Group>
+        </DimensionLayout>
+        <DimensionLayout dim="1">
+          <Group type="103" groupAlignment="0" attributes="0">
+              <Group type="102" alignment="1" attributes="0">
+                  <EmptySpace min="-2" pref="26" max="-2" attributes="0"/>
+                  <Component id="jLabel4" pref="28" max="32767" attributes="0"/>
+                  <EmptySpace type="separate" max="-2" attributes="0"/>
+                  <Component id="jScrollPane5" min="-2" pref="392" max="-2" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
+              </Group>
+          </Group>
+        </DimensionLayout>
+      </Layout>
+      <SubComponents>
+        <Container class="javax.swing.JScrollPane" name="jScrollPane5">
+          <AuxValues>
+            <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
+          </AuxValues>
+
+          <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
+          <SubComponents>
+            <Component class="javax.swing.JTextPane" name="text2">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="The source nodes are painted with green color.&#xa;The sink nodes are painted with red color.&#xa;The wire nodes are painted with blue color. The color of wire nodes will change due to the change of cost, which means the cost goes higher, the color goes lighter. When the cost of a node becomes too high, the node will keep yellow. &#xa;&#xa;Firstly, press &quot;input&quot; button to select a configuration file to test. &#xa;Secondly, input a number in the text filed next to &quot;start&quot; button, and press the button to run algorithm for the input number of iterations. If the problem was solved within the limited iterations, it will stop running automatically, and show how many iterations the pathfinder algorithm used to solve congestion. Otherwise, it will show the number of congestion nodes on the panel, and we can input another number and press &#x201c;start&#x201d; again until it finds a final solution.&#xa;If the congestion is solved or the problem is discarded, press &#x201c;restart&#x201d; button, and reload a configuration file to start again. &#xa;&#xa;Other Features:&#xa;To check details of a specific tile on the panel, double right click the tile and see the index of nodes and color change of wire nodes.&#xa;Press the source nodes, and the paths between source-destination show up. &#xa;Press the wire nodes, and the congestion history and current cost show up. &#xa;To zoom the whole FPGA architecture, press &#x201c;zoom in&#x201d; or &#x201c;zoom out&#x201d; button to realize it. However, the program can be zoom only by 2x or 0.5x from the original size. &#xa;"/>
+              </Properties>
+            </Component>
+          </SubComponents>
+        </Container>
+        <Component class="javax.swing.JLabel" name="jLabel4">
+          <Properties>
+            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+              <Font name="Tekton Pro" size="24" style="1"/>
+            </Property>
+            <Property name="text" type="java.lang.String" value="How to use the program"/>
+          </Properties>
+        </Component>
+      </SubComponents>
+    </Container>
     <Menu class="javax.swing.JMenuBar" name="jMenuBar1">
       <SubComponents>
         <Menu class="javax.swing.JMenu" name="menu">
@@ -171,7 +228,11 @@
                               <EmptySpace min="-2" pref="26" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
                                   <Component id="reroute" min="-2" max="-2" attributes="0"/>
-                                  <Component id="num_field" min="-2" pref="72" max="-2" attributes="0"/>
+                                  <Group type="102" alignment="0" attributes="0">
+                                      <Component id="num_field" min="-2" pref="72" max="-2" attributes="0"/>
+                                      <EmptySpace max="32767" attributes="0"/>
+                                      <Component id="inst" min="-2" max="-2" attributes="0"/>
+                                  </Group>
                               </Group>
                           </Group>
                           <Group type="102" alignment="0" attributes="0">
@@ -182,7 +243,7 @@
                               </Group>
                           </Group>
                       </Group>
-                      <EmptySpace max="32767" attributes="0"/>
+                      <EmptySpace min="-2" pref="40" max="-2" attributes="0"/>
                   </Group>
               </Group>
               <Component id="showPane" min="-2" pref="650" max="-2" attributes="0"/>
@@ -199,6 +260,7 @@
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="route" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="num_field" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="inst" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
@@ -375,6 +437,14 @@
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="zoom_outActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JButton" name="inst">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Instruction"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="instActionPerformed"/>
       </Events>
     </Component>
   </SubComponents>

@@ -45,7 +45,6 @@ public class DrawTile extends JPanel {
             transform = g2.getTransform();
             transform.scale(scale, scale);
             g2.setTransform(transform);
-            System.out.println("transform");
         }
         //if no zoom request, just show the tile on the jpanel                                                 
         if (!zoom) {
@@ -94,7 +93,6 @@ public class DrawTile extends JPanel {
                         JLabel l = (JLabel) e.getSource();
                         if (e.getClickCount() == 2 && e.getModifiers() == MouseEvent.BUTTON3_MASK) {
                             need_zoom = Integer.parseInt(l.getName());
-                            System.out.println("textttttttttttttttttttttttttttttttttttttttttttttttttt");
                             zoom = true;
                             repaint();
                         }

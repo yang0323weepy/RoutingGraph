@@ -123,6 +123,25 @@ public class Tile<K> {
             }
         }
     }
+        public void computePath1(Node<K> pin, Node<K> pout){
+        pin.min_distance = 0;
+        PriorityQueue<Node<K>> node_queue = new PriorityQueue<Node<K>>();
+        node_queue.add(pin);
+        while (!node_queue.isEmpty()){
+            Node<K> vertex = node_queue.poll();
+            for(int i = 0; i < vertex.getEdge().size(); i++){
+                Edge<K> edge = vertex.getEdge().get(i);
+                Node<K> neighbor = edge.getNode();
+                double total_distance = edge.getWeight() + vertex.min_distance;
+                if(total_distance < neighbor.min_distance){
+                    node_queue.remove(neighbor);
+                    neighbor.min_distance = total_distance;
+                    neighbor.prev = vertex;
+                    node_queue.add(neighbor);
+                }
+            }
+        }
+    }
     //run algorithm with the source nodes we use and store the results for next iteration and showing up in the panel
     public ArrayList<Node<K>> findShortestPath(int k1, int k2, ArrayList<Node<K>> nodes) {
         ArrayList<Node<K>> path = new ArrayList<Node<K>>();
@@ -172,60 +191,6 @@ public class Tile<K> {
             }
         }
     }
-//unused methods    
-    public void negotiationCongestion(Node<K> pin,Node<K> pout){
-        pin.min_distance = 0;
-        PriorityQueue<Node<K>> node_queue = new PriorityQueue<Node<K>>();
-        node_queue.add(pin);
-        while (!node_queue.peek().equals(pout)){
-            Node<K> vertex = node_queue.poll();
-            for(int i = 0; i < vertex.getEdge().size(); i++){
-                Edge<K> edge = vertex.getEdge().get(i);
-                Node<K> neighbor = edge.getNode();
-                double total_distance = edge.getWeight() + vertex.min_distance;
-                if(total_distance < neighbor.min_distance){
-                    node_queue.remove(neighbor);
-                    neighbor.min_distance = total_distance;
-                    neighbor.prev = vertex;
-                    node_queue.add(neighbor);
-                }
-            }
-        }
-    }
-    public ArrayList<Node<K>> findpath(int k1, int k2, ArrayList<Node<K>> nodes) {
-        ArrayList<Node<K>> path = new ArrayList<Node<K>>();
-        Node<K> start;
-        Node<K> end;
-        for (int i = 0; i < nodes.size(); i++) {
-            if (k1==(nodes.get(i).getKey())) {
-                start = nodes.get(i);
-                for (int k = 0; k < nodes.size(); k++) {
-                    nodes.get(k).prev = null;
-                    nodes.get(k).min_distance = Integer.MAX_VALUE;
-                }
-                computePath(start);
-                for (int j = 0; j < nodes.size(); j++) {
-                    if (k2==(nodes.get(j).getKey())) {
-                        end = nodes.get(j);
-                        start.find_distance = end.min_distance;
-                        if (start.find_distance != Integer.MAX_VALUE) {
-                            DecimalFormat numformat = new DecimalFormat("#.00");
-                            System.out.println("final distance" + numformat.format(end.min_distance) + " !");
-                        } else {
-                            System.out.println("no path found");
-                        }
-                        for (Node<K> visit = end; visit != null; visit = visit.prev) {
-                            path.add(visit);
-                        }
-                        Collections.reverse(path);
-                    }
-                }
-            }
-        }
-        return path;
-    }
-    
-
     
     public int getSourceNum(){
         return source_num;
@@ -321,7 +286,7 @@ public class Tile<K> {
     
     //the formula to calcualte cost
     public void changeCost(){
-        cost = (base + history)*other;
+        cost = base*critical + (1-critical)*(base + history)*other;
     }
     //change cost of congestion history
     public double changeHistory(){
@@ -357,6 +322,7 @@ public class Tile<K> {
     public void addEdge(Edge e){
         edge.add(e);
     }
+    @Override
     public int compareTo(Node<K> other){
         return Double.compare(min_distance, other.min_distance);
     }
