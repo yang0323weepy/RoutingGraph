@@ -104,7 +104,7 @@ public class Tile<K> {
     }
 
 //implement dijkstra's algorithm to compute shortest path for each pair source-dest
-    public void computePath(Node<K> pin){
+    public void computePath(Node<K> pin, ArrayList<Node<K>> nodes){
         pin.min_distance = 0;
         PriorityQueue<Node<K>> node_queue = new PriorityQueue<Node<K>>();
         node_queue.add(pin);
@@ -154,7 +154,7 @@ public class Tile<K> {
                     nodes.get(k).prev = null;
                     nodes.get(k).min_distance = Integer.MAX_VALUE;
                 }
-                computePath(start);
+                computePath(start,nodes);
                 for (int j = 0; j < nodes.size(); j++) {
                     if (k2==(nodes.get(j).getKey())) {
                         end = nodes.get(j);

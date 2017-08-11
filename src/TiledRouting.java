@@ -3,8 +3,11 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.text.DecimalFormat;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
@@ -106,6 +109,7 @@ public class TiledRouting extends javax.swing.JFrame {
         jMenuBar1 = new javax.swing.JMenuBar();
         menu = new javax.swing.JMenu();
         info = new javax.swing.JMenuItem();
+        export = new javax.swing.JMenuItem();
         exit = new javax.swing.JMenuItem();
 
         dialog.setCursor(new java.awt.Cursor(java.awt.Cursor.CROSSHAIR_CURSOR));
@@ -278,6 +282,14 @@ public class TiledRouting extends javax.swing.JFrame {
             }
         });
         menu.add(info);
+
+        export.setText("Export");
+        export.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                exportActionPerformed(evt);
+            }
+        });
+        menu.add(export);
 
         exit.setText("Exit");
         exit.addActionListener(new java.awt.event.ActionListener() {
@@ -483,6 +495,23 @@ public class TiledRouting extends javax.swing.JFrame {
         dialog.setVisible(true);
     }//GEN-LAST:event_instActionPerformed
 
+    private void exportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportActionPerformed
+        // TODO add your handling code here:
+        try {
+           File file = new File("export.txt");
+          BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+            for(int i = 0; i < tile_graph.getWireList().size();i++){
+                writer.write("wire node: " + tile_graph.getWireList().get(i).getKey() + "      ");
+                writer.write("cost: " + tile_graph.getWireList().get(i).getCost());
+                writer.newLine();
+                writer.newLine();
+            }  
+            writer.close();
+        } catch (Exception e) {
+             e.printStackTrace();
+        }
+    }//GEN-LAST:event_exportActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -560,6 +589,7 @@ public class TiledRouting extends javax.swing.JFrame {
     private javax.swing.JDialog dialog;
     private javax.swing.JDialog dialog1;
     private javax.swing.JMenuItem exit;
+    private javax.swing.JMenuItem export;
     private javax.swing.JMenuItem info;
     private javax.swing.JButton inst;
     private javax.swing.JLabel jLabel1;

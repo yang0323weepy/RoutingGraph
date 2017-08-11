@@ -270,6 +270,10 @@ public class TiledGraph {
     public ArrayList<Tile<Integer>.Node<Integer>> getSourceList() {
         return sourceList;
     }
+    
+        public ArrayList<Tile<Integer>.Node<Integer>> getSourceinList() {
+        return sourceinList;
+    }
     private int size_g;
     private int size_w;
     private int source_num;

@@ -1,0 +1,288 @@
+wire node: 2      cost: 1.0
+
+wire node: 3      cost: 5.0
+
+wire node: 4      cost: 5.0
+
+wire node: 5      cost: 4.0
+
+wire node: 8      cost: 2.0
+
+wire node: 9      cost: 4.0
+
+wire node: 10      cost: 2.0
+
+wire node: 11      cost: 3.0
+
+wire node: 14      cost: 5.0
+
+wire node: 15      cost: 1.0
+
+wire node: 16      cost: 5.0
+
+wire node: 17      cost: 5.0
+
+wire node: 20      cost: 2.0
+
+wire node: 21      cost: 5.0
+
+wire node: 22      cost: 1.0
+
+wire node: 23      cost: 1.0
+
+wire node: 26      cost: 4.0
+
+wire node: 27      cost: 2.0
+
+wire node: 28      cost: 5.0
+
+wire node: 29      cost: 1.0
+
+wire node: 32      cost: 5.0
+
+wire node: 33      cost: 1.0
+
+wire node: 34      cost: 5.0
+
+wire node: 35      cost: 1.0
+
+wire node: 38      cost: 4.0
+
+wire node: 39      cost: 1.0
+
+wire node: 40      cost: 3.0
+
+wire node: 41      cost: 1.0
+
+wire node: 44      cost: 2.0
+
+wire node: 45      cost: 4.0
+
+wire node: 46      cost: 1.0
+
+wire node: 47      cost: 2.0
+
+wire node: 50      cost: 2.0
+
+wire node: 51      cost: 2.0
+
+wire node: 52      cost: 5.0
+
+wire node: 53      cost: 4.0
+
+wire node: 56      cost: 1.0
+
+wire node: 57      cost: 5.0
+
+wire node: 58      cost: 2.0
+
+wire node: 59      cost: 5.0
+
+wire node: 62      cost: 3.0
+
+wire node: 63      cost: 2.0
+
+wire node: 64      cost: 2.0
+
+wire node: 65      cost: 3.0
+
+wire node: 68      cost: 3.0
+
+wire node: 69      cost: 2.0
+
+wire node: 70      cost: 1.0
+
+wire node: 71      cost: 5.0
+
+wire node: 74      cost: 4.0
+
+wire node: 75      cost: 1.0
+
+wire node: 76      cost: 4.0
+
+wire node: 77      cost: 2.0
+
+wire node: 80      cost: 4.0
+
+wire node: 81      cost: 2.0
+
+wire node: 82      cost: 3.0
+
+wire node: 83      cost: 2.0
+
+wire node: 86      cost: 5.0
+
+wire node: 87      cost: 1.0
+
+wire node: 88      cost: 2.0
+
+wire node: 89      cost: 5.0
+
+wire node: 92      cost: 3.0
+
+wire node: 93      cost: 1.0
+
+wire node: 94      cost: 1.0
+
+wire node: 95      cost: 1.0
+
+wire node: 98      cost: 2.0
+
+wire node: 99      cost: 3.0
+
+wire node: 100      cost: 3.0
+
+wire node: 101      cost: 3.0
+
+wire node: 104      cost: 2.0
+
+wire node: 105      cost: 5.0
+
+wire node: 106      cost: 4.0
+
+wire node: 107      cost: 2.0
+
+wire node: 110      cost: 5.0
+
+wire node: 111      cost: 4.0
+
+wire node: 112      cost: 4.0
+
+wire node: 113      cost: 2.0
+
+wire node: 116      cost: 2.0
+
+wire node: 117      cost: 5.0
+
+wire node: 118      cost: 2.0
+
+wire node: 119      cost: 2.0
+
+wire node: 122      cost: 5.0
+
+wire node: 123      cost: 1.0
+
+wire node: 124      cost: 2.0
+
+wire node: 125      cost: 2.0
+
+wire node: 128      cost: 3.0
+
+wire node: 129      cost: 2.0
+
+wire node: 130      cost: 1.0
+
+wire node: 131      cost: 1.0
+
+wire node: 134      cost: 2.0
+
+wire node: 135      cost: 4.0
+
+wire node: 136      cost: 5.0
+
+wire node: 137      cost: 2.0
+
+wire node: 140      cost: 3.0
+
+wire node: 141      cost: 3.0
+
+wire node: 142      cost: 5.0
+
+wire node: 143      cost: 3.0
+
+wire node: 146      cost: 3.0
+
+wire node: 147      cost: 3.0
+
+wire node: 148      cost: 4.0
+
+wire node: 149      cost: 1.0
+
+wire node: 152      cost: 1.0
+
+wire node: 153      cost: 2.0
+
+wire node: 154      cost: 2.0
+
+wire node: 155      cost: 3.0
+
+wire node: 158      cost: 1.0
+
+wire node: 159      cost: 5.0
+
+wire node: 160      cost: 3.0
+
+wire node: 161      cost: 2.0
+
+wire node: 164      cost: 5.0
+
+wire node: 165      cost: 2.0
+
+wire node: 166      cost: 4.0
+
+wire node: 167      cost: 2.0
+
+wire node: 170      cost: 1.0
+
+wire node: 171      cost: 2.0
+
+wire node: 172      cost: 4.0
+
+wire node: 173      cost: 2.0
+
+wire node: 176      cost: 4.0
+
+wire node: 177      cost: 1.0
+
+wire node: 178      cost: 5.0
+
+wire node: 179      cost: 5.0
+
+wire node: 182      cost: 2.0
+
+wire node: 183      cost: 3.0
+
+wire node: 184      cost: 3.0
+
+wire node: 185      cost: 5.0
+
+wire node: 188      cost: 3.0
+
+wire node: 189      cost: 4.0
+
+wire node: 190      cost: 3.0
+
+wire node: 191      cost: 5.0
+
+wire node: 194      cost: 3.0
+
+wire node: 195      cost: 4.0
+
+wire node: 196      cost: 1.0
+
+wire node: 197      cost: 1.0
+
+wire node: 200      cost: 2.0
+
+wire node: 201      cost: 2.0
+
+wire node: 202      cost: 1.0
+
+wire node: 203      cost: 1.0
+
+wire node: 206      cost: 4.0
+
+wire node: 207      cost: 4.0
+
+wire node: 208      cost: 5.0
+
+wire node: 209      cost: 1.0
+
+wire node: 212      cost: 4.0
+
+wire node: 213      cost: 5.0
+
+wire node: 214      cost: 4.0
+
+wire node: 215      cost: 1.0
+
